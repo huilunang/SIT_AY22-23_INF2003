@@ -13,7 +13,7 @@ class MariaDBConnManager:
                 password=os.environ['DB_PWD'],
                 host=os.environ['MARIA_HOST'],
                 port=3306,
-                database=os.environ['DB']
+                database=os.environ['DATABASE']
             )
         except mariadb.Error as e:
             print(f"Error connecting to MariaDB Platform: {e}")

@@ -9,7 +9,7 @@ class MongoDBConnManager:
                                   port=27017,
                                   username=os.environ['DB_USER'],
                                   password=os.environ['DB_PWD'],
-                                  authSource=os.environ['DB'])
+                                  authSource=os.environ['DATABASE'])
 
     def get_connection(self):
         return self.client

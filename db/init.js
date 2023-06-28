@@ -1,16 +1,16 @@
 // create database
-bloobin = db.getSiblingDB("bloobin_db");
+bloobin = db.getSiblingDB(process.env.MONGO_INITDB_DATABASE);
 
 // create user
 bloobin.createUser({
-  user: "bloobin_user",
-  pwd: "bloobin_pwd",
-  roles: [{ role: "readWrite", db: "bloobin_db" }],
+  user: process.env.DB_USER,
+  pwd: process.env.DB_PWD,
+  roles: [{ role: "readWrite", db: process.env.MONGO_INITDB_DATABASE }],
   mechanisms: ["SCRAM-SHA-1"],
 });
 
 // Create DB and collection
-bloobin.createCollection("detection_result", { capped: false });
+bloobin.createCollection(process.env.COLLECTION, { capped: false });
 
 // insert dummy data
 bloobin.detection_result.insert(
