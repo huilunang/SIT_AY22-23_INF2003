@@ -1,0 +1,5 @@
+FROM mongo:6.0.6
+
+COPY db/init.js /docker-entrypoint-initdb.d/init.js
+
+RUN chmod 755 /docker-entrypoint-initdb.d/init.js

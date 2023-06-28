@@ -1,23 +1,3 @@
-CREATE TABLE IF NOT EXISTS Recycles (
-  RecycledID INT PRIMARY KEY,
-  BinID INT,
-  Datetime DATETIME,
-  Image blob,
-  MaterialType VARCHAR(255),
-  UserID INT,
-  FOREIGN KEY (BinID) REFERENCES Bins(BinID),
-  FOREIGN KEY (UserID) REFERENCES Users(UserID)
-);
-
-CREATE TABLE IF NOT EXISTS RewardTransactions (
-  TransactionID INT PRIMARY KEY,
-  RewardID INT,
-  UserID INT,
-  Claimed BOOLEAN,
-  FOREIGN KEY (RewardID) REFERENCES Rewards(RewardID),
-  FOREIGN KEY (UserID) REFERENCES Users(UserID)
-);
-
 CREATE TABLE IF NOT EXISTS Users (
   UserID INT PRIMARY KEY,
   Name VARCHAR(255),
@@ -43,27 +23,31 @@ CREATE TABLE IF NOT EXISTS Rewards (
   Stock INT
 );
 
+CREATE TABLE IF NOT EXISTS Recycles (
+  RecycledID INT PRIMARY KEY,
+  BinID INT,
+  Datetime DATETIME,
+  Image blob,
+  MaterialType VARCHAR(255),
+  UserID INT,
+  FOREIGN KEY (BinID) REFERENCES Bins(BinID),
+  FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+CREATE TABLE IF NOT EXISTS RewardTransactions (
+  TransactionID INT PRIMARY KEY,
+  RewardID INT,
+  UserID INT,
+  Claimed BOOLEAN,
+  FOREIGN KEY (RewardID) REFERENCES Rewards(RewardID),
+  FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
 DELETE FROM Recycles WHERE RecycledID>0;
 DELETE FROM RewardTransactions WHERE TransactionID>0;	
 DELETE FROM Users WHERE UserID>0;
 DELETE FROM Bins WHERE BinID>0;
 DELETE FROM Rewards WHERE RewardID>0;
-
-INSERT INTO Recycles (RecycledID, BinID, Datetime, Image, MaterialType, UserID)
-VALUES
-  (1, 1, '2023-06-10 09:30:00', '', 'Plastic', 1),
-  (2, 2, '2023-07-05 14:15:00', '', 'Paper', 2),
-  (3, 3, '2023-05-20 11:45:00', '', 'Glass', 3),
-  (4, 4, '2023-06-28 16:30:00', '', 'Metal', 4),
-  (5, 5, '2023-07-15 13:00:00', '', 'Plastic', 5);
-  
-INSERT INTO RewardTransactions (TransactionID, RewardID, UserID, Claimed)
-VALUES
-  (1, 1, 1, true),
-  (2, 3, 2, false),
-  (3, 2, 3, true),
-  (4, 5, 4, false),
-  (5, 4, 5, true);
 
 INSERT INTO Users (UserID, Name, Email, Area, Username, Password, isAdmin, Points)
 VALUES
@@ -80,7 +64,7 @@ VALUES
   (3, 'Block 789 Clementi Street 2', 0),
   (4, 'Block 101 Jurong West Ave 5', 23),
   (5, 'Block 202 Tampines Street 11', 7);
-  
+
 INSERT INTO Rewards (RewardID, PointCost, RewardName, RewardImage, Stock)
 VALUES
   (1, 50, 'NTUC Voucher', NULL, 10),
@@ -89,6 +73,18 @@ VALUES
   (4, 45, 'Clothing Store Voucher', NULL, 10),
   (5, 25, 'Bookstore Coupon', NULL, 10);
 
-
-
-
+INSERT INTO Recycles (RecycledID, BinID, Datetime, Image, MaterialType, UserID)
+VALUES
+  (1, 1, '2023-06-10 09:30:00', '', 'Plastic', 1),
+  (2, 2, '2023-07-05 14:15:00', '', 'Paper', 2),
+  (3, 3, '2023-05-20 11:45:00', '', 'Glass', 3),
+  (4, 4, '2023-06-28 16:30:00', '', 'Metal', 4),
+  (5, 5, '2023-07-15 13:00:00', '', 'Plastic', 5);
+  
+INSERT INTO RewardTransactions (TransactionID, RewardID, UserID, Claimed)
+VALUES
+  (1, 1, 1, true),
+  (2, 3, 2, false),
+  (3, 2, 3, true),
+  (4, 5, 4, false),
+  (5, 4, 5, true);

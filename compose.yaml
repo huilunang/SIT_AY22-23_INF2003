@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:11
+    restart: always
+    container_name: mariadb
+    ports:
+      - "3306:3306"
+    environment:
+      - MARIADB_USER=${DB_USER}
+      - MARIADB_PASSWORD=${DB_PWD}
+      - MARIADB_DATABASE=${DATABASE}
+      - MARIADB_ROOT_PASSWORD=${ROOTPWD}
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+    networks:
+      - bloobin-network
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.flask
+    container_name: bloobin
+    ports:
+      - 5000:5000
+    environment:
+      APP_ENV: "dev"
+      APP_PORT: 5000
+      DB: ${DATABASE}
+      DB_USER: ${DB_USER}
+      DB_PWD: ${DB_PWD}
+      MARIA_HOST: ${MARIA_HOST}
+      MONGO_HOST: ${MONGO_HOST}
+    depends_on:
+      - mariadb
+      - mongodb
+    networks:
+      - bloobin-network
+
+  mongodb:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.mongo
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ${ROOTPWD}
+      MONGO_INITDB_DATABASE: ${DATABASE}
+    networks:
+      - bloobin-network
+
+networks:
+  bloobin-network:
