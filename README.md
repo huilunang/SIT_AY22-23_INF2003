@@ -18,3 +18,11 @@
 > flask --app src/app run
 ### WindowsOS
 > python -m flask --app src/app run
+### Docker
+> make run
+
+## Clean Up Resources
+### Remove compose build (stop application)
+> make clean
+### Remove unused resources dangling
+> make deepclean

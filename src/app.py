@@ -1,37 +1,33 @@
-import os
-import mariadb
+from database.mariadb_conn import MariaDBConnManager
+from database.mongodb_conn import MongoDBConnManager
 
 from flask import Flask, render_template
 
 
 app = Flask(__name__)
-
+maria_db = MariaDBConnManager()
+mongo_db = MongoDBConnManager()
 
 # TO BE DELETED
 @app.route("/example")
 def example_queries():
-    # Connect to MariaDB Platform
-    try:
-        conn = mariadb.connect(
-            user=os.environ['DB_USER'],
-            password=os.environ['DB_PWD'],
-            host=os.environ['MARIA_HOST'],
-            port=3306,
-            database=os.environ['DB']
-        )
+    json_data = []
 
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM Users")
+    # mariadb example
+    conn = maria_db.get_conn()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM Users")
 
-        row_headers = [x[0] for x in cur.description]
-        rv = cur.fetchall()
+    row_headers = [x[0] for x in cur.description]
+    rv = cur.fetchall()
 
-        json_data = []
-        for result in rv:
-            json_data.append(dict(zip(row_headers, result)))
+    for result in rv:
+        json_data.append(dict(zip(row_headers, result)))
 
-    except mariadb.Error as e:
-        print(f"Error connecting to MariaDB Platform: {e}")
+    # mongodb example
+    detection_result = mongo_db.get_collection("detection_result")
+    for data in detection_result.find():
+        json_data.append(data)
 
     return render_template("example.html", data=json_data)
 
