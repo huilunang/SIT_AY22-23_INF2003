@@ -74,7 +74,7 @@ def logout():
     return redirect(url_for('login'))
 
 @app.route("/register",methods=['GET','POST'])
-def reg():
+def register():
     msg = ''
     if request.method == 'POST' and 'name' in request.form and 'email' in request.form and 'area' in request.form and 'username' in request.form and 'password' in request.form:
         name = request.form['name']
@@ -84,7 +84,7 @@ def reg():
         password = request.form['password']
         conn = maria_db.get_conn()
         cur = conn.cursor()
-        cur.execute('SELECT * FROM Users WHERE username = % s', (username, ))
+        cur.execute('SELECT * FROM Users WHERE username = %s', (username, ))
         record = cur.fetchone()
         if record:
             msg = 'Username/Account already exists !'
