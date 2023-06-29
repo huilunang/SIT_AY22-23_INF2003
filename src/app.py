@@ -3,6 +3,8 @@ from database.mongodb_conn import MongoDBConnManager
 
 from flask import Flask, render_template, request, session, redirect, url_for
 
+import re
+import hashlib
 
 app = Flask(__name__)
 
@@ -12,10 +14,6 @@ mongo_db = MongoDBConnManager()
 # session data signed by server cryptographically
 app.secret_key = "secret key"
 
-# mariadb
-conn = maria_db.get_conn()
-cur = conn.cursor()
-
 # TO BE DELETED
 @app.route("/example")
 def example_queries():
@@ -23,7 +21,7 @@ def example_queries():
 
     # mariadb example
     conn = maria_db.get_conn()
-    cur = conn.cur()
+    cur = conn.cursor()
     cur.execute("SELECT * FROM Users")
 
     row_headers = [x[0] for x in cur.description]
@@ -48,21 +46,21 @@ def index():
 def home():
     return render_template('home.html', username=session['username'])
 
-@app.route("/register")
-def reg():
-    return "Registration account"
-
 @app.route("/login",methods=['GET','POST'])
 def login():
     msg=''
     if request.method == 'POST':
         username=request.form['username']
         password=request.form['password']
-        cur.execute('SELECT * FROM Users WHERE username=%s AND password=%s',(username,password))
+        conn = maria_db.get_conn()
+        cur = conn.cursor()
+        hashed_password=hashlib.sha256(password.encode()).hexdigest()
+        cur.execute('SELECT * FROM Users WHERE username=%s AND password=%s',(username,hashed_password))
         record=cur.fetchone()
         if record:
             session['loggedin']=True
-            session['username']=record[1]
+            session['id']=record[0]
+            session['username']=record[4]
             return redirect(url_for('home')) #create a home page
         else:
             msg='Incorrect credentials entered. Please check your username/password.'
@@ -71,9 +69,40 @@ def login():
 @app.route("/logout")
 def logout():
     session.pop('loggedin',None)
+    session.pop('id',None)
     session.pop('username',None)
     return redirect(url_for('login'))
 
+@app.route("/register",methods=['GET','POST'])
+def reg():
+    msg = ''
+    if request.method == 'POST' and 'name' in request.form and 'email' in request.form and 'area' in request.form and 'username' in request.form and 'password' in request.form:
+        name = request.form['name']
+        email = request.form['email']
+        area = request.form['area']
+        username = request.form['username']
+        password = request.form['password']
+        conn = maria_db.get_conn()
+        cur = conn.cursor()
+        cur.execute('SELECT * FROM Users WHERE username = % s', (username, ))
+        record = cur.fetchone()
+        if record:
+            msg = 'Username/Account already exists !'
+        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
+            msg = 'Invalid email address !'
+        elif not re.match(r'[A-Za-z0-9]+', username):
+            msg = 'Username must contain only characters and numbers !'
+        elif not name or not email or not area or not username or not password:
+            msg = 'Please fill in all the fields!'
+        else:
+            hashed_password=hashlib.sha256(password.encode()).hexdigest()
+            cur.execute('INSERT INTO Users (Name, Email, Area, Username, Password, isAdmin, Points) VALUES (%s, %s, %s, %s, %s, %s, %s)', (name, email, area, username, hashed_password, False, 0))
+            conn.commit()
+            msg = 'You have successfully registered!'
+            return redirect(url_for('login'))
+    elif request.method == 'POST':
+        msg = 'Please fill in all the fields!'
+    return render_template('register.html', msg = msg)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

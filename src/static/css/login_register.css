@@ -1,17 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 
+header {
+  background: #007cd1;
+}
+
 body{
   /* background: #94cce9; */
   background: url('../assets/bkgrdpic.jpg')no-repeat;
+  width:100%;
+  height: 100vh;
   background-position: center;
   background-size: cover;
+  position:relative;
   overflow: hidden;
 }
 ::selection{
   background: #007cd1;
 }
 .container{
-  max-width: 440px;
+  max-width: 500px;
   padding: 0 20px;
   margin: 150px auto;
 }
@@ -96,15 +103,21 @@ form .row input::placeholder{
 form .button input:hover{
   background: #007cd1;
 }
-.wrapper form .signup-link{
+.wrapper form .end-link{
   text-align: center;
   margin-top: 20px;
   font-size: 17px;
 }
-.wrapper form .signup-link a{
+.wrapper form .end-link a{
   color: #007cd1;
   text-decoration: none;
 }
-form .signup-link a:hover{
+form .end-link a:hover{
   text-decoration: underline;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+  text-align: center;
 }

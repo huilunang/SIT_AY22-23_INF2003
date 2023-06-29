@@ -11,9 +11,9 @@
 	margin: 0 auto;
 }
 
-header {
+/* header {
   background: #007cd1;
-}
+} */
 
 header::after {
   content: '';

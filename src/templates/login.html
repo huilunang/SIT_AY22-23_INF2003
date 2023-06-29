@@ -1,8 +1,10 @@
+<!-- login page -->
+
 {% extends 'base.html' %}
 
 {% block head %}
 <title>Login</title>
-<link rel="stylesheet" href="../static/css/login.css">
+<link rel="stylesheet" href="../static/css/login_register.css">
 <link rel="stylesheet" href="../static/css/nav.css">
 {% endblock head %}
 
@@ -16,6 +18,7 @@
         <li><a href="/">Home</a></li>
         <li><a href="#">About</a></li>
         <li><a href="#">Contact</a></li>
+        <li><a href="login">Login</a></li>
       </ul>
     </nav>
   </div>
@@ -23,7 +26,11 @@
 <div class="container">
   <div class="wrapper">
     <div class="title"><span>Sign In</span></div>
+    {% if msg %}
+      <p class="error-message">{{ msg }}</p>
+    {% endif %}
     <form action="{{url_for('login')}}" method="post">
+      <div></div>
       <div class="row">
         <i class="fas fa-user"></i>
         <input type="text" placeholder="Username" name="username" id="username" required>
@@ -36,7 +43,7 @@
       <div class="row button">
         <input type="submit" value="Login">
       </div>
-      <div class="signup-link">Not a member? <a href="#">Signup now</a></div>
+      <div class="end-link">Not a member? <a href="#">Signup now</a></div>
     </form>
   </div>
 </div>

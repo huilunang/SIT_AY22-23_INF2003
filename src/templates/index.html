@@ -1,7 +1,10 @@
+<!-- This is the page open to public, yet to login -->
+
 {% extends 'base.html' %}
 
 {% block head %}
 <title>Welcome to Smart Bloobin</title>
+<link rel="stylesheet" href="../static/css/index.css">
 <link rel="stylesheet" href="../static/css/nav.css">
 {% endblock head %}
 
@@ -20,5 +23,15 @@
         </nav>
     </div>
 </header>
+<div class="center">
+    <div class="title">Start Recycling Today.</div>
+    <div class="sub_title">Introduced by Bloobin</div>
+    <div class="btns">
+        <button>Learn More</button>
+        <button>Contact Us</button>
+    </div>
+</div>
 
 {% endblock content %}
+
+
