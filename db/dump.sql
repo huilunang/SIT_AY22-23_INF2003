@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS Users (
-  UserID INT PRIMARY KEY,
+  UserID INT PRIMARY KEY AUTO_INCREMENT,
   Name VARCHAR(255),
   Email VARCHAR(255),
   Area VARCHAR(255),
   Username VARCHAR(255),
-  Password VARCHAR(255),
+  Password CHAR(64),
   isAdmin BOOLEAN,
   Points INT
 );
@@ -49,13 +49,13 @@ DELETE FROM Users WHERE UserID>0;
 DELETE FROM Bins WHERE BinID>0;
 DELETE FROM Rewards WHERE RewardID>0;
 
-INSERT INTO Users (UserID, Name, Email, Area, Username, Password, isAdmin, Points)
+INSERT INTO Users (Name, Email, Area, Username, Password, isAdmin, Points)
 VALUES
-  (1, 'Phileo Teo', 'phileo@gmail.com', 'Bishan', 'phileo', '123', false, 3),
-  (2, 'Xue Er', 'xueer@gmail.com', 'Yishun', 'xueer', '123', false, 10),
-  (3, 'Hui Lun', 'huilun@gmail.com', 'Jurong', 'huilun', '123', true, 6),
-  (4, 'Si Hui', 'sihui@gmail.com', 'Sengkang', 'sihui', '123', false, 4),
-  (5, 'Shi Ya', 'shiya@gmail.com', 'Tampines', 'shiya', '123', false, 5);
+  ('Phileo Teo', 'phileo@gmail.com', 'Bishan', 'phileo', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', false, 3),
+  ('Xue Er', 'xueer@gmail.com', 'Yishun', 'xueer', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', false, 10),
+  ('Hui Lun', 'huilun@gmail.com', 'Jurong', 'huilun', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', true, 6),
+  ('Si Hui', 'sihui@gmail.com', 'Sengkang', 'sihui', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', false, 4),
+  ('Shi Ya', 'shiya@gmail.com', 'Tampines', 'shiya', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', false, 5);
 
 INSERT INTO Bins (BinID, Location, Capacity)
 VALUES

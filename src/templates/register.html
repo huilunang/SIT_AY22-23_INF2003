@@ -1,0 +1,62 @@
+<!-- register page -->
+
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Register</title>
+<link rel="stylesheet" href="../static/css/login_register.css">
+<link rel="stylesheet" href="../static/css/nav.css">
+{% endblock head %}
+
+{% block content %}
+<header>
+  <div class="containerNav">
+    <img src="../static/assets/smart bloobin logo.png" alt="logo" class="logo">
+
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="login">Login</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<div class="container">
+  <div class="wrapper">
+    <div class="title"><span>Create an Account</span></div>
+    {% if msg %}
+      <p class="error-message">{{ msg }}</p>
+    {% endif %}
+    <form action="{{url_for('register')}}" method="post">
+      <div></div>
+      <div class="row">
+        <i class="fas fa-address-card"></i>
+        <input type="text" placeholder="Full Name" name="name" id="name" required>
+      </div>
+      <div class="row">
+        <i class="fas fa-envelope"></i>
+        <input type="text" placeholder="Email" name="email" id="email" required>
+      </div>
+      <div class="row">
+        <i class="fas fa-home"></i>
+        <input type="text" placeholder="Area of Residence" name="area" id="area" required>
+      </div>
+      <div class="row">
+        <i class="fas fa-user"></i>
+        <input type="text" placeholder="Username" name="username" id="username" required>
+      </div>
+      <div class="row">
+        <i class="fas fa-lock"></i>
+        <input type="password" placeholder="Password" name="password" id="password" required>
+      </div>
+      <div class="row button">
+        <input type="submit" value="Register">
+      </div>
+      <div class="end-link">Already have an account? <a href="{{url_for('login')}}">Login Here</a></div>
+    </form>
+  </div>
+</div>
+{% endblock content %}
+
