@@ -1,0 +1,14 @@
+header {
+  background: #007cd1;
+}
+body {
+padding: 0;
+margin: 0;
+}
+body{
+height: 92vh;
+width: 100vw;
+}
+#map{
+    height: 100%;
+}

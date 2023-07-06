@@ -1,0 +1,58 @@
+<!-- This page is customized according to user after authentication -->
+
+{% extends 'base.html' %} {% block head %}
+<title>Search</title>
+<link rel="stylesheet" href="../static/css/location.css" />
+<link rel="stylesheet" href="../static/css/nav.css" />
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+  integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+  crossorigin=""
+/>
+<script
+  src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+  crossorigin=""
+></script>
+
+{% endblock head %} {% block content %}
+<header>
+  <div class="containerNav">
+    <img
+      src="../static/assets/smart bloobin logo.png"
+      alt="logo"
+      class="logo"
+    />
+
+    <nav>
+      <ul>
+        <li><a href="home">Home</a></li>
+        <li><a href="search">Search</a></li>
+        <li><a href="scan">Scan</a></li>
+        <li><a href="#">Activity</a></li>
+        <li><a href="location" class="active">Location</a></li>
+        <li><a href="login">Profile</a></li>
+        <li><a href="{{url_for('logout')}}">Logout</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<body>
+  <div id="map"></div>
+
+  <script>
+    var map = L.map('map').fitWorld();
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        {% for marker in markers %}
+        L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}]).addTo(map)
+        .bindPopup("{{ marker['popup'] }}")
+        .openPopup();
+        {% endfor %}
+  </script>
+</body>
+{% endblock %}

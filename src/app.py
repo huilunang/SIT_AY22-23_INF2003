@@ -30,10 +30,10 @@ def example_queries():
     for result in rv:
         json_data.append(dict(zip(row_headers, result)))
 
-    # mongodb example
-    detection_result = mongo_db.get_collection("detection_result")
-    for data in detection_result.find():
-        json_data.append(data)
+    # # mongodb example
+    # detection_result = mongo_db.get_collection("detection_result")
+    # for data in detection_result.find():
+    #     json_data.append(data)
 
     return render_template("example.html", data=json_data)
 
@@ -45,6 +45,35 @@ def index():
 @app.route("/home")
 def home():
     return render_template('home.html', username=session['username'])
+
+@app.route("/search")
+def search():
+    json_data = []
+
+    # mariadb example
+    conn = maria_db.get_conn()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM Users")
+
+    row_headers = [x[0] for x in cur.description]
+    rv = cur.fetchall()
+
+    for result in rv:
+        json_data.append(dict(zip(row_headers, result)))
+
+    return render_template('search.html', username=session['username'],data=json_data)
+
+@app.route("/location")
+def location():
+    markers=[
+    {
+    'lat':0,
+    'lon':0,
+    'popup':'This is the middle of the map.'
+        }
+    ]
+
+    return render_template('location.html', username=session['username'],markers=markers)
 
 @app.route("/login",methods=['GET','POST'])
 def login():
@@ -105,4 +134,5 @@ def register():
     return render_template('register.html', msg = msg)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000,
+            use_reloader=True, threaded=True)

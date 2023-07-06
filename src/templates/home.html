@@ -2,31 +2,37 @@
 
 {% extends 'base.html' %}
 
+{% block head %}
+<title>Welcome to Smart Bloobin</title>
+<link rel="stylesheet" href="../static/css/home.css">
+<link rel="stylesheet" href="../static/css/nav.css">
+{% endblock head %}
+
 {% block content %}
-<div>
-    <h1>Welcome, {{username}}!</h1>
-    <a href="{{url_for('logout')}}">Logout</a>
-</div>
+<header>
+    <div class="containerNav">
+        <img src="../static/assets/smart bloobin logo.png" alt="logo" class="logo">
+
+        <nav>
+            <ul>
+                <li><a href="home" class="active">Home</a></li>
+                <li><a href="search">Search</a></li>
+                <li><a href="scan">Scan</a></li>
+                <li><a href="#">Activity</a></li>
+                <li><a href="location">Location</a></li>
+                <li><a href="login">Profile</a></li>
+                <li><a href="{{url_for('logout')}}">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<div class="container-fluid text-center">    
+    <div class="col-sm-8 text-left"> 
+        <div>
+            <h1>Welcome, {{username}}!</h1>
+        </div>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+
 {% endblock %}
-<!-- 
-<h1>user details {{name}} </h1>
-<table>
-    <thread>
-    <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Username</th>
-        <th>Password</th>
-    </tr>
-    </thread>
-    <tbody>
-    {% for row in data%}
-    <tr>
-        <td>{{row[1]}}</td>
-        <td>{{row[2]}}</td>
-        <td>{{row[4]}}</td>
-        <td>{{row[5]}}</td>
-    </tr>
-    {%endfor%}
-    </tbody>
-</table> -->
