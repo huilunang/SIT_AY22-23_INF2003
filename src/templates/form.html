@@ -1,0 +1,110 @@
+<!-- This page is used to search through recycling database -->
+
+{% extends 'base.html' %} {% block head %}
+<title>Form</title>
+<link rel="stylesheet" href="../static/css/form.css" />
+<link rel="stylesheet" href="../static/css/nav.css" />
+{% endblock head %} {% block content %}
+<header>
+  <div class="containerNav">
+    <img
+      src="../static/assets/smart bloobin logo.png"
+      alt="logo"
+      class="logo"
+    />
+
+    <nav>
+      <ul>
+        <li><a href="home">Home</a></li>
+        <li><a href="search">Search</a></li>
+        <li><a href="scan" class="active">Scan</a></li>
+        <li><a href="#">Activity</a></li>
+        <li><a href="location">Location</a></li>
+        <li><a href="login">Profile</a></li>
+        <li><a href="{{url_for('logout')}}">Logout</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<body>
+  <div class="container-fluid" style="height: 90%">
+    <div
+      class="row d-flex justify-content-center align-items-center searchContainer"
+      style="height: 100%"
+    >
+      <div
+        class="col-md-9 d-flex justify-content-center align-items-center"
+        style="height: 100%"
+      >
+        <div
+          class="row d-flex justify-content-center px-5 form-container"
+          style="height: 70%"
+        >
+          <form
+            method="POST"
+            action="{{ url_for('scan') }}?qb={{ queryBinID }}&ql={{ queryLocation }}"
+            class="row d-flex flex-column justify-content-center px-5"
+          >
+            <h1 class="pb-4">RECYCLE</h1>
+            <div class="form-group">
+              <label for="materialType">Select Material Type:</label>
+              <select
+                id="materialType"
+                class="form-control"
+                name="materialType"
+              >
+                <option value="Paper">Paper</option>
+                <option value="Plastic">Plastic</option>
+                <option value="Glass">Glass</option>
+                <option value="Metal">Metal</option>
+                <option value="E-Waste">E-Waste</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="fileInput">Select an image:</label>
+              <input
+                type="file"
+                id="fileInput"
+                class="form-control-file"
+                name="fileInput"
+                accept="image/*"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Submit</button>
+            <div class="form-group">
+              <small
+                id="currentLocation"
+                name="currentLocation"
+                class="form-text text-muted"
+                >BinID: {{ queryBinID }}</small
+              >
+              <small
+                id="currentLocation"
+                name="currentLocation"
+                class="form-text text-muted"
+                >Location: {{ queryLocation }}</small
+              >
+              <small id="timeNow" name="timeNow" class="form-text text-muted"
+                >Datetime:
+              </small>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Get the current date and time
+    var currentDateTime = new Date();
+
+    // Format the date and time as desired
+    var formattedDateTime = currentDateTime.toLocaleString();
+
+    // Update the text content of the small element
+    var timeNowElement = document.getElementById("timeNow");
+    timeNowElement.textContent += formattedDateTime;
+  </script>
+</body>
+{% endblock %}

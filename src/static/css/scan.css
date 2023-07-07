@@ -1,0 +1,46 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+header {
+  background: #007cd1;
+}
+body {
+  /* background: #94cce9; */
+  /* background: url('../assets/bkgrdpic.jpg')no-repeat; */
+  background: #007cd1;
+  width: 100%;
+  height: 100vh;
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  overflow: hidden;
+}
+::selection {
+  background: #007cd1;
+}
+
+.mainContainer {
+  background: #007cd1;
+  color: #fff;
+}
+
+.scanContainer{
+  background-color: #fff;
+  border-radius: 10%;
+}
+
+.button-link {
+  display: inline-block;
+  padding: 10px 20px;
+  text-decoration: none;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.button-link:hover {
+  text-decoration: none;
+  border: none;
+  background-color: #0164ce;
+}

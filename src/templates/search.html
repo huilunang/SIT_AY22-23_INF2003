@@ -51,8 +51,11 @@
                 <a href="#" class="search-icon">
                   <i class="fa fa-search"></i>
                 </a>
-                <div id="suggestions" class="dropdown-menu" aria-labelledby="search-input">
-                </div>
+                <div
+                  id="suggestions"
+                  class="dropdown-menu"
+                  aria-labelledby="search-input"
+                ></div>
               </div>
             </form>
           </div>
@@ -68,13 +71,14 @@
     </div>
   </div>
   <div class="container-fluid" style="height: 40%">
-    <h5 class="heading pt-5 text-center">Learn more on what to recycle</h5>
+    <h5 class="heading pt-5 text-center">Learn more on what to recycle!</h5>
     <div
       class="row d-flex justify-content-center align-items-center p-3"
       style="height: 80%"
     >
       <div class="col-lg-2 col-md-6 h-100">
-        <a href="/search?q=paper"
+        <a
+          href="/search?m=paper"
           class="card h-100 d-flex justify-content-center align-items-center"
           style="background-color: #1f6aa9; color: #fff"
         >
@@ -100,7 +104,8 @@
         </a>
       </div>
       <div class="col-lg-2 col-md-6 h-100">
-        <a href="/search?q=plastic"
+        <a
+          href="/search?m=plastic"
           class="card h-100 d-flex justify-content-center align-items-center"
           style="background-color: #e25947; color: #fff"
         >
@@ -126,7 +131,8 @@
         </a>
       </div>
       <div class="col-lg-2 col-md-6 h-100">
-        <a href="/search?q=glass"
+        <a
+          href="/search?m=glass"
           class="card h-100 d-flex justify-content-center align-items-center"
           style="background-color: #3cb065; color: #fff"
         >
@@ -152,7 +158,8 @@
         </a>
       </div>
       <div class="col-lg-2 col-md-6 h-100">
-        <a href="/search?q=metal"
+        <a
+          href="/search?m=metal"
           class="card h-100 d-flex justify-content-center align-items-center"
           style="background-color: #f2be3e; color: #fff"
         >
@@ -178,7 +185,8 @@
         </a>
       </div>
       <div class="col-lg-2 col-md-6 h-100">
-        <a href="/search?q=e-waste"
+        <a
+          href="/search?m=e-waste"
           class="card h-100 d-flex justify-content-center align-items-center"
           style="background-color: #483945; color: #fff"
         >
@@ -225,11 +233,11 @@
             suggestionsContainer.innerHTML = "";
             if (data && data.suggested_words.length > 0) {
               data.suggested_words.forEach((word) => {
-              const suggestion = document.createElement("a");
-              suggestion.classList.add("dropdown-item");
-              suggestion.href = "search?q=" + encodeURIComponent(word);
-              suggestion.textContent = word;
-              suggestionsContainer.appendChild(suggestion);
+                const suggestion = document.createElement("a");
+                suggestion.classList.add("dropdown-item");
+                suggestion.href = "search?q=" + encodeURIComponent(word);
+                suggestion.textContent = word;
+                suggestionsContainer.appendChild(suggestion);
               });
             } else {
               const noResults = document.createElement("a");

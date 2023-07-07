@@ -1,5 +1,9 @@
 -- Incomplete location dataset
 -- In Mongodb, insert document and paste the data in
+-- Order to import 3 documents under the same collection("location"): 
+-- (1) recyclingbin.geojson, (for recycling bins)
+-- (2) e-wastebin.geojson, (for e-waste bins)
+-- (3) this(by copy pasting) (portion of recycling bins because recyclingbin.geojson is too big)
 {
   "_id": {
     "$oid": "64a74c0dcf9bd904d147b578"

@@ -1,15 +1,15 @@
 from database.mariadb_conn import MariaDBConnManager
 from database.mongodb_conn import MongoDBConnManager
 
-from flask import Flask, render_template, request, session, redirect, url_for, Response, jsonify
+from flask import Flask, render_template, request, session, redirect, url_for, jsonify
 
 import re
 import hashlib
 
 import cv2
-from pyzbar import pyzbar
 
 app = Flask(__name__)
+camera = cv2.VideoCapture(0)
 
 maria_db = MariaDBConnManager()
 mongo_db = MongoDBConnManager()
@@ -25,7 +25,7 @@ def example_queries():
     # mariadb example
     conn = maria_db.get_conn()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM info1")
+    cur.execute("SELECT * FROM Users")
 
     row_headers = [x[0] for x in cur.description]
     rv = cur.fetchall()
@@ -52,8 +52,26 @@ def home():
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     query = request.args.get('q')  # Access the 'q' query parameter
+    mquery = request.args.get('m')  # Access the 'q' query parameter
     if query:
-        return render_template('qsearch.html', query=query)
+        conn = maria_db.get_conn()
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM info1 INNER JOIN info2 ON info1.id = info2.id WHERE info1.item = %s", (query,))
+        record = cur.fetchone()
+
+        return render_template('qsearch.html', query=query, record=record)
+    elif mquery:
+        mrecord = []
+        conn = maria_db.get_conn()
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM info1 INNER JOIN info2 ON info1.id = info2.id WHERE info1.type = %s", (mquery,))
+        row_headers = [x[0] for x in cur.description]
+        rv = cur.fetchall()
+
+        for result in rv:
+            mrecord.append(dict(zip(row_headers, result)))
+
+        return render_template('qsearch.html', query=query, mrecord=mrecord)
     else:
         if request.method == 'POST':
             search_query = request.form.get('search_query')
@@ -113,7 +131,7 @@ def logout():
     session.pop('username',None)
     return redirect(url_for('login'))
 
-@app.route("/register",methods=['GET','POST'])
+@app.route("/register", methods=['GET','POST'])
 def register():
     msg = ''
     if request.method == 'POST' and 'name' in request.form and 'email' in request.form and 'area' in request.form and 'username' in request.form and 'password' in request.form:
@@ -144,38 +162,27 @@ def register():
         msg = 'Please fill in all the fields!'
     return render_template('register.html', msg = msg)
 
-@app.route("/scan")
+@app.route('/scan', methods=['GET', 'POST'])
 def scan():
-    return render_template('scan.html')
+    queryBinID = request.args.get('qb')  # Access the 'qb' query parameter
+    queryLocation = request.args.get('ql')  # Access the 'ql' query parameter
+    if queryBinID and queryLocation:
+        if request.method == 'POST' and 'fileInput' in request.form and 'materialType' in request.form:
+            fileInput = request.form['fileInput']
+            materialType = request.form['materialType']
 
-def gen_frames():
-    camera = cv2.VideoCapture(0)
-
-    while True:
-        success, frame = camera.read()
-
-        if not success:
-            break
-
-        # Detect QR codes in the frame
-        decoded_objs = pyzbar.decode(frame)
-
-        for obj in decoded_objs:
-            # Extract QR code data and display it
-            qr_data = obj.data.decode('utf-8')
-            print('QR Code:', qr_data)
-
-        # Display the frame in the browser
-        ret, buffer = cv2.imencode('.jpg', frame)
-        frame = buffer.tobytes()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-    camera.release()
-
-@app.route('/video_feed')
-def video_feed():
-    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+            conn = maria_db.get_conn()
+            cur = conn.cursor()
+            cur.execute('INSERT INTO Recycles (RecycledID, BinID, Datetime, Image, MaterialType, UserID) VALUES (%s, %s, NOW(), %s, %s, %s)', (6, queryBinID, fileInput, materialType, session['id']))
+            conn.commit()
+            msg = 'You have successfully recycled!'
+            return redirect(url_for('home'))
+        elif request.method == 'POST':
+            msg = 'Please fill in all the fields!'
+            return render_template('form.html', queryBinID=queryBinID, queryLocation=queryLocation)
+        return render_template('form.html', queryBinID=queryBinID, queryLocation=queryLocation)
+    else:
+        return render_template('scan.html')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
