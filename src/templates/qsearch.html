@@ -1,0 +1,117 @@
+<!-- This page is used to search through recycling database -->
+
+{% extends 'base.html' %} {% block head %}
+<title>Search</title>
+<link rel="stylesheet" href="../static/css/search.css" />
+<link rel="stylesheet" href="../static/css/nav.css" />
+{% endblock head %} {% block content %}
+<header>
+  <div class="containerNav">
+    <img
+      src="../static/assets/smart bloobin logo.png"
+      alt="logo"
+      class="logo"
+    />
+
+    <nav>
+      <ul>
+        <li><a href="home">Home</a></li>
+        <li><a href="search" class="active">Search</a></li>
+        <li><a href="scan">Scan</a></li>
+        <li><a href="#">Activity</a></li>
+        <li><a href="location">Location</a></li>
+        <li><a href="login">Profile</a></li>
+        <li><a href="{{url_for('logout')}}">Logout</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<body>
+  <div class="container-fluid" style="height: 50%">
+    <div
+      class="row d-flex justify-content-center align-items-center searchContainer"
+      style="height: 100%"
+    >
+      <div class="col-md-9 m-5">
+        <h1 class="heading text-center">CAN THIS BE RECYCLED</h1>
+        <div class="row d-flex justify-content-center px-5">
+          <div class="search">
+            <form method="POST" action="{{ url_for('search') }}">
+              <div class="dropdown">
+                <input
+                  type="text"
+                  id="search-input"
+                  class="search-input"
+                  placeholder="Search..."
+                  name="search_query"
+                  data-toggle="dropdown"
+                  autocomplete="off"
+                />
+                <a href="#" class="search-icon">
+                  <i class="fa fa-search"></i>
+                </a>
+                <div id="suggestions" class="dropdown-menu" aria-labelledby="search-input">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- <div class="row d-flex justify-content-center px-5" id="suggestions">
+            <ul>
+            {% for word in suggested_words %}
+                <li>{{ word }}</li>
+            {% endfor %}
+          </ul>
+          </div>    -->
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid" style="height: 40%">
+    <div
+      class="row d-flex justify-content-center align-items-center p-5"
+      style="height: 100%"
+    >{{ query }}
+  </div>
+</div>
+
+  <script>
+    const searchInput = document.getElementById("search-input");
+    const suggestionsContainer = document.getElementById("suggestions");
+
+    searchInput.addEventListener("input", function () {
+      const searchQuery = this.value;
+      if (searchQuery.length >= 2) {
+        fetch("/get_suggestions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ search_query: searchQuery }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            suggestionsContainer.innerHTML = "";
+            if (data && data.suggested_words.length > 0) {
+              data.suggested_words.forEach((word) => {
+              const suggestion = document.createElement("a");
+              suggestion.classList.add("dropdown-item");
+              suggestion.href = "search?q=" + encodeURIComponent(word);
+              suggestion.textContent = word;
+              suggestionsContainer.appendChild(suggestion);
+              });
+            } else {
+              const noResults = document.createElement("a");
+              suggestion.classList.add("dropdown-item");
+              suggestion.href = "#";
+              suggestion.textContent = word;
+              suggestionsContainer.appendChild(noResults);
+            }
+          });
+      } else {
+        suggestionsContainer.innerHTML = "";
+      }
+    });
+  </script>
+</body>
+{% endblock %}

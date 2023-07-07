@@ -1,10 +1,13 @@
 from database.mariadb_conn import MariaDBConnManager
 from database.mongodb_conn import MongoDBConnManager
 
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, Response, jsonify
 
 import re
 import hashlib
+
+import cv2
+from pyzbar import pyzbar
 
 app = Flask(__name__)
 
@@ -22,7 +25,7 @@ def example_queries():
     # mariadb example
     conn = maria_db.get_conn()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM Users")
+    cur.execute("SELECT * FROM info1")
 
     row_headers = [x[0] for x in cur.description]
     rv = cur.fetchall()
@@ -31,7 +34,7 @@ def example_queries():
         json_data.append(dict(zip(row_headers, result)))
 
     # # mongodb example
-    # detection_result = mongo_db.get_collection("detection_result")
+    # detection_result = mongo_db.get_collection("location")
     # for data in detection_result.find():
     #     json_data.append(data)
 
@@ -46,22 +49,32 @@ def index():
 def home():
     return render_template('home.html', username=session['username'])
 
-@app.route("/search")
+@app.route('/search', methods=['GET', 'POST'])
 def search():
-    json_data = []
+    query = request.args.get('q')  # Access the 'q' query parameter
+    if query:
+        return render_template('qsearch.html', query=query)
+    else:
+        if request.method == 'POST':
+            search_query = request.form.get('search_query')
+            suggested_words = retrieve_suggested_words_from_database(search_query)
+            return render_template('search.html', suggested_words=suggested_words)
+        return render_template('search.html')
 
-    # mariadb example
-    conn = maria_db.get_conn()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM Users")
+def retrieve_suggested_words_from_database(search_query):
+    if len(search_query) >= 2:
+        conn = maria_db.get_conn()
+        cur = conn.cursor()
+        cur.execute("SELECT item FROM info1 WHERE item LIKE %s ORDER BY item LIMIT 10", ('%' + search_query.replace(' ', '%') + '%',))
+        suggested_words = [row[0] for row in cur.fetchall()]
+        return suggested_words
+    return False
 
-    row_headers = [x[0] for x in cur.description]
-    rv = cur.fetchall()
-
-    for result in rv:
-        json_data.append(dict(zip(row_headers, result)))
-
-    return render_template('search.html', username=session['username'],data=json_data)
+@app.route('/get_suggestions', methods=['POST'])
+def get_suggestions():
+    search_query = request.json['search_query']
+    suggested_words = retrieve_suggested_words_from_database(search_query)
+    return jsonify({'suggested_words': suggested_words})
 
 @app.route("/location")
 def location():
@@ -73,7 +86,13 @@ def location():
         }
     ]
 
-    return render_template('location.html', username=session['username'],markers=markers)
+    json_data = []
+
+    detection_result = mongo_db.get_collection("location")
+    for data in detection_result.find():
+        json_data.append(data)
+
+    return render_template('location.html', username=session['username'],data=json_data, markers=markers)
 
 @app.route("/login",methods=['GET','POST'])
 def login():
@@ -133,6 +152,34 @@ def register():
         msg = 'Please fill in all the fields!'
     return render_template('register.html', msg = msg)
 
+def gen_frames():
+    camera = cv2.VideoCapture(0)
+
+    while True:
+        success, frame = camera.read()
+
+        if not success:
+            break
+
+        # Detect QR codes in the frame
+        decoded_objs = pyzbar.decode(frame)
+
+        for obj in decoded_objs:
+            # Extract QR code data and display it
+            qr_data = obj.data.decode('utf-8')
+            print('QR Code:', qr_data)
+
+        # Display the frame in the browser
+        ret, buffer = cv2.imencode('.jpg', frame)
+        frame = buffer.tobytes()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+    camera.release()
+
+@app.route('/scan')
+def video_feed():
+    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000,
-            use_reloader=True, threaded=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)

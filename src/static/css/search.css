@@ -173,6 +173,13 @@ form .end-link a:hover {
   color: #fff !important;
 }
 
+#suggestions, .dropdown-item{
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 a:link {
   text-decoration: none;
 }
