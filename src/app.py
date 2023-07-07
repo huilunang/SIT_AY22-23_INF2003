@@ -78,21 +78,13 @@ def get_suggestions():
 
 @app.route("/location")
 def location():
-    markers=[
-    {
-    'lat':0,
-    'lon':0,
-    'popup':'This is the middle of the map.'
-        }
-    ]
-
     json_data = []
 
-    detection_result = mongo_db.get_collection("location")
-    for data in detection_result.find():
+    location_result = mongo_db.get_collection("location")
+    for data in location_result.find():
         json_data.append(data)
 
-    return render_template('location.html', username=session['username'],data=json_data, markers=markers)
+    return render_template('location.html', username=session['username'],data=json_data)
 
 @app.route("/login",methods=['GET','POST'])
 def login():
@@ -152,6 +144,10 @@ def register():
         msg = 'Please fill in all the fields!'
     return render_template('register.html', msg = msg)
 
+@app.route("/scan")
+def scan():
+    return render_template('scan.html')
+
 def gen_frames():
     camera = cv2.VideoCapture(0)
 
@@ -177,7 +173,7 @@ def gen_frames():
 
     camera.release()
 
-@app.route('/scan')
+@app.route('/video_feed')
 def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
