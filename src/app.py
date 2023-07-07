@@ -173,7 +173,7 @@ def scan():
 
             conn = maria_db.get_conn()
             cur = conn.cursor()
-            cur.execute('INSERT INTO Recycles (RecycledID, BinID, Datetime, Image, MaterialType, UserID) VALUES (%s, %s, NOW(), %s, %s, %s)', (6, queryBinID, fileInput, materialType, session['id']))
+            cur.execute('INSERT INTO Recycles (RecycledID, BinID, Datetime, Image, MaterialType, UserID) VALUES (%s, %s, NOW(), %s, %s, %s)', ('', queryBinID, fileInput, materialType, session['id']))
             conn.commit()
             msg = 'You have successfully recycled!'
             return redirect(url_for('home'))
