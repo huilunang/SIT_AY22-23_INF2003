@@ -45,6 +45,7 @@
             method="POST"
             action="{{ url_for('scan') }}?qb={{ queryBinID }}&ql={{ queryLocation }}"
             class="row d-flex flex-column justify-content-center px-5"
+            enctype="multipart/form-data"
           >
             <h1 class="pb-4">RECYCLE</h1>
             <div class="form-group">

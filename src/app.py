@@ -167,19 +167,29 @@ def scan():
     queryBinID = request.args.get('qb')  # Access the 'qb' query parameter
     queryLocation = request.args.get('ql')  # Access the 'ql' query parameter
     if queryBinID and queryLocation:
-        if request.method == 'POST' and 'fileInput' in request.form and 'materialType' in request.form:
-            fileInput = request.form['fileInput']
+        if request.method == 'POST' and 'materialType' in request.form:
             materialType = request.form['materialType']
+            f = request.files['fileInput']
+            if f.filename != '':
+                fdir = "uploads/" + f.filename
+                f.save(fdir)
 
-            conn = maria_db.get_conn()
-            cur = conn.cursor()
-            cur.execute('INSERT INTO Recycles (RecycledID, BinID, Datetime, Image, MaterialType, UserID) VALUES (%s, %s, NOW(), %s, %s, %s)', ('', queryBinID, fileInput, materialType, session['id']))
-            conn.commit()
-            msg = 'You have successfully recycled!'
-            return redirect(url_for('home'))
+                conn = maria_db.get_conn()
+                cur = conn.cursor()
+                cur.execute('INSERT INTO Recycles (RecycledID, BinID, Datetime, Image, MaterialType, UserID) VALUES (%s, %s, NOW(), %s, %s, %s)', ('', queryBinID, fdir, materialType, session['id']))
+                conn.commit()
+                msg = 'You have successfully recycled!'
+                return redirect(url_for('home'))
+            else:
+                conn = maria_db.get_conn()
+                cur = conn.cursor()
+                cur.execute('INSERT INTO Recycles (RecycledID, BinID, Datetime, Image, MaterialType, UserID) VALUES (%s, %s, NOW(), %s, %s, %s)', ('', queryBinID, '', materialType, session['id']))
+                conn.commit()
+                msg = 'You have successfully recycled!'
+                return redirect(url_for('home'))
         elif request.method == 'POST':
             msg = 'Please fill in all the fields!'
-            return render_template('form.html', queryBinID=queryBinID, queryLocation=queryLocation)
+            return redirect(url_for('register'))
         return render_template('form.html', queryBinID=queryBinID, queryLocation=queryLocation)
     else:
         return render_template('scan.html')
