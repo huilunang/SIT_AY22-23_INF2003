@@ -1,4 +1,8 @@
+-- MARIADB
 -- There are two dataset here: info1 and info2
+-- SOURCES:
+-- info1: https://www.towardszerowaste.gov.sg/recycle/what-to-recycle/
+-- info2: https://www.nea.gov.sg/docs/default-source/our-services/waste-management/list-of-items-that-are-recyclable-and-not.pdf
 
 --
 -- Table structure for table `info1`

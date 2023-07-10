@@ -62,25 +62,25 @@
         class="col-md-9 d-flex flex-column align-items-center"
       >
     {% if query %}
-      <h3>{{ query }}</h3>
+      <h3>{{ query|title }}</h3>
     {% endif %}
     {% if record %}
-      <p>Record ID: {{ record[0] }}</p>
+      <p>Record ID: {{ record[0]|title }}</p>
       <!-- <h3>Record ID (uppercase): {{ record[5] }}</h3> -->
-      <p>Material: {{ record[6] }}</p>
+      <p>Material: {{ record[6]|title }}</p>
       <!-- <p>Material: {{ record[1] }}</p> -->
-      <p>Description: {{ record[7] }}</p>
+      <p>Description: {{ record[7]|title }}</p>
       <!-- <p>Description: {{ record[2] }}</p> -->
-      <p>Reusable: {{ record[3] }}</p>
-      <p>Additional Info: {{ record[8] }}{{ record[9] }}</p>
+      <p>Reusable: {{ record[3]|title }}</p>
+      <p>Additional Info: {{ record[8]|capitalize }}{{ record[9]|capitalize }}</p>
       <!-- <p>Additional Info: {{ record[4] }}</p> -->
     {% elif mrecord %}
       {% for record in mrecord %}
-        <h3>{{ record['item'] }}</h3>
-        <p>Record ID: {{ record['id'] }}</p>
-        <p>Material: {{ record['type'] }}</p>
-        <p>Reusable: {{ record['recycle'] }}</p>
-        <p>Additional Info: {{ record[8] }}{{ record[9] }}</p>
+        <h3>{{ record['item']|title }}</h3>
+        <p>Record ID: {{ record['id']|title }}</p>
+        <p>Material: {{ record['type']|title }}</p>
+        <p>Reusable: {{ record['recycle']|title }}</p>
+        <p>Additional Info: {{ record['recyclable']|capitalize }}{{ record['nonrecyclable']|capitalize }}</p>
         <!-- <p>Additional Info: {{ record['remarks'] }}</p> -->
       {% endfor %}
     {% else %}
