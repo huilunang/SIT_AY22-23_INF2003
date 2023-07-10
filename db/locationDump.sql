@@ -7,7 +7,7 @@
 -- Follow the order to import 3 documents under the same collection("location"): 
 -- (1) recyclingbin.geojson, (Import JSON)
 -- (2) e-wastebin.geojson, (Import JSON)
--- (3) For testing(by copy pasting; Insert Documents) 
+-- (3) This file for testing(by copy pasting; Insert Documents) 
 
 {
   "_id": {
