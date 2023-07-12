@@ -1,9 +1,0 @@
-ROOTPWD=root
-
-DATABASE=bloobin_db
-DB_USER=bloobin_user
-DB_PWD=bloobin_pwd
-
-# change to localhost if not using docker
-MARIA_HOST=mariadb
-MONGO_HOST=mongodb

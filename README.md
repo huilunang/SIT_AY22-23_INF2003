@@ -19,11 +19,17 @@
 > flask --app src/app run
 ### WindowsOS
 > python -m flask --app src/app run
-### Docker
+### Docker (for mac)
 > make run
+### Docker (for windows)
+> mingw32-make
 
 ## Clean Up Resources
 ### Remove compose build (stop application)
 > make clean
 ### Remove unused resources dangling
 > make deepclean
+
+## Login Credentials
+### Username: <your name> (e.g. sihui)
+### Password: 123

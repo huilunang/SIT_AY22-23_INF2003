@@ -55,9 +55,9 @@ VALUES
   ('Xue Er', 'xueer@gmail.com', 'Yishun', 'xueer', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', false, 10),
   ('Hui Lun', 'huilun@gmail.com', 'Jurong', 'huilun', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', true, 6),
   ('Si Hui', 'sihui@gmail.com', 'Sengkang', 'sihui', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', false, 4),
-  ('Shi Ya', 'shiya@gmail.com', 'Tampines', 'shiya', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', false, 5);
+  ('Shi Ya', 'shiya@gmail.com', 'Tampines', 'shiya', '', false, 5);
 
-INSERT INTO Bins (BinID, Location, Capacity)
+INSERT INTO Bins (BinID, Location, Capacity)a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3
 VALUES
   (1, 'Block 123 Ang Mo Kio Ave 4', 10),
   (2, 'Block 456 Bedok North Road', 14),
