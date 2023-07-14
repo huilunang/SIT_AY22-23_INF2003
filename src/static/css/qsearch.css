@@ -173,7 +173,8 @@ form .end-link a:hover {
   color: #fff !important;
 }
 
-#suggestions, .dropdown-item{
+#suggestions,
+.dropdown-item {
   width: 100%;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -207,11 +208,29 @@ a:link {
   line-height: 4vw;
 }
 
-.mg{
+.mg {
   padding: 12vw;
   background-color: yellow;
 }
 
-.card{
+.card {
   border-radius: 20%;
+}
+
+@media screen and (min-width: 601px) {
+  .heading {
+    font-size: 2vw;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .heading {
+    font-size: 4vw;
+  }
+  .search .search-input {
+    font-size: 15px;
+  }
+  body > div:nth-child(2) > div > div > div {
+    padding: 0 !important;
+  }
 }
