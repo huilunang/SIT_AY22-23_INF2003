@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+header {
+  background: #007cd1;
+}
+
+::selection {
+  background: #007cd1;
+}
+
+.container {
+  max-width: 500px;
+  padding: 0 20px;
+  margin: 150px auto;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  height: 92vh;
+  width: 100vw;
+}
+
+#map {
+  height: 85%;
+  width: 100%;
+}
+
+/* .search{
+  width: 70% !important;
+  height: 15%;
+  border: 3px solid #007cd1;
+  color: #007cd1;
+  margin-top: 0px !important;
+  margin: 15px !important;
+} */
+
+.search-input {
+  height: 100%;
+  color: #007cd1;
+}
