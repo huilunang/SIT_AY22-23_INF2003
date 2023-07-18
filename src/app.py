@@ -192,5 +192,10 @@ def scan():
     else:
         return render_template('scan.html')
 
+@app.route('/activity', methods=['GET', 'POST'])
+def activity():
+    return render_template('activity.html')
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
