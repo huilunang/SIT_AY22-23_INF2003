@@ -57,7 +57,7 @@ VALUES
   ('Si Hui', 'sihui@gmail.com', 'Sengkang', 'sihui', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', false, 4),
   ('Shi Ya', 'shiya@gmail.com', 'Tampines', 'shiya', '', false, 5);
 
-INSERT INTO Bins (BinID, Location, Capacity)a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3
+INSERT INTO Bins (BinID, Location, Capacity)
 VALUES
   (1, 'Block 123 Ang Mo Kio Ave 4', 10),
   (2, 'Block 456 Bedok North Road', 14),

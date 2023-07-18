@@ -22,7 +22,7 @@
 ### Docker (for mac)
 > make run
 ### Docker (for windows)
-> mingw32-make run
+> mingw32-make run  
 
 ## Clean Up Resources
 ### Remove compose build (stop application)
