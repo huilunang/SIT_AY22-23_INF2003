@@ -5,6 +5,10 @@ from flask import Flask, render_template, request, session, redirect, url_for, j
 
 import re
 import hashlib
+import datetime
+import pandas as pd
+import matplotlib.pyplot as plt
+import pytz
 
 
 app = Flask(__name__)
@@ -192,9 +196,91 @@ def scan():
     else:
         return render_template('scan.html')
 
+def generate_graph():
+    conn = maria_db.get_conn()
+    # Query the database to retrieve the data for the last 7 days in GMT+8
+    end_date = datetime.datetime.now(pytz.timezone('Asia/Singapore')).date()
+    # end_date = datetime.date.today()
+    start_date = end_date - datetime.timedelta(days=6)
+    query = f'''
+        SELECT DAYOFWEEK(DATE(Datetime)) AS DayOfWeek,
+       DATE_FORMAT(Datetime, '%Y-%m-%d') AS Date,
+       COUNT(*) AS TotalRecycled
+        FROM Recycles
+        WHERE DATE(Datetime) BETWEEN '{start_date}' AND '{end_date}'
+        GROUP BY Date
+        ORDER BY Date;
+    '''
+    df = pd.read_sql_query(query, conn)
+    print(df)
+    # Map the day of the week to its corresponding name
+    day_mapping = {
+        1: 'Sunday',
+        2: 'Monday',
+        3: 'Tuesday',
+        4: 'Wednesday',
+        5: 'Thursday',
+        6: 'Friday',
+        7: 'Saturday'
+    }
+
+    df['DayOfWeek'] = df['DayOfWeek'].map(day_mapping)
+    print(df['DayOfWeek'] )
+
+    # Create a DataFrame with all days of the week
+    all_days = pd.DataFrame({'DayOfWeek': list(day_mapping.values())})
+    df = pd.merge(all_days, df, on='DayOfWeek', how='left')
+    df['TotalRecycled'] = df['TotalRecycled'].fillna(0)
+
+    # Determine the starting day index based on the current day of the week
+    current_day_index = end_date.weekday()
+
+    # Calculate the number of days to offset the x-axis labels
+    if current_day_index < 5:
+        current_day_index+=2
+    elif current_day_index >= 5 & current_day_index <= 6:
+        current_day_index = current_day_index-5
+        
+    # Rearrange the days of the week starting from the current day
+    print(current_day_index)
+    all_days = all_days.reindex(list(range(current_day_index, 7)) + list(range(0, current_day_index)))
+    print(all_days)
+    # Reset the index of the DataFrame
+    all_days.reset_index(drop=True, inplace=True)
+
+    # Merge the all_days DataFrame with the data from the database query
+    df = pd.merge(all_days, df, on='DayOfWeek', how='left')
+
+    # Fill any missing values in TotalRecycled with 0
+    df['TotalRecycled'].fillna(0, inplace=True)
+
+    # Create a line graph using matplotlib
+    plt.plot(all_days['DayOfWeek'], df['TotalRecycled'], marker='o')
+
+    # Set the chart title and labels
+    plt.title('Total Number of Recycled Items per Day')
+    plt.xlabel('Day of the Week (GMT+8)')
+    plt.ylabel('Total Recycled')
+
+    # Rotate the x-axis labels for better readability
+    plt.xticks(rotation=45)
+
+    # Set the y-axis lower limit to 0
+    plt.ylim(bottom=0)
+
+    # Display the chart
+    plt.savefig('static/assets/graphs/graph1.png')
+
 @app.route('/activity', methods=['GET', 'POST'])
 def activity():
-    return render_template('activity.html')
+    
+    conn = maria_db.get_conn()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM Recycles")
+    record = cur.fetchall()
+    generate_graph()
+    graph_path = 'static/assets/graphs/graph1.png'
+    return render_template('activity.html', record=record, graph_path=graph_path)
 
 
 if __name__ == '__main__':
