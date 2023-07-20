@@ -45,7 +45,38 @@ def index():
 
 @app.route("/home")
 def home():
-    return render_template('home.html', username=session['username'])
+    conn = maria_db.get_conn()
+    cur = conn.cursor()
+
+    # user current points
+    query = "SELECT Points FROM Users WHERE UserID = %s"
+    cur.execute(query, (session['id'],))
+    record = cur.fetchone()
+    points = record[0]
+
+    # recycles by month line chart
+    query = "SELECT DATE(Datetime) AS recyDate, COUNT(*) AS NumRecords FROM Recycles WHERE UserID = %s GROUP BY recyDate ORDER BY recyDate"
+    cur.execute(query, (session['id'],))
+    record = cur.fetchall()
+
+    recycles_by_month = []
+    month_label = []
+    for date, num in record:
+        month_label.append(date.strftime("%b-%y"))
+        recycles_by_month.append(num)
+
+    # materials count bar chart
+    query = "SELECT MaterialType, COUNT(*) AS matCount FROM Recycles WHERE UserID = %s GROUP BY MaterialType"
+    cur.execute(query, (session['id'],))
+    record = cur.fetchall()
+
+    material_count = []
+    material = []
+    for mat, num in record:
+        material.append(mat)
+        material_count.append(num)
+
+    return render_template('home.html', username=session['username'], points=points, recycles_by_month=recycles_by_month, month_label=month_label, material=material, material_count=material_count)
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():

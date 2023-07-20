@@ -27,12 +27,105 @@
     </div>
 </header>
 
-<div class="container-fluid text-center">    
-    <div class="col-sm-8 text-left"> 
+<div class="container-fluid text-center">
+    <div class="col-sm-8 text-left">
         <div>
+            <br>
             <h1>Welcome, {{username}}!</h1>
+            <br>
         </div>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
     </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        
+        <div class="col-md-4">
+            <div class="card card-style mb-2">
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative;">
+                        <canvas id="recycle_by_month"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-style mb-2">
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative;">
+                        <canvas id="material"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="box">
+                <div class="box-title">Existing Points</div>
+                <div class="points">
+                    <span>{{points}}</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    let recycles_by_month = JSON.parse('{{recycles_by_month | tojson}}');
+    let month_labels = JSON.parse('{{month_label | tojson}}');
+
+    new Chart(document.getElementById('recycle_by_month'), {
+        type: 'line',
+        data: {
+            labels: month_labels,
+            datasets: [{
+                label: 'Recyling Count by Month',
+                data: recycles_by_month,
+                borderColor: 'rgb(75, 192, 192)',
+                lineTension: 0.1
+            }]
+        },
+        options: {}
+    });
+
+    let material = JSON.parse('{{material | tojson}}');
+    let material_count = JSON.parse('{{material_count | tojson}}');
+
+    new Chart(document.getElementById('material'), {
+        type: 'bar',
+        data: {
+            labels: material,
+            datasets: [{
+                label: "Material Types",
+                data: material_count,
+                backgroundColor: ['#5DA5DA ', '#FAA43A', '#60BD68', '#B276B2'],
+                borderWidth: 1,
+                hoverBorderColor: "black",
+                hoverBorderWidth: 2,
+                pointHoverRadius: 5
+            }],
+        },
+        options: {
+            title: {
+                display: true,
+                text: "Material Count",
+                fontSize: 20,
+            },
+            legend: {
+                position: "right",
+                labels: {
+                    fontColor: "gray"
+                },
+                display: true,
+            },
+
+            elements: {
+                hitRadius: 3,
+            }
+        }
+    })
+</script>
 
 {% endblock %}
