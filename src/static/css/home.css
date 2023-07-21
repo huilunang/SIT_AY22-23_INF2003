@@ -121,3 +121,38 @@ form .end-link a:hover {
 .searchContainer {
   background: #007cd1;
 }
+
+/* CSS for the points display */
+.box {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100%;
+  border: 2px solid grey;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  margin-right: 100px;
+  position: relative; 
+}
+
+.box-title {
+  flex: 1;
+  font-size: 18px;
+  position: absolute;
+  top: 0; 
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.points {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 80px;
+}
