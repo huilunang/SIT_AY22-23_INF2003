@@ -148,10 +148,45 @@ def login():
             session['loggedin']=True
             session['id']=record[0]
             session['username']=record[4]
-            return redirect(url_for('home')) #create a home page
+            return redirect(url_for('home')) 
         else:
             msg='Incorrect credentials entered. Please check your username/password.'
     return render_template('login.html',msg=msg)
+
+@app.route("/profile",methods=['GET','POST'])
+def profile():
+    msg=''
+    conn = maria_db.get_conn()
+    cur = conn.cursor()
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        area = request.form['area']
+        username = request.form['username']
+        password = request.form['password']
+        if name == "" or email=="" or area == "" or username == "":
+            msg = 'Please ensure all fields are filled in.'
+        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
+            msg = 'Invalid email address !'
+        elif not re.match(r'[A-Za-z0-9]+', username):
+            msg = 'Username must contain only characters and numbers !'
+        else:
+            if password == "":
+                cur.execute('UPDATE Users SET name=%s, email=%s, area=%s, username=%s WHERE UserID = %s', (name, email, area, username,session['id']))
+                conn.commit()
+                msg = 'Profile Updated Successfully.'
+                session['username']=username
+            else:
+                hashed_password=hashlib.sha256(password.encode()).hexdigest()
+                cur.execute('UPDATE Users SET name=%s, email=%s, area=%s, username=%s, password=%s WHERE UserID = %s', (name, email, area, username, hashed_password,session['id']))
+                conn.commit()
+                msg = 'Profile Updated Successfully.'
+                session['username']=username
+    cur.execute('SELECT * FROM Users WHERE UserID=%s',(session['id'],))
+    details=cur.fetchone()
+    return render_template('profile.html',msg=msg, details=details)
+    
+    
 
 @app.route("/logout")
 def logout():
