@@ -45,7 +45,38 @@ def index():
 
 @app.route("/home")
 def home():
-    return render_template('home.html', username=session['username'])
+    conn = maria_db.get_conn()
+    cur = conn.cursor()
+
+    # user current points
+    query = "SELECT Points FROM Users WHERE UserID = %s"
+    cur.execute(query, (session['id'],))
+    record = cur.fetchone()
+    points = record[0]
+
+    # recycles by month line chart
+    query = "SELECT DATE(Datetime) AS recyDate, COUNT(*) AS NumRecords FROM Recycles WHERE UserID = %s GROUP BY recyDate ORDER BY recyDate"
+    cur.execute(query, (session['id'],))
+    record = cur.fetchall()
+
+    recycles_by_month = []
+    month_label = []
+    for date, num in record:
+        month_label.append(date.strftime("%b-%y"))
+        recycles_by_month.append(num)
+
+    # materials count bar chart
+    query = "SELECT MaterialType, COUNT(*) AS matCount FROM Recycles WHERE UserID = %s GROUP BY MaterialType"
+    cur.execute(query, (session['id'],))
+    record = cur.fetchall()
+
+    material_count = []
+    material = []
+    for mat, num in record:
+        material.append(mat)
+        material_count.append(num)
+
+    return render_template('home.html', username=session['username'], points=points, recycles_by_month=recycles_by_month, month_label=month_label, material=material, material_count=material_count)
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
@@ -117,10 +148,45 @@ def login():
             session['loggedin']=True
             session['id']=record[0]
             session['username']=record[4]
-            return redirect(url_for('home')) #create a home page
+            return redirect(url_for('home')) 
         else:
             msg='Incorrect credentials entered. Please check your username/password.'
     return render_template('login.html',msg=msg)
+
+@app.route("/profile",methods=['GET','POST'])
+def profile():
+    msg=''
+    conn = maria_db.get_conn()
+    cur = conn.cursor()
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        area = request.form['area']
+        username = request.form['username']
+        password = request.form['password']
+        if name == "" or email=="" or area == "" or username == "":
+            msg = 'Please ensure all fields are filled in.'
+        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
+            msg = 'Invalid email address !'
+        elif not re.match(r'[A-Za-z0-9]+', username):
+            msg = 'Username must contain only characters and numbers !'
+        else:
+            if password == "":
+                cur.execute('UPDATE Users SET name=%s, email=%s, area=%s, username=%s WHERE UserID = %s', (name, email, area, username,session['id']))
+                conn.commit()
+                msg = 'Profile Updated Successfully.'
+                session['username']=username
+            else:
+                hashed_password=hashlib.sha256(password.encode()).hexdigest()
+                cur.execute('UPDATE Users SET name=%s, email=%s, area=%s, username=%s, password=%s WHERE UserID = %s', (name, email, area, username, hashed_password,session['id']))
+                conn.commit()
+                msg = 'Profile Updated Successfully.'
+                session['username']=username
+    cur.execute('SELECT * FROM Users WHERE UserID=%s',(session['id'],))
+    details=cur.fetchone()
+    return render_template('profile.html',msg=msg, details=details)
+    
+    
 
 @app.route("/logout")
 def logout():

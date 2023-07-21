@@ -1,0 +1,64 @@
+<!-- This page is customized according to user after authentication -->
+
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Welcome to Smart Bloobin</title>
+<link rel="stylesheet" href="../static/css/home.css">
+<link rel="stylesheet" href="../static/css/nav.css">
+<link rel="stylesheet" href="../static/css/profile.css">
+{% endblock head %}
+
+{% block content %}
+<header>
+    <div class="containerNav">
+        <img src="../static/assets/smart bloobin logo.png" alt="logo" class="logo">
+
+        <nav>
+            <ul>
+                <li><a href="home" class="active">Home</a></li>
+                <li><a href="search">Search</a></li>
+                <li><a href="scan">Scan</a></li>
+                <li><a href="#">Activity</a></li>
+                <li><a href="location">Location</a></li>
+                <li><a href="profile">Profile</a></li>
+                <li><a href="{{url_for('logout')}}">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+        <div>
+            {% if msg %}
+            <p class="error-message">{{ msg }}</p>
+            {% endif %}
+            <form action="{{url_for('profile')}}" id="profile-form" method="post">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-right">Your Profile</h4>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6"><label class="plabels">Name</label><input type="text" class="form-control"
+                            name="name" id="name" value="{{details[1]}}"></div>
+                        <div class="col-md-6"><label class="plabels">Username</label><input type="text" class="form-control"
+                            name="username" id="username" value="{{details[4]}}"></div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12"><label class="plabels">Email</label><input type="text" class="form-control"
+                            name="email" id="email" value="{{details[2]}}"></div>
+                        <div class="col-md-12"><label class="plabels">Area of Residence</label><input type="text"
+                            name="area" id="area" class="form-control" value="{{details[3]}}"></div>
+                        <div class="col-md-12"><label class="plabels">New Password (if any)</label><input type="text"
+                            name="password" id="password" class="form-control" value=""></div>
+                    </div>
+                    <div class="mt-5 text-center"><button class="btn btn-primary profile-button" id="update-btn"
+                            type="submit">Update</button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
