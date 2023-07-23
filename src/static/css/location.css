@@ -22,20 +22,29 @@ body {
 }
 
 #map {
-  height: 85%;
+  height: 82%;
   width: 100%;
 }
-
-/* .search{
-  width: 70% !important;
-  height: 15%;
-  border: 3px solid #007cd1;
-  color: #007cd1;
-  margin-top: 0px !important;
-  margin: 15px !important;
-} */
 
 .search-input {
   height: 100%;
   color: #007cd1;
+}
+
+/* Style for the legend */
+.info.legend {
+  background: #f9f9f9; /* Add your desired background color here */
+  padding: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  line-height: 1.5;
+  font-size: 14px;
+  text-align: left;
+}
+
+.info.legend img {
+  width: 20px;
+  height: 30px;
+  margin-right: 8px;
+  vertical-align: middle;
 }

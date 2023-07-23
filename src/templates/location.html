@@ -11,11 +11,20 @@
   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
   crossorigin=""
 />
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css"
+/>
 <script
   src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
   crossorigin=""
 ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/leaflet.markercluster.js"></script>
 
 {% endblock head %} {% block content %}
 <header>
@@ -42,7 +51,7 @@
 
 <body>
   <div class="search">
-    <form onsubmit="searchLocation(); return false;">
+    <form onsubmit="searchLocation('input'); return false;">
       <input
         type="text"
         id="search-input"
@@ -52,94 +61,131 @@
         data-toggle="dropdown"
         autocomplete="off"
       />
-      <a href="#" class="search-icon" onclick="searchLocation();">
+      <a href="#" class="search-icon" onclick="searchLocation('input');">
         <i class="fa fa-search"></i>
       </a>
     </form>
   </div>
 
   <div id="map"></div>
+  <div id="legend" class="leaflet-control" style="background-color: aliceblue;"></div>
 
   <script>
-            var map = L.map('map').setView([1.3521, 103.8198], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
+    var map = L.map('map',{
+    center: [1.3521, 103.8198],
+    zoom: 13,
+    // layers: [recyclingMarkers, eWasteMarkers]
+    });
 
-              let myMarker = null;
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
 
-        // Function to search for a location
-        function searchLocation() {
-          var input = document.getElementById('search-input').value;
+    let myMarker = null;
 
-        var redIcon = new L.Icon({
-          iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-          iconSize: [25, 41],
-          iconAnchor: [12, 41],
-          popupAnchor: [1, -34],
-          shadowSize: [41, 41]
-        });
+    // Function to search for a location
+    function searchLocation(type) {
+      if (type == 'input'){
+        var input = document.getElementById('search-input').value;
+      }else if(type = 'init'){
+        var input = '{{ user_location }}' + ' Singapore';
+      }
 
-          // Perform the geocoding request
-          fetch('https://api.mapbox.com/geocoding/v5/mapbox.places/' + input + '.json?access_token=pk.eyJ1Ijoib3NzeXVydSIsImEiOiJjbGpzOXlmM3gwb2huM2psbGx1ZWtvM3dyIn0.sUJBInQdWgnsfMBJu-Na5w')
-          .then((response) => response.json())
-          .then((data) => {
-              // Extract the latitude and longitude from the geocoding response
-          var latitude = data.features[0].center[1];
-          var longitude = data.features[0].center[0];
+      var redIcon = new L.Icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      });
 
-            if (myMarker !== null) {
-            myMarker.remove();
-          }
+      // Perform the geocoding request
+      fetch('https://api.mapbox.com/geocoding/v5/mapbox.places/' + input + '.json?access_token=pk.eyJ1Ijoib3NzeXVydSIsImEiOiJjbGpzOXlmM3gwb2huM2psbGx1ZWtvM3dyIn0.sUJBInQdWgnsfMBJu-Na5w')
+      .then((response) => response.json())
+      .then((data) => {
+        // Extract the latitude and longitude from the geocoding response
+        var latitude = data.features[0].center[1];
+        var longitude = data.features[0].center[0];
 
-              // Update the map to center on the searched location
-              map.setView([latitude, longitude], 13);
-
-              // Add a marker at the searched location
-              myMarker = L.marker([latitude, longitude], {icon: redIcon}).addTo(map);
-            })
-            .catch(function(error) {
-              console.log('Error:', error);
-            });
+          if (myMarker !== null) {
+          myMarker.remove();
         }
 
-            // {% for marker in markers %}
-            //   L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}]).addTo(map)
-            //   .bindPopup("{{ marker['popup'] }}")
-            //   .openPopup();
-            // {% endfor %}
-        var greenIcon = new L.Icon({
-          iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-          iconSize: [25, 41],
-          iconAnchor: [12, 41],
-          popupAnchor: [1, -34],
-          shadowSize: [41, 41]
-        });
-        var violetIcon = new L.Icon({
-          iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
-          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-          iconSize: [25, 41],
-          iconAnchor: [12, 41],
-          popupAnchor: [1, -34],
-          shadowSize: [41, 41]
-        });
+        // Update the map to center on the searched location
+        map.setView([latitude, longitude], 13);
+
+        // Add a marker at the searched location
+        myMarker = L.marker([latitude, longitude], {icon: redIcon}).addTo(map);
+      })
+      .catch(function(error) {
+        console.log('Error:', error);
+      });
+    }
+
+    var greenIcon = new L.Icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+    var violetIcon = new L.Icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+
+    function createLegend() {
+      var legend = L.control({ position: 'bottomright' });
+
+      legend.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'info legend');
+        div.innerHTML += '<img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png" alt="Your Location"> Your Location<br>';
+        div.innerHTML += '<img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png" alt="E-Waste Bins"> E-Waste Bins<br>';
+        div.innerHTML += '<img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png" alt="Recycling Bins"> Recycling Bins<br>';
+        return div;
+      };
+
+      legend.addTo(map);
+    }
+
+    // Call the createLegend function to add the legend to the map
+    createLegend();
+
+    var eWasteMarkers = L.markerClusterGroup(); 
+    var recyclingMarkers = L.markerClusterGroup();
 
     {% if data %}
-      // {% set features = data[0]['features'] %}
-      // {% for feature in features %}
-      //   var marker = L.marker([{{ feature['geometry']['coordinates'][1] }}, {{ feature['geometry']['coordinates'][0] }}], {icon: greenIcon}).bindPopup(`{{ feature['properties']['description']['value'] }}`).addTo(map);
-      {% endfor %}
       {% set features = data[1]['features'] %}
       {% for feature in features %}
-        var marker = L.marker([{{ feature['geometry']['coordinates'][1] }}, {{ feature['geometry']['coordinates'][0] }}], {icon: violetIcon}).bindPopup(`{{ feature['properties']['Description']|safe }}`).addTo(map);
+        var eWasteMarker = L.marker([{{ feature['geometry']['coordinates'][1] }}, {{ feature['geometry']['coordinates'][0] }}], {icon: violetIcon}).bindPopup(`{{ feature['properties']['Description']|safe }}`);
+        eWasteMarkers.addLayer(eWasteMarker); // Add marker to the layer group
       {% endfor %}
-      {% set features = data[2]['features'] %}
+
+      {% set features = data[0]['features'] %}
       {% for feature in features %}
-        var marker = L.marker([{{ feature['geometry']['coordinates'][1] }}, {{ feature['geometry']['coordinates'][0] }}], {icon: greenIcon}).bindPopup(`{{ feature['properties']['description']['value']|safe }}`).addTo(map);
+        var recyclingMarker = L.marker([{{ feature['geometry']['coordinates'][1] }}, {{ feature['geometry']['coordinates'][0] }}], {icon: greenIcon}).bindPopup(`{{ feature['properties']['description']['value']|safe }}`);
+        recyclingMarkers.addLayer(recyclingMarker); // Add marker to the layer group
       {% endfor %}
     {% endif %}
+
+
+    // Create the layer control and add it to the map
+    var layerControl = L.control.layers(null, null, { collapsed: false }).addTo(map);
+
+    // Add overlays to the layer control
+    layerControl.addOverlay(recyclingMarkers, "Recycling Bins");
+    layerControl.addOverlay(eWasteMarkers, "E-Waste Bins");
+
+    searchLocation('init');
+
+    map.addLayer(eWasteMarkers);
+    map.addLayer(recyclingMarkers);
   </script>
 </body>
 {% endblock %}
