@@ -1,36 +1,32 @@
 <!-- This page is the scanner -->
-  {% extends 'base.html' %} {% block head %}
-  <title>Scan</title>
-  <link rel="stylesheet" href="../static/css/scan.css" />
-  <link rel="stylesheet" href="../static/css/nav.css" />
+{% extends 'base.html' %} {% block head %}
+<title>Scan</title>
+<link rel="stylesheet" href="../static/css/scan.css" />
+<link rel="stylesheet" href="../static/css/nav.css" />
 
-  <script src="https://unpkg.com/html5-qrcode@2.0.9/dist/html5-qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.0.9/dist/html5-qrcode.min.js"></script>
 
-  {% endblock head %} {% block content %}
+{% endblock head %} {% block content %}
 
-  <header>
-    <div class="containerNav">
-      <img
-        src="../static/assets/smart bloobin logo.png"
-        alt="logo"
-        class="logo"
-      />
+<header>
+  <div class="containerNav">
+    <img src="../static/assets/smart bloobin logo.png" alt="logo" class="logo" />
 
-      <nav>
-        <ul>
-          <li><a href="home">Home</a></li>
-          <li><a href="search">Search</a></li>
-          <li><a href="scan" class="active">Scan</a></li>
-          <li><a href="#">Activity</a></li>
-          <li><a href="location">Location</a></li>
-          <li><a href="profile">Profile</a></li>
-          <li><a href="{{url_for('logout')}}">Logout</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+    <nav>
+      <ul>
+        <li><a href="home">Home</a></li>
+        <li><a href="search">Search</a></li>
+        <li><a href="scan" class="active">Scan</a></li>
+        <li><a href="#">Activity</a></li>
+        <li><a href="location">Location</a></li>
+        <li><a href="profile">Profile</a></li>
+        <li><a href="{{url_for('logout')}}">Logout</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
 
-  <body>
+<body>
   <!-- <div class="container-fluid h-100">
     <div class="row mainContainer" style="height: 100%">
       <div class="col-md-6 m-5">
@@ -45,39 +41,42 @@
       </div>
     </div>
   </div> -->
-<!-- <div class="" style="height: 1900px;"> -->
-    <div class="row justify-content-center h-100" style="padding: 2vw 3vw";>
-        <div class="col-md-7 col-lg-7 mainContainer d-flex flex-column justify-content-center align-items-baseline h-100">
-            <h1 class="txt1 mb-0" style="font-size: 6vw; line-height: 1;">SCAN TO BEGIN</h1>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<br>
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </div>
-        <div class="col-md-5 col-lg-5 scanContainer d-flex flex-column justify-content-center align-items-center h-100" style="padding: 2vw 0";>
-            <div class="d-flex flex-column justify-content-center text-center h-40">
-                <h1 class="txt2 mb-0" style="font-size: 5vw; line-height: 1;">SCAN</h1>
-                <h1 class="txt3" style="font-size: 3.3vw; line-height: 1;">QR CODE</h1>
-            </div>
-            <div id="qr-reader" class="mt-3" style="width: 80%; height: 70%"></div>
-            <a id="qr_data"></a>
-        </div>
+  <!-- <div class="" style="height: 1900px;"> -->
+  <div class="row justify-content-center h-100" style="padding: 2vw 3vw" ;>
+    <div class="col-md-7 col-lg-7 mainContainer d-flex flex-column justify-content-center align-items-baseline h-100">
+      <h1 class="txt1 mb-0" style="font-size: 6vw; line-height: 1;">SCAN TO BEGIN</h1>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
+      magna aliqua.<br>
+      Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
     </div>
-<!-- </div> -->
+    <div class="col-md-5 col-lg-5 scanContainer d-flex flex-column justify-content-center align-items-center h-100"
+      style="padding: 2vw 0" ;>
+      <div class="d-flex flex-column justify-content-center text-center h-40">
+        <h1 class="txt2 mb-0" style="font-size: 5vw; line-height: 1;">SCAN</h1>
+        <h1 class="txt3" style="font-size: 3.3vw; line-height: 1;">QR CODE</h1>
+      </div>
+      <div id="qr-reader" class="mt-3" style="width: 80%; height: 70%"></div>
+      <a id="qr_data"></a>
+    </div>
+  </div>
+  <!-- </div> -->
 
-    <script>
-      const qr_data = document.getElementById("qr_data");
+  <script>
+    const qr_data = document.getElementById("qr_data");
 
-      function onScanSuccess(decodedText, decodedResult) {
-        console.log(`Code scanned = ${decodedText}`, decodedResult);
-        qr_data.href = decodedText;
-        qr_data.classList.add("button-link");
-        qr_data.innerHTML = "Next";
-      }
-      var html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", {
-        fps: 10,
-        qrbox: 250,
-      });
-      html5QrcodeScanner.render(onScanSuccess);
-    </script>
-  </body>
+    function onScanSuccess(decodedText, decodedResult) {
+      console.log(`Code scanned = ${decodedText}`, decodedResult);
+      qr_data.href = decodedText;
+      qr_data.classList.add("button-link");
+      qr_data.innerHTML = "Next";
+    }
+    var html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", {
+      fps: 10,
+      qrbox: 250,
+    });
+    html5QrcodeScanner.render(onScanSuccess);
+  </script>
+</body>
+
 </html>
 {% endblock %}
