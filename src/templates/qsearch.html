@@ -82,23 +82,18 @@
     </tr>
   </thead>
   <tbody>
-    <!-- <tr> -->
         {% if query %}
         <h3>{{ query|title }}</h3>
         {% endif %} {% if record %}
         <tr>
         <td>{{ record[0]|title }}</td>
-        <!-- <h3>Record ID (uppercase): {{ record[5] }}</h3> -->
         <td>{{ record[6]|title }}</td>
-        <!-- <p>Material: {{ record[1] }}</p> -->
         <td>{{ record[7]|title }}</td>
-        <!-- <p>Description: {{ record[2] }}</p> -->
         <td>{{ record[3]|title }}</p>
         <td>
           {{ record[8]|capitalize }}{{ record[9]|capitalize }}
         </td>
         </tr>
-        <!-- <p>Additional Info: {{ record[4] }}</p> -->
         {% elif mrecord %} {% for record in mrecord %}
         <tr>
         <td>{{ record['id']|title }}</td>
@@ -110,20 +105,12 @@
           record['nonrecyclable']|capitalize }}
         </td>
         </tr>
-        <!-- <p>Additional Info: {{ record['remarks'] }}</p> -->
         {% endfor %} {% else %}
         <td>No record found.</td>
         {% endif %}
       </div>
     </div>
   </div>
-
-
-      <!-- <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td> -->
-    <!-- </tr> -->
   </tbody>
 </table>
 
