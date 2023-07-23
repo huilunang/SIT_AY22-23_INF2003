@@ -7,11 +7,7 @@
 {% endblock head %} {% block content %}
 <header>
   <div class="containerNav">
-    <img
-      src="../static/assets/smart bloobin logo.png"
-      alt="logo"
-      class="logo"
-    />
+    <img src="../static/assets/smart bloobin logo.png" alt="logo" class="logo" />
 
     <nav>
       <ul>
@@ -29,36 +25,22 @@
 
 <body>
   <div class="container-fluid" style="height: 50%">
-    <div
-      class="row d-flex justify-content-center align-items-center searchContainer"
-      style="height: 100%"
-    >
+    <div class="row d-flex justify-content-center align-items-center searchContainer" style="height: 100%">
       <div class="col-md-9 m-5">
         <h1 class="heading text-center">
-          CAN {% if query %}{{ query | upper }}{% else %}THIS{% endif %} BE
+          CAN {% if data.query %}{{ data.query | upper }}{% else %}THIS{% endif %} BE
           RECYCLED
         </h1>
         <div class="row d-flex justify-content-center px-5">
           <div class="search">
             <form method="POST" action="{{ url_for('search') }}">
               <div class="dropdown">
-                <input
-                  type="text"
-                  id="search-input"
-                  class="search-input"
-                  placeholder="Search..."
-                  name="search_query"
-                  data-toggle="dropdown"
-                  autocomplete="off"
-                />
+                <input type="text" id="search-input" class="search-input" placeholder="Search..." name="search_query"
+                  data-toggle="dropdown" autocomplete="off" />
                 <a href="#" class="search-icon">
                   <i class="fa fa-search"></i>
                 </a>
-                <div
-                  id="suggestions"
-                  class="dropdown-menu"
-                  aria-labelledby="search-input"
-                ></div>
+                <div id="suggestions" class="dropdown-menu" aria-labelledby="search-input"></div>
               </div>
             </form>
           </div>
@@ -67,65 +49,65 @@
     </div>
   </div>
   <div class="container-fluid" style="overflow: auto">
-    <div
-      class="row d-flex flex-column justify-content-center align-items-center pt-5 pb-5"
-    >
+    <div class="row d-flex flex-column justify-content-center align-items-center pt-5 pb-5">
       <div class="col-md-9 flex-column align-items-center table-responsive">
         <table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Material</th>
-      <th scope="col">Item</th>
-      <th scope="col">Reusable</th>
-      <th scope="col">Additional Info</th>
-    </tr>
-  </thead>
-  <tbody>
-    <!-- <tr> -->
-        {% if query %}
-        <h3>{{ query|title }}</h3>
-        {% endif %} {% if record %}
-        <tr>
-        <td>{{ record[0]|title }}</td>
-        <!-- <h3>Record ID (uppercase): {{ record[5] }}</h3> -->
-        <td>{{ record[6]|title }}</td>
-        <!-- <p>Material: {{ record[1] }}</p> -->
-        <td>{{ record[7]|title }}</td>
-        <!-- <p>Description: {{ record[2] }}</p> -->
-        <td>{{ record[3]|title }}</p>
-        <td>
-          {{ record[8]|capitalize }}{{ record[9]|capitalize }}
-        </td>
-        </tr>
-        <!-- <p>Additional Info: {{ record[4] }}</p> -->
-        {% elif mrecord %} {% for record in mrecord %}
-        <tr>
-        <td>{{ record['id']|title }}</td>
-        <td>{{ record['type']|title }}</td>
-        <td>{{ record['item']|title }}</td> 
-        <td>{{ record['recycle']|title }}</td>
-        <td>
-          {{ record['recyclable']|capitalize }}{{
-          record['nonrecyclable']|capitalize }}
-        </td>
-        </tr>
-        <!-- <p>Additional Info: {{ record['remarks'] }}</p> -->
-        {% endfor %} {% else %}
-        <td>No record found.</td>
-        {% endif %}
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Material</th>
+              <th scope="col">Item</th>
+              <th scope="col">Reusable</th>
+              <th scope="col">Additional Info</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- <tr> -->
+            {% if data.query %}
+            <h3>{{ data.query|title }}</h3>
+            {% endif %}
+            {% if data.record %}
+            <tr>
+              <td>{{ data.record[0]|title }}</td>
+              <!-- <h3>Record ID (uppercase): {{ data.record[5] }}</h3> -->
+              <td>{{ data.record[6]|title }}</td>
+              <!-- <p>Material: {{ data.record[1] }}</p> -->
+              <td>{{ data.record[7]|title }}</td>
+              <!-- <p>Description: {{ data.record[2] }}</p> -->
+              <td>{{ data.record[3]|title }}</td>
+              <td>
+                {{ data.record[8]|capitalize }}{{ data.record[9]|capitalize }}
+              </td>
+            </tr>
+            <!-- <p>Additional Info: {{ data.record[4] }}</p> -->
+            {% elif data.mrecord %}
+            {% for record in data.mrecord %}
+            <tr>
+              <td>{{ record['id']|title }}</td>
+              <td>{{ record['type']|title }}</td>
+              <td>{{ record['item']|title }}</td>
+              <td>{{ record['recycle']|title }}</td>
+              <td>
+                {{ record['recyclable']|capitalize }}{{
+                record['nonrecyclable']|capitalize }}
+              </td>
+            </tr>
+            <!-- <p>Additional Info: {{ record['remarks'] }}</p> -->
+            {% endfor %}
+            {% else %}
+            <td>No record found.</td>
+            {% endif %}
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 
-
-      <!-- <th scope="row">1</th>
+  <!-- <th scope="row">1</th>
       <td>Mark</td>
       <td>Otto</td>
       <td>@mdo</td> -->
-    <!-- </tr> -->
-  </tbody>
-</table>
+  <!-- </tr> -->
 
   <script>
     const searchInput = document.getElementById("search-input");
