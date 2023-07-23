@@ -51,7 +51,7 @@ services:
       MONGO_INITDB_DATABASE: ${DATABASE}
       DB_USER: ${DB_USER}
       DB_PWD: ${DB_PWD}
-      COLLECTION: detection_result
+      # COLLECTION: detection_result
     networks:
       - bloobin-network
 
