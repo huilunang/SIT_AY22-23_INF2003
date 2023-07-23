@@ -87,8 +87,8 @@
     function searchLocation(type) {
       if (type == 'input'){
         var input = document.getElementById('search-input').value;
-      }else if(type = 'init'){
-        var input = '{{ user_location }}' + ' Singapore';
+      }else if(type == 'init'){
+        var input = '{{ user_location["result"][0] }}' + ' Singapore';
       }
 
       var redIcon = new L.Icon({
@@ -146,34 +146,35 @@
       legend.onAdd = function (map) {
         var div = L.DomUtil.create('div', 'info legend');
         div.innerHTML += '<img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png" alt="Your Location"> Your Location<br>';
-        div.innerHTML += '<img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png" alt="E-Waste Bins"> E-Waste Bins<br>';
         div.innerHTML += '<img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png" alt="Recycling Bins"> Recycling Bins<br>';
+        div.innerHTML += '<img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png" alt="E-Waste Bins"> E-Waste Bins<br>';
         return div;
       };
 
       legend.addTo(map);
     }
 
+    // Call the searchLocation function to add user location marker to the map
+    searchLocation('init');
     // Call the createLegend function to add the legend to the map
     createLegend();
 
-    var eWasteMarkers = L.markerClusterGroup(); 
     var recyclingMarkers = L.markerClusterGroup();
+    var eWasteMarkers = L.markerClusterGroup(); 
 
     {% if data %}
-      {% set features = data[1]['features'] %}
-      {% for feature in features %}
-        var eWasteMarker = L.marker([{{ feature['geometry']['coordinates'][1] }}, {{ feature['geometry']['coordinates'][0] }}], {icon: violetIcon}).bindPopup(`{{ feature['properties']['Description']|safe }}`);
-        eWasteMarkers.addLayer(eWasteMarker); // Add marker to the layer group
-      {% endfor %}
-
       {% set features = data[0]['features'] %}
       {% for feature in features %}
         var recyclingMarker = L.marker([{{ feature['geometry']['coordinates'][1] }}, {{ feature['geometry']['coordinates'][0] }}], {icon: greenIcon}).bindPopup(`{{ feature['properties']['description']['value']|safe }}`);
         recyclingMarkers.addLayer(recyclingMarker); // Add marker to the layer group
       {% endfor %}
-    {% endif %}
 
+      {% set features = data[1]['features'] %}
+      {% for feature in features %}
+        var eWasteMarker = L.marker([{{ feature['geometry']['coordinates'][1] }}, {{ feature['geometry']['coordinates'][0] }}], {icon: violetIcon}).bindPopup(`{{ feature['properties']['Description']|safe }}`);
+        eWasteMarkers.addLayer(eWasteMarker); // Add marker to the layer group
+      {% endfor %}
+    {% endif %}
 
     // Create the layer control and add it to the map
     var layerControl = L.control.layers(null, null, { collapsed: false }).addTo(map);
@@ -181,8 +182,6 @@
     // Add overlays to the layer control
     layerControl.addOverlay(recyclingMarkers, "Recycling Bins");
     layerControl.addOverlay(eWasteMarkers, "E-Waste Bins");
-
-    searchLocation('init');
 
     map.addLayer(eWasteMarkers);
     map.addLayer(recyclingMarkers);
