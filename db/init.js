@@ -10,18 +10,18 @@ bloobin.createUser({
 });
 
 // Create DB and collection
-bloobin.createCollection(process.env.COLLECTION, { capped: false });
+bloobin.createCollection('detection_result', { capped: false });
 
 // insert dummy data
-bloobin.detection_result.insert(
-  {
-    label: "trash",
-    score: 0.89,
-    userId: 2,
-  },
-  {
-    label: "glass",
-    score: 0.59,
-    userId: 2,
-  }
-);
+// bloobin.detection_result.insertMany([
+//   {
+//     label: "trash",
+//     score: 0.89,
+//     userId: 2,
+//   },
+//   {
+//     label: "glass",
+//     score: 0.59,
+//     userId: 2,
+//   }
+// ]);
