@@ -172,8 +172,9 @@ def get_suggestions():
 @app.route("/location")
 def location():
     data = mongo_q.get_locations()
+    user_location = maria_q.getUserLocation()
 
-    return render_template("location.html", username=session["username"], data=data)
+    return render_template("location.html", user_location=user_location, data=data)
 
 
 @app.route("/scan", methods=["GET", "POST"])
