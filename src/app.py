@@ -2,6 +2,7 @@ from database.mariadb_conn import MariaDBConnManager
 from database.mongodb_conn import MongoDBConnManager
 
 from flask import Flask, render_template, request, session, redirect, url_for, jsonify
+from utils.helper_functions import retrieve_suggested_words_from_database
 
 import re
 import hashlib
@@ -108,15 +109,6 @@ def search():
             return render_template('search.html', suggested_words=suggested_words)
         return render_template('search.html')
 
-def retrieve_suggested_words_from_database(search_query):
-    if len(search_query) >= 2:
-        conn = maria_db.get_conn()
-        cur = conn.cursor()
-        cur.execute("SELECT item FROM info1 WHERE item LIKE %s ORDER BY item LIMIT 10", ('%' + search_query.replace(' ', '%') + '%',))
-        suggested_words = [row[0] for row in cur.fetchall()]
-        return suggested_words
-    return False
-
 @app.route('/get_suggestions', methods=['POST'])
 def get_suggestions():
     search_query = request.json['search_query']
@@ -125,13 +117,18 @@ def get_suggestions():
 
 @app.route("/location")
 def location():
+    conn = maria_db.get_conn()
+    cur = conn.cursor()
+    cur.execute('SELECT Area FROM Users WHERE UserID=%s', (session['id'],))
+    user_location = cur.fetchone()[0]
+
     json_data = []
 
     location_result = mongo_db.get_collection("location")
     for data in location_result.find():
         json_data.append(data)
 
-    return render_template('location.html', username=session['username'],data=json_data)
+    return render_template('location.html', user_location=user_location, data=json_data)
 
 @app.route("/login",methods=['GET','POST'])
 def login():
@@ -148,7 +145,7 @@ def login():
             session['loggedin']=True
             session['id']=record[0]
             session['username']=record[4]
-            return redirect(url_for('home')) 
+            return redirect(url_for('home')) #create a home page
         else:
             msg='Incorrect credentials entered. Please check your username/password.'
     return render_template('login.html',msg=msg)
@@ -185,8 +182,6 @@ def profile():
     cur.execute('SELECT * FROM Users WHERE UserID=%s',(session['id'],))
     details=cur.fetchone()
     return render_template('profile.html',msg=msg, details=details)
-    
-    
 
 @app.route("/logout")
 def logout():
