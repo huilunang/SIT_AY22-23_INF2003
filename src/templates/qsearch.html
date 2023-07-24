@@ -62,24 +62,19 @@
             </tr>
           </thead>
           <tbody>
-            <!-- <tr> -->
             {% if data.query %}
             <h3>{{ data.query|title }}</h3>
             {% endif %}
             {% if data.record %}
             <tr>
               <td>{{ data.record[0]|title }}</td>
-              <!-- <h3>Record ID (uppercase): {{ data.record[5] }}</h3> -->
               <td>{{ data.record[6]|title }}</td>
-              <!-- <p>Material: {{ data.record[1] }}</p> -->
               <td>{{ data.record[7]|title }}</td>
-              <!-- <p>Description: {{ data.record[2] }}</p> -->
               <td>{{ data.record[3]|title }}</td>
               <td>
                 {{ data.record[8]|capitalize }}{{ data.record[9]|capitalize }}
               </td>
             </tr>
-            <!-- <p>Additional Info: {{ data.record[4] }}</p> -->
             {% elif data.mrecord %}
             {% for record in data.mrecord %}
             <tr>
@@ -92,7 +87,6 @@
                 record['nonrecyclable']|capitalize }}
               </td>
             </tr>
-            <!-- <p>Additional Info: {{ record['remarks'] }}</p> -->
             {% endfor %}
             {% else %}
             <td>No record found.</td>
@@ -102,12 +96,6 @@
       </div>
     </div>
   </div>
-
-  <!-- <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td> -->
-  <!-- </tr> -->
 
   <script>
     const searchInput = document.getElementById("search-input");
