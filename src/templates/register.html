@@ -27,7 +27,7 @@
   <div class="wrapper">
     <div class="title"><span>Create an Account</span></div>
     {% if msg %}
-      <p class="error-message">{{ msg }}</p>
+    <p class="error-message">{{ msg }}</p>
     {% endif %}
     <form action="{{url_for('register')}}" method="post">
       <div></div>
@@ -59,4 +59,3 @@
   </div>
 </div>
 {% endblock content %}
-

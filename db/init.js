@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 // create database
 bloobin = db.getSiblingDB(process.env.MONGO_INITDB_DATABASE);
 
@@ -10,18 +12,28 @@ bloobin.createUser({
 });
 
 // Create DB and collection
-bloobin.createCollection(process.env.COLLECTION, { capped: false });
+bloobin.createCollection('detection_result', { capped: false });
 
 // insert dummy data
-bloobin.detection_result.insert(
-  {
-    label: "trash",
-    score: 0.89,
-    userId: 2,
-  },
-  {
-    label: "glass",
-    score: 0.59,
-    userId: 2,
-  }
-);
+// bloobin.detection_result.insertMany([
+//   {
+//     label: "trash",
+//     score: 0.89,
+//     userId: 2,
+//   },
+//   {
+//     label: "glass",
+//     score: 0.59,
+//     userId: 2,
+//   }
+// ]);
+
+function loadGeoJSON(filePath, collectionName) {
+  const fileData = fs.readFileSync(filePath);
+  const jsonData = JSON.parse(fileData);
+  bloobin[collectionName].insert(jsonData);
+}
+
+bloobin.createCollection('location', { capped: false });
+loadGeoJSON('/docker-entrypoint-initdb.d/recyclingbin.geojson', 'location');
+loadGeoJSON('/docker-entrypoint-initdb.d/e-wastebin.geojson', 'location');

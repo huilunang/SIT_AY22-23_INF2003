@@ -5,22 +5,25 @@
 -- info2: https://www.nea.gov.sg/docs/default-source/our-services/waste-management/list-of-items-that-are-recyclable-and-not.pdf
 
 --
--- Table structure for table `info1`
+-- Table structure for table info1
 --
 
-CREATE TABLE `info1` (
-  `id` int(2) NOT NULL,
-  `type` varchar(7) NOT NULL,
-  `item` varchar(294) NOT NULL,
-  `recycle` varchar(5) DEFAULT NULL,
-  `remarks` varchar(566) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+CREATE TABLE IF NOT EXISTS info1 (
+  id INT(2) PRIMARY KEY NOT NULL,
+  type VARCHAR(7) NOT NULL,
+  item VARCHAR(294) NOT NULL,
+  recycle VARCHAR(5) DEFAULT NULL,
+  remarks VARCHAR(566) DEFAULT NULL,
+  -- Adding indexes to the 'type' and 'item' columns of the 'info1' table
+  INDEX `idx_type` (`type`),
+  INDEX `idx_item` (`item`)
+);
 
 --
--- Dumping data for table `info1`
+-- Dumping data for table info1
 --
 
-INSERT INTO `info1` (`id`, `type`, `item`, `recycle`, `remarks`) VALUES
+INSERT INTO info1 (id, type, item, recycle, remarks) VALUES
 (1, 'Paper', 'Printed paper (Glossy and non-glossy)', 'YES', ''),
 (2, 'Paper', 'Writing paper', 'YES', ''),
 (3, 'Paper', 'Newspaper', 'YES', ''),
@@ -106,64 +109,22 @@ INSERT INTO `info1` (`id`, `type`, `item`, `recycle`, `remarks`) VALUES
 (83, 'Others', 'Bulky waste (e.g. Furniture, standing fan etc)', 'NO', 'Donate if it is in good condition / Contact Town council to remove from your residential premises');
 
 --
--- Indexes for dumped tables
+-- Table structure for table info2
 --
 
---
--- Indexes for table `info1`
---
-ALTER TABLE `info1`
-  ADD PRIMARY KEY (`id`);
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-
--- ================================================================================================================================================================
-
--- phpMyAdmin SQL Dump
--- version 5.2.0
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Generation Time: Jul 07, 2023 at 03:54 AM
--- Server version: 10.4.27-MariaDB
--- PHP Version: 8.2.0
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+CREATE TABLE IF NOT EXISTS info2 (
+  id INT(2) PRIMARY KEY NOT NULL,
+  type VARCHAR(16) NOT NULL,
+  item VARCHAR(296) NOT NULL,
+  recyclable VARCHAR(88) DEFAULT NULL,
+  nonrecyclable VARCHAR(472) DEFAULT NULL
+);
 
 --
--- Database: `bloobin`
+-- Dumping data for table info2
 --
 
--- --------------------------------------------------------
-
---
--- Table structure for table `info2`
---
-
-CREATE TABLE `info2` (
-  `id` int(2) NOT NULL,
-  `type` varchar(16) NOT NULL,
-  `item` varchar(296) NOT NULL,
-  `recyclable` varchar(88) DEFAULT NULL,
-  `nonrecyclable` varchar(472) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Dumping data for table `info2`
---
-
-INSERT INTO `info2` (`id`, `type`, `item`, `recyclable`, `nonrecyclable`) VALUES
+INSERT INTO info2 (id, type, item, recyclable, nonrecyclable) VALUES
 (1, 'PAPER', 'PRINTED PAPER (Glossy and non-glossy)', 'Make sure it is clean before recycling', ''),
 (2, 'PAPER', 'WRITING PAPER', 'Make sure it is clean before recycling', ''),
 (3, 'PAPER', 'NEWSPAPER', 'Make sure it is clean before recycling', ''),
@@ -247,13 +208,3 @@ INSERT INTO `info2` (`id`, `type`, `item`, `recyclable`, `nonrecyclable`) VALUES
 (81, 'OTHERS', 'PLANT WASTE / HORTICULTURAL WASTE', '', 'Only for landed estates: bag and place outside your unit on collection days'),
 (82, 'OTHERS', 'LUGGAGE BAG', '', 'Donate if it is in good condition'),
 (83, 'OTHERS', 'BULKY WASTE / FURNITURE', '', 'Donate if it is in good condition or contact Town Council to remove from your residential premises');
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `info2`
---
-ALTER TABLE `info2`
-  ADD PRIMARY KEY (`id`);

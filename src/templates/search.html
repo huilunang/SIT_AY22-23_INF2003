@@ -7,11 +7,7 @@
 {% endblock head %} {% block content %}
 <header>
   <div class="containerNav">
-    <img
-      src="../static/assets/smart bloobin logo.png"
-      alt="logo"
-      class="logo"
-    />
+    <img src="../static/assets/smart bloobin logo.png" alt="logo" class="logo" />
 
     <nav>
       <ul>
@@ -29,73 +25,37 @@
 
 <body>
   <div class="container-fluid" style="height: 50%">
-    <div
-      class="row d-flex justify-content-center align-items-center searchContainer"
-      style="height: 100%"
-    >
+    <div class="row d-flex justify-content-center align-items-center searchContainer" style="height: 100%">
       <div class="col-md-9 m-5">
         <h1 class="heading text-center">CAN THIS BE RECYCLED</h1>
         <div class="row d-flex justify-content-center px-5">
           <div class="search">
             <form method="POST" action="{{ url_for('search') }}">
               <div class="dropdown">
-                <input
-                  type="text"
-                  id="search-input"
-                  class="search-input"
-                  placeholder="Search..."
-                  name="search_query"
-                  data-toggle="dropdown"
-                  autocomplete="off"
-                />
+                <input type="text" id="search-input" class="search-input" placeholder="Search..." name="search_query"
+                  data-toggle="dropdown" autocomplete="off" />
                 <a href="#" class="search-icon">
                   <i class="fa fa-search"></i>
                 </a>
-                <div
-                  id="suggestions"
-                  class="dropdown-menu"
-                  aria-labelledby="search-input"
-                ></div>
+                <div id="suggestions" class="dropdown-menu" aria-labelledby="search-input"></div>
               </div>
             </form>
           </div>
         </div>
-        <!-- <div class="row d-flex justify-content-center px-5" id="suggestions">
-            <ul>
-            {% for word in suggested_words %}
-                <li>{{ word }}</li>
-            {% endfor %}
-          </ul>
-          </div>    -->
       </div>
     </div>
   </div>
   <div class="container-fluid" style="height: 40%">
     <h5 class="heading pt-5 text-center">Learn more on what to recycle!</h5>
-    <div
-      class="row d-flex justify-content-center align-items-center p-3"
-      style="height: 80%"
-    >
+    <div class="row d-flex justify-content-center align-items-center p-3" style="height: 80%">
       <div class="col-lg-2 col-md-6 h-100 m-1">
-        <a
-          href="/search?m=paper"
-          class="card h-100 d-flex justify-content-center align-items-center"
-          style="background-color: #1f6aa9; color: #fff"
-        >
-          <div
-            class="card-body d-flex flex-column justify-content-center align-items-center"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="80"
-              height="80"
-              fill="currentColor"
-              class="bi bi-recycle"
-              viewBox="0 0 16 16"
-            >
+        <a href="/search?m=paper" class="card h-100 d-flex justify-content-center align-items-center"
+          style="background-color: #1f6aa9; color: #fff">
+          <div class="card-body d-flex flex-column justify-content-center align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-recycle"
+              viewBox="0 0 16 16">
               <path
-                d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z"
-              />
+                d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z" />
             </svg>
             <div class="text-center mg-text">
               <h2 class="mg-text">PAPER</h2>
@@ -104,25 +64,13 @@
         </a>
       </div>
       <div class="col-lg-2 col-md-6 h-100 m-1">
-        <a
-          href="/search?m=plastic"
-          class="card h-100 d-flex justify-content-center align-items-center"
-          style="background-color: #e25947; color: #fff"
-        >
-          <div
-            class="card-body d-flex flex-column justify-content-center align-items-center"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="80"
-              height="80"
-              fill="currentColor"
-              class="bi bi-recycle"
-              viewBox="0 0 16 16"
-            >
+        <a href="/search?m=plastic" class="card h-100 d-flex justify-content-center align-items-center"
+          style="background-color: #e25947; color: #fff">
+          <div class="card-body d-flex flex-column justify-content-center align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-recycle"
+              viewBox="0 0 16 16">
               <path
-                d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z"
-              />
+                d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z" />
             </svg>
             <div class="text-center mg-text">
               <h2 class="mg-text">PLASTIC</h2>
@@ -131,25 +79,13 @@
         </a>
       </div>
       <div class="col-lg-2 col-md-6 h-100 m-1">
-        <a
-          href="/search?m=glass"
-          class="card h-100 d-flex justify-content-center align-items-center"
-          style="background-color: #3cb065; color: #fff"
-        >
-          <div
-            class="card-body d-flex flex-column justify-content-center align-items-center"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="80"
-              height="80"
-              fill="currentColor"
-              class="bi bi-recycle"
-              viewBox="0 0 16 16"
-            >
+        <a href="/search?m=glass" class="card h-100 d-flex justify-content-center align-items-center"
+          style="background-color: #3cb065; color: #fff">
+          <div class="card-body d-flex flex-column justify-content-center align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-recycle"
+              viewBox="0 0 16 16">
               <path
-                d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z"
-              />
+                d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z" />
             </svg>
             <div class="text-center mg-text">
               <h2 class="mg-text">GLASS</h2>
@@ -158,25 +94,13 @@
         </a>
       </div>
       <div class="col-lg-2 col-md-6 h-100 m-1">
-        <a
-          href="/search?m=metal"
-          class="card h-100 d-flex justify-content-center align-items-center"
-          style="background-color: #f2be3e; color: #fff"
-        >
-          <div
-            class="card-body d-flex flex-column justify-content-center align-items-center"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="80"
-              height="80"
-              fill="currentColor"
-              class="bi bi-recycle"
-              viewBox="0 0 16 16"
-            >
+        <a href="/search?m=metal" class="card h-100 d-flex justify-content-center align-items-center"
+          style="background-color: #f2be3e; color: #fff">
+          <div class="card-body d-flex flex-column justify-content-center align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-recycle"
+              viewBox="0 0 16 16">
               <path
-                d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z"
-              />
+                d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z" />
             </svg>
             <div class="text-center mg-text">
               <h2 class="mg-text">METAL</h2>
@@ -185,25 +109,13 @@
         </a>
       </div>
       <div class="col-lg-2 col-md-6 h-100">
-        <a
-          href="/search?m=others"
-          class="card h-100 d-flex justify-content-center align-items-center"
-          style="background-color: #483945; color: #fff"
-        >
-          <div
-            class="card-body d-flex flex-column justify-content-center align-items-center"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="80"
-              height="80"
-              fill="currentColor"
-              class="bi bi-recycle"
-              viewBox="0 0 16 16"
-            >
+        <a href="/search?m=others" class="card h-100 d-flex justify-content-center align-items-center"
+          style="background-color: #483945; color: #fff">
+          <div class="card-body d-flex flex-column justify-content-center align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-recycle"
+              viewBox="0 0 16 16">
               <path
-                d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z"
-              />
+                d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z" />
             </svg>
             <div class="text-center mg-text">
               <h2 class="mg-text">E-WASTE</h2>
