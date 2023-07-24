@@ -75,12 +75,25 @@ def register():
         msg = "Please fill in all the fields!"
     return render_template("register.html", msg=msg)
 
+
 @app.route("/admin_home")
 def admin_home():
+    record = maria_q.getAllUsers()
     return render_template(
         "admin_home.html",
+        record=record,
         username=session["username"],
     )
+
+@app.route('/delete_user', methods = ['POST'])
+def delete_user():
+    record_id = request.form.get('record_id')
+    try:
+        maria_q.deleteUser(record_id)
+        return jsonify(success=True, message="User Deleted Successfully.")
+    except Exception  as e:
+        print(f"Error: {e}")
+        return jsonify(success=False, message="Error deleting record")
 
 
 @app.route("/home")
