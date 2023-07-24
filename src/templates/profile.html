@@ -14,14 +14,22 @@
     <div class="containerNav">
         <img src="../static/assets/smart bloobin logo.png" alt="logo" class="logo">
 
-        <nav>
+        <nav id="user" style="display: none;">
             <ul>
-                <li><a href="home" class="active">Home</a></li>
+                <li><a href="home">Home</a></li>
                 <li><a href="search">Search</a></li>
                 <li><a href="scan">Scan</a></li>
-                <li><a href="#">Activity</a></li>
+                <li><a href="#">Rewards</a></li>
                 <li><a href="location">Location</a></li>
-                <li><a href="profile">Profile</a></li>
+                <li><a href="profile" class="active">Profile</a></li>
+                <li><a href="{{url_for('logout')}}">Logout</a></li>
+            </ul>
+        </nav>
+        <nav id="admin" style="display: none;">
+            <ul>
+                <li><a href="admin_home">Admin</a></li>
+                <li><a href="#">Rewards</a></li>
+                <li><a href="profile" class="active">Profile</a></li>
                 <li><a href="{{url_for('logout')}}">Logout</a></li>
             </ul>
         </nav>
@@ -60,5 +68,20 @@
         </div>
     </div>
 </div>
+
+<script>
+    var userNav = document.getElementById("user");
+    var adminNav = document.getElementById("admin");
+
+    console.log("{{isAdmin}}");
+    if ("{{isAdmin}}" == 1) {
+        userNav.style.display = 'none';
+        adminNav.style.display = 'block'; 
+    } else {
+        userNav.style.display = 'block'; 
+        adminNav.style.display = 'none';
+    }
+    
+</script>
 
 {% endblock %}

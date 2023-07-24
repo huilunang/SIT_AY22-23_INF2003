@@ -1,0 +1,38 @@
+<!-- This page is customized according to user after authentication -->
+
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Welcome to Smart Bloobin</title>
+<link rel="stylesheet" href="../static/css/home.css">
+<link rel="stylesheet" href="../static/css/nav.css">
+{% endblock head %}
+
+{% block content %}
+<header>
+    <div class="containerNav">
+        <img src="../static/assets/smart bloobin logo.png" alt="logo" class="logo">
+
+        <nav>
+            <ul>
+                <li><a href="admin_home" class="active">Admin</a></li>
+                <li><a href="#">Rewards</a></li>
+                <li><a href="profile">Profile</a></li>
+                <li><a href="{{url_for('logout')}}">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<div class="container-fluid text-center">
+    <div class="col-sm-8 text-left">
+        <div>
+            <br>
+            <h1>Welcome, {{username}}!</h1>
+            <br>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

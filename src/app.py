@@ -31,6 +31,9 @@ def login():
             session["loggedin"] = True
             session["id"] = record[0]
             session["username"] = record[4]
+            session["isAdmin"] = record[6]
+            if record[6]:
+                return redirect(url_for("admin_home"))
             return redirect(url_for("home"))
 
         msg = "Incorrect credentials entered. Please check your username/password."
@@ -71,6 +74,13 @@ def register():
     elif request.method == "POST":
         msg = "Please fill in all the fields!"
     return render_template("register.html", msg=msg)
+
+@app.route("/admin_home")
+def admin_home():
+    return render_template(
+        "admin_home.html",
+        username=session["username"],
+    )
 
 
 @app.route("/home")
@@ -136,7 +146,7 @@ def profile():
 
     details = maria_q.userProfile()
 
-    return render_template("profile.html", msg=msg, details=details)
+    return render_template("profile.html", msg=msg, details=details, isAdmin=session["isAdmin"])
 
 
 @app.route("/search", methods=["GET", "POST"])
