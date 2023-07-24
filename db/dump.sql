@@ -16,10 +16,10 @@ CREATE TABLE IF NOT EXISTS Bins (
 );
 
 CREATE TABLE IF NOT EXISTS Rewards (
-  RewardID INT PRIMARY KEY,
-  PointCost FLOAT,
+  RewardID INT PRIMARY KEY AUTO_INCREMENT,
+  PointCost INT,
   RewardName VARCHAR(255),
-  RewardImage BLOB,
+  RewardImage VARCHAR(255),
   Stock INT
 );
 
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS RewardTransactions (
   RewardID INT,
   UserID INT,
   Claimed BOOLEAN,
-  FOREIGN KEY (RewardID) REFERENCES Rewards(RewardID),
+  FOREIGN KEY (RewardID) REFERENCES Rewards(RewardID) ON DELETE CASCADE,
   FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE
 );
 
@@ -65,13 +65,13 @@ VALUES
   (4, 'Block 101 Jurong West Ave 5', 23),
   (5, 'Block 202 Tampines Street 11', 7);
 
-INSERT INTO Rewards (RewardID, PointCost, RewardName, RewardImage, Stock)
+INSERT INTO Rewards (PointCost, RewardName, RewardImage, Stock)
 VALUES
-  (1, 50, 'NTUC Voucher', NULL, 10),
-  (2, 35, 'Movie Ticket', NULL, 10),
-  (3, 40, 'Starbucks Gift Card', NULL, 10),
-  (4, 45, 'Clothing Store Voucher', NULL, 10),
-  (5, 25, 'Bookstore Coupon', NULL, 10);
+  (500, '$10 NTUC Voucher', 'ntuc.png', 10),
+  (350, 'Movie Ticket', 'movie.jpg', 10),
+  (400, 'Starbucks Gift Card', 'Starbucks.png', 10),
+  (450, 'Clothing Store Voucher', 'clothing.jpg', 10),
+  (250, 'Bookstore Coupon', 'bookstore.jpg', 10);
 
 INSERT INTO Recycles (RecycledID, BinID, Datetime, Image, MaterialType, UserID)
 VALUES

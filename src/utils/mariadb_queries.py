@@ -36,6 +36,25 @@ def deleteUser(userID):
     maria_db.execute(query, "", userID)
 
 
+# admin rewards page 
+def getAllRewards():
+    query ="SELECT * FROM Rewards"
+    result = maria_db.execute(query, "all")
+    return result["result"]
+
+def replaceImage(newFileName, rewardID):
+    query = "UPDATE Rewards SET RewardImage = %s WHERE RewardID = %s"
+    maria_db.execute(query,"", newFileName, rewardID)
+
+def deleteReward(rewardID):
+    query = "DELETE FROM Rewards WHERE RewardID = %s"
+    maria_db.execute(query, "", rewardID)
+
+def createReward(pointCost, name, fileName, stock):
+    query = "INSERT INTO Rewards (PointCost, RewardName, RewardImage, Stock) VALUES (%s, %s, %s, %s)"
+    maria_db.execute(query, "", pointCost, name, fileName, stock)
+
+
 # home page
 def getUserPoints():
     query = "SELECT Points FROM Users WHERE UserID = %s"

@@ -6,7 +6,7 @@
 <title>Welcome to Smart Bloobin</title>
 <link rel="stylesheet" href="../static/css/home.css">
 <link rel="stylesheet" href="../static/css/nav.css">
-<link rel="stylesheet" href="../static/css/admin_home.css">
+<link rel="stylesheet" href="../static/css/admin_rewards.css">
 {% endblock head %}
 
 {% block content %}
@@ -16,8 +16,8 @@
 
         <nav>
             <ul>
-                <li><a href="admin_home" class="active">Admin</a></li>
-                <li><a href="admin_rewards">Rewards</a></li>
+                <li><a href="admin_home">Admin</a></li>
+                <li><a href="admin_rewards" class="active">Rewards</a></li>
                 <li><a href="profile">Profile</a></li>
                 <li><a href="{{url_for('logout')}}">Logout</a></li>
             </ul>
@@ -25,29 +25,15 @@
     </div>
 </header>
 
-<div class="container-fluid text-center">
-    <div class="col-sm-8 text-left">
-        <div>
-            <br>
-            <h3>Welcome, {{username}}!</h3>
-            <br>
-        </div>
-    </div>
-</div>
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6 text-center mb-5">
-            <h2 class="heading-section">All Users</h2>
+            <h2 class="heading-section">All Rewards</h2>
         </div>
     </div>
-    <div class="row justify-content-end">
-        <div class="col-md-6 text-right mb-2">
-            <label class="flip-switch">
-                <input type="checkbox" id="isAdminSwitch">
-                <span class="flip-slider"></span>
-            </label>
-            <p class="switch-text">View Admins</p>
-        </div>
+    <div class="col-md-6">
+        <a href="{{ url_for('add_reward') }}" class="btn btn-primary btn-add-reward">Add Reward Item</a>
     </div>
     <div class="row">
         <div class="col-md-12">
@@ -55,24 +41,30 @@
                 <table class="table table-responsive-xl">
                     <thead>
                         <tr>
-                            <th>UserID</th>
-                            <th>Username</th>
+                            <th>RewardID</th>
                             <th>Name</th>
-                            <th>Email</th>
-                            <th>Area of Residence</th>
-                            <th>Available Points</th>
+                            <th>Point Cost</th>
+                            <th>Stocks</th>
+                            <th>Image</th>
+                            <th>&nbsp;</th>
                             <th>&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for rec in record %}
-                            <tr class="alert" role="alert" data-isadmin="{{ rec[6] }}">
+                            <tr class="alert" role="alert">
                                 <td>{{ rec[0] }}</td>
-                                <td>{{ rec[4] }}</td>
-                                <td>{{ rec[1] }}</td>
                                 <td>{{ rec[2] }}</td>
-                                <td>{{ rec[3] }}</td>
-                                <td>{{ rec[7] }}</td>
+                                <td>{{ rec[1] }}</td>
+                                <td>{{ rec[4] }}</td>
+                                <td><img src="../static/assets/rewards/{{ rec[3] }}" alt="Uploaded Image" class="image"></td>
+                                <td>
+                                    <form action="/upload_image" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="reward_id" value="{{ rec[0] }}">
+                                        <input type="file" class="fileUpload" name="image_file" accept="image/*">
+                                        <input type="submit" class="fileUpload" value="Upload Image">
+                                      </form>                                      
+                                </td>
                                 <td>
                                     <button type="button" class="delete-btn btn btn-danger" data-record-id="{{ rec[0] }}" data-toggle="modal" data-target="#confirmationModal">
                                         <i class="fa fa-trash"></i></span>
@@ -97,7 +89,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                Are you sure you want to delete this user?
+                Are you sure you want to delete this reward item?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -110,39 +102,6 @@
 
 <script>
     $(document).ready(function () {
-        // Function to filter records based on isAdmin value
-        function filterRecords(isAdminValue) {
-            var rows = $('.table tbody tr');
-
-            if (isAdminValue == false) {
-                rows.each(function () {
-                    if ($(this).data('isadmin') === 0) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
-            } else {
-                rows.each(function () {
-                    if ($(this).data('isadmin') === 1) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
-            }
-        }
-
-        // Initial filter to show all user records (unchecked by default)
-        filterRecords(false);
-
-        // Handle the switch button change event
-        $('#isAdminSwitch').on('change', function () {
-            var isAdminValue = $(this).is(':checked');
-
-            filterRecords(isAdminValue)
-        });
-
         var deleteRecordId; // Store the ID of the record to be deleted
 
         // Handle the click event for delete buttons
@@ -158,7 +117,7 @@
             // Make an AJAX request to the Flask endpoint for deletion
             $.ajax({
                 type: 'POST',
-                url: '/delete_user',
+                url: '/delete_reward',
                 data: {
                     record_id: deleteRecordId
                 },
