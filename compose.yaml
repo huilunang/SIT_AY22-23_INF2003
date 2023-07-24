@@ -52,6 +52,8 @@ services:
       DB_USER: ${DB_USER}
       DB_PWD: ${DB_PWD}
       # COLLECTION: detection_result
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
     networks:
       - bloobin-network
 
