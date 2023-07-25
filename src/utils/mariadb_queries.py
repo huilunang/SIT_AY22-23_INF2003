@@ -137,3 +137,10 @@ def suggestion(search_query):
     arg = "%" + search_query.replace(" ", "%") + "%"
     result = maria_db.execute(query, "all", arg)
     return result["result"]
+
+# location page
+def getUserLocation():
+    query = "SELECT Area FROM Users WHERE UserID=%s"
+    result = maria_db.execute(query, "one", session['id'])
+    return result
+

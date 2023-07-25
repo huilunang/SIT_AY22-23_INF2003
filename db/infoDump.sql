@@ -13,7 +13,10 @@ CREATE TABLE IF NOT EXISTS info1 (
   type VARCHAR(7) NOT NULL,
   item VARCHAR(294) NOT NULL,
   recycle VARCHAR(5) DEFAULT NULL,
-  remarks VARCHAR(566) DEFAULT NULL
+  remarks VARCHAR(566) DEFAULT NULL,
+  -- Adding indexes to the 'type' and 'item' columns of the 'info1' table
+  INDEX `idx_type` (`type`),
+  INDEX `idx_item` (`item`)
 );
 
 --
