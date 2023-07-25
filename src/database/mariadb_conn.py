@@ -51,7 +51,10 @@ class MariaDBConnManager:
             elif fetch_method == "":
                 conn.commit()
     
-    def executeForDataframe(self, query):
+    def executeForDataframe(self, query, args=None):
         conn = self.get_conn()
-        df = pd.read_sql_query(query, conn)
+        if args is None:
+            df = pd.read_sql_query(query, conn)
+        else:
+            df = pd.read_sql_query(query, conn, params=[args])
         return df

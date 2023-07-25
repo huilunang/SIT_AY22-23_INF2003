@@ -70,6 +70,16 @@ def updateStock(newStock, rewardID):
     query = "UPDATE Rewards SET Stock = %s WHERE RewardID = %s"
     maria_db.execute(query, "", newStock, rewardID)
 
+def getRewardTransactions():
+    query = "SELECT TransactionDate, RewardID, Claimed FROM RewardTransactions WHERE UserID = %s"
+    result = maria_db.execute(query, "all", session["id"])
+    return result["result"]
+
+def getRewardNameByRewardID(RewardID):
+    query = "SELECT RewardName FROM Rewards WHERE RewardID = %s"
+    result = maria_db.execute(query, "one", RewardID)
+    return result["result"]
+
 # home page
 def getUserPoints():
     query = "SELECT Points FROM Users WHERE UserID = %s"
@@ -88,28 +98,33 @@ def getMaterialCount():
     result = maria_db.execute(query, "all", session["id"])
     return result["result"]
 
-def getRecycleAcivity():
+def getUserRecycleAcivity():
     end_date = datetime.datetime.now(pytz.timezone('Asia/Singapore')).date()
     start_date = end_date - datetime.timedelta(days=6)
     query = f'''SELECT DAYOFWEEK(DATE(Datetime)) AS DayOfWeek,
        DATE_FORMAT(Datetime, '%Y-%m-%d') AS Date,
        COUNT(*) AS TotalRecycled
         FROM Recycles
-        WHERE DATE(Datetime) BETWEEN '{start_date}' AND '{end_date}'
+        WHERE UserID = %s
+        AND DATE(Datetime) BETWEEN '{start_date}' AND '{end_date}'
         GROUP BY Date
         ORDER BY Date;'''
+    result = maria_db.executeForDataframe(query, session["id"])
+    return result
+
+def getRecycleActivity60days():
+    end_date = datetime.datetime.now(pytz.timezone('Asia/Singapore')).date()
+    start_date = end_date - datetime.timedelta(days=59) 
+    query = f'''SELECT DATE(Datetime) AS Date,
+    COUNT(*) AS TotalRecycled
+    FROM Recycles
+    WHERE DATE(Datetime) BETWEEN '{start_date}' AND '{end_date}'
+    GROUP BY Date
+    ORDER BY Date
+    '''
     result = maria_db.executeForDataframe(query)
     return result
 
-def getRewardTransactions():
-    query = "SELECT TransactionDate, RewardID, Claimed FROM RewardTransactions WHERE UserID = %s"
-    result = maria_db.execute(query, "all", session["id"])
-    return result["result"]
-
-def getRewardNameByRewardID(RewardID):
-    query = "SELECT RewardName FROM Rewards WHERE RewardID = %s"
-    result = maria_db.execute(query, "one", RewardID)
-    return result["result"]
 
 
 # profile page

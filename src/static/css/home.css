@@ -11,7 +11,7 @@ body {
   background-position: center;
   background-size: cover;
   position: relative;
-  overflow: hidden;
+  overflow: auto;
 }
 ::selection {
   background: #007cd1;
@@ -162,27 +162,4 @@ form .end-link a:hover {
   height: auto; /* Maintain the aspect ratio of the image */
   display: block; /* Ensure the image behaves as a block-level element */
   margin: 0 auto; /* Center the image within its container */
-}
-
-.center-table{
-  margin: 0 auto;
-}
-
-.table-cell-spacing {
-  padding: 30px; /* Adjust the padding value as needed */
-}
-
-/* Add border between each table row */
-table {
-  border-collapse: collapse;
-}
-
-table tr {
-  border-bottom: 1px solid #ccc; /* Adjust the border color and style as needed */
-}
-
-/* Align all table cells to the left */
-table th,
-table td {
-  text-align: center;
 }

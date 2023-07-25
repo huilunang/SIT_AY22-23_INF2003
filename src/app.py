@@ -157,10 +157,30 @@ def rewards():
     record = maria_q.getAllRewards()
     userPointsRecord = maria_q.getUserPoints()
     userPoints= userPointsRecord[0]
+
+    # reward transactions table
+    transactionRecord = maria_q.getRewardTransactions()
+    transaction_dates = []
+    reward_names = []
+    claimed = []
+
+    # Retrieve and append data to lists
+    for date, id, claim in transactionRecord:
+        rewardName = maria_q.getRewardNameByRewardID(id)
+        transaction_dates.append(date)
+        reward_names.append(rewardName[0])
+        if claim:
+            claimed.append('Redeemed')
+        else:
+            claimed.append('Not Redeemed')
+
+    # Create transaction_data list after appending data
+    transaction_data = list(enumerate(zip(reward_names, transaction_dates, claimed), 1))
     return render_template(
         "rewards.html",
         record = record,
         userPoints = userPoints,
+        transaction_data=transaction_data,
     )
 
 @app.route('/redeem_reward', methods=['POST'])
@@ -203,27 +223,10 @@ def home():
 
     # generate activity graph
     helper.generateGraph()
-    graph_path = "static/assets/graphs/recentActivity.png"
+    helper.generateActivities(maria_q.getRecycleActivity60days())
+    recentActivityGraph_path = "static/assets/graphs/recentActivity.png"
+    Last60DaysActivityGraph_path = "static/assets/graphs/last60DaysActivity.png"
 
-    # reward transactions table
-    record = maria_q.getRewardTransactions()
-    transaction_dates = []
-    reward_names = []
-    claimed = []
-
-    # Retrieve and append data to lists
-    for date, id, claim in record:
-        rewardName = maria_q.getRewardNameByRewardID(id)
-        transaction_dates.append(date)
-        reward_names.append(rewardName[0])
-        if claim:
-            claimed.append('Redeemed')
-        else:
-            claimed.append('Not Redeemed')
-
-    # Create transaction_data list after appending data
-    transaction_data = list(enumerate(zip(reward_names, transaction_dates, claimed), 1))
-        
     return render_template(
         "home.html",
         username=session["username"],
@@ -232,8 +235,8 @@ def home():
         month_label=month_label,
         material=material,
         material_count=material_count,
-        graph_path=graph_path,
-        transaction_data=transaction_data,
+        recentActivityGraph_path=recentActivityGraph_path,
+        Last60DaysActivityGraph_path=Last60DaysActivityGraph_path,
     )
 
 
