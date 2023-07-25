@@ -1,0 +1,56 @@
+<!-- This page is customized according to user after authentication -->
+
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Welcome to Smart Bloobin</title>
+<link rel="stylesheet" href="../static/css/home.css">
+<link rel="stylesheet" href="../static/css/nav.css">
+<link rel="stylesheet" href="../static/css/add_reward.css">
+{% endblock head %}
+
+{% block content %}
+<header>
+    <div class="containerNav">
+        <img src="../static/assets/smart bloobin logo.png" alt="logo" class="logo">
+
+        <nav>
+            <ul>
+                <li><a href="admin_home">Admin</a></li>
+                <li><a href="admin_rewards" class="active">Rewards</a></li>
+                <li><a href="profile">Profile</a></li>
+                <li><a href="{{url_for('logout')}}">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="heading-section">Add Reward</h2>
+            <form action="{{url_for('add_reward')}}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="name">Reward Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="point_cost">Point Cost</label>
+                    <input type="number" class="form-control" id="point_cost" name="point_cost" required>
+                </div>
+                <div class="form-group">
+                    <label for="stocks">Stock Count</label>
+                    <input type="number" class="form-control" id="stocks" name="stocks" required>
+                </div>
+                <div class="form-group">
+                    <label for="image_file">Upload Image</label>
+                    <input type="file" class="form-control-file" id="image_file" name="image_file" accept="image/*">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

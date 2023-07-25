@@ -1,0 +1,88 @@
+.container {
+    max-width: 80%;
+    padding: 0 20px;
+    margin: 25px auto;
+}
+
+.table-wrap {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: auto;
+    /* Enable vertical and horizontal scrolling when necessary */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #007cd1;
+}
+
+th,
+td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+}
+
+th {
+    color:white;
+}
+
+/* Apply different background colors to alternating rows */
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.flip-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+}
+
+.flip-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 30px;
+    transition: 0.4s;
+}
+
+.flip-slider:before {
+    position: absolute;
+    content: "";
+    height: 24px;
+    width: 24px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.4s;
+}
+
+input[type="checkbox"]:checked+.flip-slider {
+    background-color: #2196F3;
+}
+
+input[type="checkbox"]:checked+.flip-slider:before {
+    transform: translateX(30px);
+}
+
+/* Hide the default checkbox */
+input[type="checkbox"] {
+    display: none;
+}
+
+.switch-text {
+    margin-top: 1px;
+    font-size: 12px;
+    color: #555;
+  }
