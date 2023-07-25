@@ -25,6 +25,49 @@ def register(name, email, area, username, pwd):
     return result["result"]
 
 
+# admin home page 
+def getAllUsers():
+    query ="SELECT * FROM Users"
+    result = maria_db.execute(query, "all")
+    return result["result"]
+
+def deleteUser(userID):
+    query = "DELETE FROM Users WHERE UserID = %s"
+    maria_db.execute(query, "", userID)
+
+
+# admin rewards page 
+def getAllRewards():
+    query ="SELECT * FROM Rewards"
+    result = maria_db.execute(query, "all")
+    return result["result"]
+
+def replaceImage(newFileName, rewardID):
+    query = "UPDATE Rewards SET RewardImage = %s WHERE RewardID = %s"
+    maria_db.execute(query,"", newFileName, rewardID)
+
+def deleteReward(rewardID):
+    query = "DELETE FROM Rewards WHERE RewardID = %s"
+    maria_db.execute(query, "", rewardID)
+
+def createReward(pointCost, name, fileName, stock):
+    query = "INSERT INTO Rewards (PointCost, RewardName, RewardImage, Stock) VALUES (%s, %s, %s, %s)"
+    maria_db.execute(query, "", pointCost, name, fileName, stock)
+
+# rewards page
+def getRewardRecord(rewardID):
+    query = "SELECT * FROM Rewards WHERE RewardID = %s"
+    result = maria_db.execute(query, "one", rewardID)
+    return result["result"]
+
+def updateUserAfterRedemption(newPoints):
+    query = "UPDATE Users SET Points = %s WHERE UserID = %s"
+    maria_db.execute(query, "", newPoints, session["id"])
+
+def updateStock(newStock, rewardID):
+    query = "UPDATE Rewards SET Stock = %s WHERE RewardID = %s"
+    maria_db.execute(query, "", newStock, rewardID)
+
 # home page
 def getUserPoints():
     query = "SELECT Points FROM Users WHERE UserID = %s"
@@ -47,16 +90,14 @@ def getMaterialCount():
 # profile page
 def updateProfile(name, email, area, username):
     query = "UPDATE Users SET name=%s, email=%s, area=%s, username=%s WHERE UserID = %s"
-    result = maria_db.execute(query, "", name, email, area, username, session["id"])
-    return result["result"]
+    maria_db.execute(query, "", name, email, area, username, session["id"])
 
 
 def updateProfileWPwd(name, email, area, username, password):
     query = "UPDATE Users SET name=%s, email=%s, area=%s, username=%s, password=%s WHERE UserID = %s"
-    result = maria_db.execute(
+    maria_db.execute(
         query, "", name, email, area, username, password, session["id"]
     )
-    return result["result"]
 
 
 def userProfile():

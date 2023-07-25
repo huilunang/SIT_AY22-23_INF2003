@@ -1,0 +1,57 @@
+.container {
+    max-width: 80%;
+    padding: 0 20px;
+    margin: 25px auto;
+    overflow-y: auto;
+}
+
+.table-wrap {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.table-wrap table {
+    flex: 1;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #007cd1;
+}
+
+th,
+td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+}
+
+/* Apply different background colors to alternating rows */
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.image {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+th {
+    color: white;
+}
+
+.btn {
+    margin-bottom: 10px;
+}
+
+h2 {
+    margin-bottom: -15px;
+    margin-top: 15px;
+    font-weight: 500;
+    line-height: 1.2;
+}

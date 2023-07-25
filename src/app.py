@@ -31,6 +31,9 @@ def login():
             session["loggedin"] = True
             session["id"] = record[0]
             session["username"] = record[4]
+            session["isAdmin"] = record[6]
+            if record[6]:
+                return redirect(url_for("admin_home"))
             return redirect(url_for("home"))
 
         msg = "Incorrect credentials entered. Please check your username/password."
@@ -72,6 +75,105 @@ def register():
         msg = "Please fill in all the fields!"
     return render_template("register.html", msg=msg)
 
+
+@app.route("/admin_home")
+def admin_home():
+    record = maria_q.getAllUsers()
+    return render_template(
+        "admin_home.html",
+        record=record,
+        username=session["username"],
+    )
+
+
+@app.route('/delete_user', methods = ['POST'])
+def delete_user():
+    record_id = request.form.get('record_id')
+    try:
+        maria_q.deleteUser(record_id)
+        return jsonify(success=True, message="User Deleted Successfully.")
+    except Exception  as e:
+        print(f"Error: {e}")
+        return jsonify(success=False, message="Error deleting record")
+
+
+@app.route("/admin_rewards")
+def admin_rewards():
+    record = maria_q.getAllRewards()
+    return render_template(
+        "admin_rewards.html",
+        record = record,
+    )
+
+
+@app.route('/upload_image', methods = ['POST'])
+def upload_image():
+    if request.method == 'POST':
+        reward_id = request.form.get('reward_id')
+        image_file = request.files['image_file']
+        if image_file:
+            # Save the uploaded image name
+            filename = image_file.filename
+            file_path = "static/assets/rewards/" + filename
+            image_file.save(file_path)
+            maria_q.replaceImage(filename, reward_id)
+    return redirect(url_for("admin_rewards"))
+
+
+@app.route('/add_reward', methods=["GET", "POST"])
+def add_reward():
+    if request.method == "POST":
+        name = request.form["name"]
+        point_cost = request.form["point_cost"]
+        stocks = request.form["stocks"]
+        image_file = request.files['image_file']
+        if name and point_cost and stocks and image_file:
+            # Save the uploaded image name
+            filename = image_file.filename
+            file_path = "static/assets/rewards/" + filename
+            image_file.save(file_path)
+            maria_q.createReward(point_cost, name, filename, stocks)
+        return redirect(url_for("admin_rewards"))
+    return render_template("add_reward.html")
+
+
+@app.route('/delete_reward', methods = ['POST'])
+def delete_reward():
+    record_id = request.form.get('record_id')
+    try:
+        maria_q.deleteReward(record_id)
+        return jsonify(success=True, message="Reward Deleted Successfully.")
+    except Exception  as e:
+        print(f"Error: {e}")
+        return jsonify(success=False, message="Error deleting record")
+
+
+@app.route("/rewards")
+def rewards():
+    record = maria_q.getAllRewards()
+    userPointsRecord = maria_q.getUserPoints()
+    userPoints= userPointsRecord[0]
+    return render_template(
+        "rewards.html",
+        record = record,
+        userPoints = userPoints,
+    )
+
+@app.route('/redeem_reward', methods=['POST'])
+def redeem_reward():
+    if request.method == 'POST':
+        reward_id = request.form.get('reward_id')
+        record = maria_q.getRewardRecord(reward_id)
+        point_cost = record[1]
+        stock = record[4]
+        userPointsRecord = maria_q.getUserPoints()
+        userPoints= userPointsRecord[0]
+        newUserPoints = userPoints - point_cost
+        newStock = stock - 1
+        maria_q.updateUserAfterRedemption(newUserPoints)
+        maria_q.updateStock(newStock, reward_id)
+        return jsonify(success=True, message="Redemption successful")
+    return jsonify(success=False, message="Error processing redemption")
 
 @app.route("/home")
 def home():
@@ -136,7 +238,7 @@ def profile():
 
     details = maria_q.userProfile()
 
-    return render_template("profile.html", msg=msg, details=details)
+    return render_template("profile.html", msg=msg, details=details, isAdmin=session["isAdmin"])
 
 
 @app.route("/search", methods=["GET", "POST"])
