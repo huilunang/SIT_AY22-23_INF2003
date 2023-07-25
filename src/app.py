@@ -115,9 +115,9 @@ def home():
         transaction_dates.append(date)
         reward_names.append(rewardName[0])
         if claim:
-            claimed.append('Claimed')
+            claimed.append('Redeemed')
         else:
-            claimed.append('Not Claimed')
+            claimed.append('Not Redeemed')
 
     # Create transaction_data list after appending data
     transaction_data = list(enumerate(zip(reward_names, transaction_dates, claimed), 1))

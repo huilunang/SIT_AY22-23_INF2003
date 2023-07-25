@@ -184,5 +184,5 @@ table tr {
 /* Align all table cells to the left */
 table th,
 table td {
-  text-align: left;
+  text-align: center;
 }
