@@ -1,6 +1,6 @@
 import os
 import mariadb
-
+import pandas as pd
 
 class MariaDBConnManager:
     def __init__(self):
@@ -50,3 +50,8 @@ class MariaDBConnManager:
                 return data
             elif fetch_method == "":
                 conn.commit()
+    
+    def executeForDataframe(self, query):
+        conn = self.get_conn()
+        df = pd.read_sql_query(query, conn)
+        return df

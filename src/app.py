@@ -99,6 +99,29 @@ def home():
         material.append(mat)
         material_count.append(num)
 
+    # generate activity graph
+    helper.generateGraph()
+    graph_path = "static/assets/graphs/recentActivity.png"
+
+    # reward transactions table
+    record = maria_q.getRewardTransactions()
+    transaction_dates = []
+    reward_names = []
+    claimed = []
+
+    # Retrieve and append data to lists
+    for date, id, claim in record:
+        rewardName = maria_q.getRewardNameByRewardID(id)
+        transaction_dates.append(date)
+        reward_names.append(rewardName[0])
+        if claim:
+            claimed.append('Claimed')
+        else:
+            claimed.append('Not Claimed')
+
+    # Create transaction_data list after appending data
+    transaction_data = list(enumerate(zip(reward_names, transaction_dates, claimed), 1))
+        
     return render_template(
         "home.html",
         username=session["username"],
@@ -107,6 +130,8 @@ def home():
         month_label=month_label,
         material=material,
         material_count=material_count,
+        graph_path=graph_path,
+        transaction_data=transaction_data,
     )
 
 

@@ -1,6 +1,8 @@
 from database.mariadb_conn import MariaDBConnManager
 
 from flask import session
+import datetime
+import pytz
 
 maria_db = MariaDBConnManager()
 
@@ -41,6 +43,29 @@ def getRecyclesByMonth():
 def getMaterialCount():
     query = "SELECT MaterialType, COUNT(*) AS matCount FROM Recycles WHERE UserID = %s GROUP BY MaterialType"
     result = maria_db.execute(query, "all", session["id"])
+    return result["result"]
+
+def getRecycleAcivity():
+    end_date = datetime.datetime.now(pytz.timezone('Asia/Singapore')).date()
+    start_date = end_date - datetime.timedelta(days=6)
+    query = f'''SELECT DAYOFWEEK(DATE(Datetime)) AS DayOfWeek,
+       DATE_FORMAT(Datetime, '%Y-%m-%d') AS Date,
+       COUNT(*) AS TotalRecycled
+        FROM Recycles
+        WHERE DATE(Datetime) BETWEEN '{start_date}' AND '{end_date}'
+        GROUP BY Date
+        ORDER BY Date;'''
+    result = maria_db.executeForDataframe(query)
+    return result
+
+def getRewardTransactions():
+    query = "SELECT TransactionDate, RewardID, Claimed FROM RewardTransactions WHERE UserID = %s"
+    result = maria_db.execute(query, "all", session["id"])
+    return result["result"]
+
+def getRewardNameByRewardID(RewardID):
+    query = "SELECT RewardName FROM Rewards WHERE RewardID = %s"
+    result = maria_db.execute(query, "one", RewardID)
     return result["result"]
 
 
@@ -102,4 +127,5 @@ def getUserLocation():
     query = "SELECT Area FROM Users WHERE UserID=%s"
     result = maria_db.execute(query, "one", session['id'])
     return result
+
 

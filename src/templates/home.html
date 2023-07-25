@@ -26,52 +26,70 @@
         </nav>
     </div>
 </header>
-
-<div class="container-fluid text-center">
-    <div class="col-sm-8 text-left">
-        <div>
-            <br>
-            <h1>Welcome, {{username}}!</h1>
-            <br>
+    <div class="container-fluid text-center">
+        <div class="col-sm-8 text-left">
+            <div>
+                <br>
+                <h1>Welcome, {{username}}!</h1>
+                <br>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="container-fluid">
-    <div class="row">
+    <div class="container-fluid">
+        <div class="row">
 
-        <div class="col-md-4">
-            <div class="card card-style mb-2">
-                <div class="card-body">
-                    <div class="chart-container" style="position: relative;">
-                        <canvas id="recycle_by_month"></canvas>
+            <div class="col-md-4">
+                <div class="card card-style mb-2">
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative;">
+                            <img id="graph" src="{{ graph_path }}" alt="Graph1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card card-style mb-2">
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative;">
+                            <canvas id="material"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="box">
+                    <div class="box-title">Existing Points</div>
+                    <div class="points">
+                        <span>{{points}}</span>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-4">
-            <div class="card card-style mb-2">
-                <div class="card-body">
-                    <div class="chart-container" style="position: relative;">
-                        <canvas id="material"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="box">
-                <div class="box-title">Existing Points</div>
-                <div class="points">
-                    <span>{{points}}</span>
-                </div>
-            </div>
-        </div>
-
+        <h1 class="center-table">Transaction Data Table</h1>
+        <table class="center-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Reward Name</th>
+                    <th>Transaction Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for index, (reward_name, transaction_date, claimed) in transaction_data %}
+                <tr>
+                    <td class="table-cell-spacing">{{ index }}</td>
+                    <td class="table-cell-spacing">{{ reward_name }}</td>
+                    <td class="table-cell-spacing">{{ transaction_date }}</td>
+                    <td class="table-cell-spacing">{{ claimed }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-</div>
-
 <script>
     let recycles_by_month = JSON.parse('{{recycles_by_month | tojson}}');
     let month_labels = JSON.parse('{{month_label | tojson}}');

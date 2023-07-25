@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS RewardTransactions (
   TransactionID INT PRIMARY KEY,
   RewardID INT,
   UserID INT,
+  TransactionDate DATETIME,
   Claimed BOOLEAN,
   FOREIGN KEY (RewardID) REFERENCES Rewards(RewardID),
   FOREIGN KEY (UserID) REFERENCES Users(UserID)
@@ -101,10 +102,10 @@ VALUES
   (24, 3, '2023-07-25 16:30:00', '', 'Metal', 3),
   (25, 1, '2023-07-26 13:00:00', '', 'Plastic', 1);
   
-INSERT INTO RewardTransactions (TransactionID, RewardID, UserID, Claimed)
+INSERT INTO RewardTransactions (TransactionID, RewardID, UserID, Claimed, TransactionDate)
 VALUES
-  (1, 1, 1, true),
-  (2, 3, 2, false),
-  (3, 2, 3, true),
-  (4, 5, 4, false),
-  (5, 4, 5, true);
+  (1, 1, 1, true, '2023-07-19 13:00:00'),
+  (2, 3, 2, false, '2023-07-20 13:00:00'),
+  (3, 2, 3, true, '2023-07-21 13:00:00'),
+  (4, 5, 4, false, '2023-07-22 13:00:00'),
+  (5, 4, 5, true, '2023-07-23 13:00:00');
