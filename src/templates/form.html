@@ -1,17 +1,16 @@
 <!-- This page is used to search through recycling database -->
+{% extends 'base.html' %}
 
-{% extends 'base.html' %} {% block head %}
+{% block head %}
 <title>Form</title>
 <link rel="stylesheet" href="../static/css/form.css" />
 <link rel="stylesheet" href="../static/css/nav.css" />
-{% endblock head %} {% block content %}
+{% endblock head %}
+
+{% block content %}
 <header>
   <div class="containerNav">
-    <img
-      src="../static/assets/smart bloobin logo.png"
-      alt="logo"
-      class="logo"
-    />
+    <img src="../static/assets/smart bloobin logo.png" alt="logo" class="logo" />
 
     <nav>
       <ul>
@@ -27,85 +26,56 @@
   </div>
 </header>
 
-<body>
-  <div class="container-fluid" style="height: 90%">
-    <div
-      class="row d-flex justify-content-center align-items-center searchContainer"
-      style="height: 100%"
-    >
-      <div
-        class="col-md-9 d-flex justify-content-center align-items-center"
-        style="height: 100%"
-      >
-        <div
-          class="row d-flex justify-content-center px-5 form-container"
-          style="height: 75%"
-        >
-          <form
-            method="POST"
-            action="{{ url_for('scan') }}?qb={{ queryBinID }}&ql={{ queryLocation }}"
-            class="row d-flex flex-column justify-content-center px-5"
-            enctype="multipart/form-data"
-          >
-            <h1 class="pb-4">RECYCLE</h1>
-            <div class="form-group">
-              <label for="materialType">Select Material Type:</label>
-              <select
-                id="materialType"
-                class="form-control"
-                name="materialType"
-              >
-                <option value="Paper">Paper</option>
-                <option value="Plastic">Plastic</option>
-                <option value="Glass">Glass</option>
-                <option value="Metal">Metal</option>
-                <option value="E-Waste">E-Waste</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="fileInput">Select an image:</label>
-              <input
-                type="file"
-                id="fileInput"
-                class="form-control-file"
-                name="fileInput"
-                accept="image/*"
-              />
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Submit</button>
-            <div class="form-group">
-              <small
-                id="currentLocation"
-                name="currentLocation"
-                class="form-text text-muted"
-                >BinID: {{ queryBinID }}</small
-              >
-              <small
-                id="currentLocation"
-                name="currentLocation"
-                class="form-text text-muted"
-                >Location: {{ queryLocation|capitalize }}</small
-              >
-              <small id="timeNow" name="timeNow" class="form-text text-muted"
-                >Datetime:
-              </small>
-            </div>
-          </form>
-        </div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        Missing: {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row d-flex justify-content-center align-items-center searchContainer h-100">
+  <div class="col-md-9 d-flex justify-content-center align-items-center h-100">
+    <div class="row d-flex justify-content-center px-5 form-container h-75">
+      <form method="POST" action="{{ url_for('scan') }}?qb={{ data.queryBinID }}&ql={{ data.queryLocation }}"
+        class="row d-flex flex-column justify-content-center px-5" enctype="multipart/form-data">
+        <h1 class="pb-4">RECYCLE</h1>
+        <div class="mb-3">
+          <label for="materialType" class="form-label">Select Material Type:</label>
+          <select id="materialType" class="form-control" name="materialType">
+            {% for label in data.labels %}
+            <option value="{{ label }}">{{ label|title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="fileInput" class="form-label">Select an image:</label>
+          <input type="file" id="fileInput" class="form-control" name="fileInput" accept="image/*" />
+        </div>
+        <div class="mb-3">
+          <button type="submit" class="btn btn-primary w-100">Submit</button>
+        </div>
+        <div class="mb-3">
+          <small class="form-text text-muted">BinID: {{ queryBinID }}</small>
+          <small class="form-text text-muted">Location: {{ queryLocation|capitalize }}</small>
+          <small id="timeNow" class="form-text text-muted">Datetime: </small>
+        </div>
+      </form>
     </div>
   </div>
+</div>
+<script>
+  // Get the current date and time
+  var currentDateTime = new Date();
 
-  <script>
-    // Get the current date and time
-    var currentDateTime = new Date();
+  // Format the date and time as desired
+  var formattedDateTime = currentDateTime.toLocaleString();
 
-    // Format the date and time as desired
-    var formattedDateTime = currentDateTime.toLocaleString();
-
-    // Update the text content of the small element
-    var timeNowElement = document.getElementById("timeNow");
-    timeNowElement.textContent += formattedDateTime;
-  </script>
-</body>
+  // Update the text content of the small element
+  var timeNowElement = document.getElementById("timeNow");
+  timeNowElement.textContent += formattedDateTime;
+</script>
 {% endblock %}

@@ -33,13 +33,23 @@ def getUserPoints():
 
 
 def getRecyclesByMonth():
-    query = "SELECT DATE(Datetime) AS recyDate, COUNT(*) AS NumRecords FROM Recycles WHERE UserID = %s GROUP BY recyDate ORDER BY recyDate"
+    query = """
+    SELECT DATE(Datetime) AS recyDate, COUNT(*) AS NumRecords
+    FROM Recycles
+    WHERE UserID = %s AND Approved = 1
+    GROUP BY recyDate
+    ORDER BY recyDate
+    """
     result = maria_db.execute(query, "all", session["id"])
     return result["result"]
 
 
 def getMaterialCount():
-    query = "SELECT MaterialType, COUNT(*) AS matCount FROM Recycles WHERE UserID = %s GROUP BY MaterialType"
+    query = """
+    SELECT MaterialType, COUNT(*) AS matCount
+    FROM Recycles WHERE UserID = %s AND Approved = 1
+    GROUP BY MaterialType
+    """
     result = maria_db.execute(query, "all", session["id"])
     return result["result"]
 
@@ -66,12 +76,9 @@ def userProfile():
 
 
 # scan page
-def recyle(queryBinID, fdir, materialType):
-    query = "INSERT INTO Recycles (RecycledID, BinID, Datetime, Image, MaterialType, UserID) VALUES (%s, %s, NOW(), %s, %s, %s)"
-    result = maria_db.execute(
-        query, "", "", queryBinID, fdir, materialType, session["id"]
-    )
-    return result["result"]
+def recyle(queryBinID, blobID):
+    query = "INSERT INTO Recycles (BinID, Datetime, BlobID, MaterialType, UserID) VALUES (%s, NOW(), %s, %s, %s)"
+    maria_db.execute(query, "", queryBinID, blobID, None, session["id"])
 
 
 # search page
@@ -97,9 +104,9 @@ def suggestion(search_query):
     result = maria_db.execute(query, "all", arg)
     return result["result"]
 
+
 # location page
 def getUserLocation():
     query = "SELECT Area FROM Users WHERE UserID=%s"
-    result = maria_db.execute(query, "one", session['id'])
+    result = maria_db.execute(query, "one", session["id"])
     return result
-

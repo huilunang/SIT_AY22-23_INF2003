@@ -1,11 +1,24 @@
 import re
 import hashlib
 
-from flask import Flask, render_template, request, session, redirect, url_for, jsonify
+from flask import (
+    Flask,
+    render_template,
+    request,
+    session,
+    redirect,
+    url_for,
+    jsonify,
+    flash,
+)
+from werkzeug.utils import secure_filename
 
+import utils.constant as const
 import utils.helper_functions as helper
 import utils.mariadb_queries as maria_q
 import utils.mongodb_queries as mongo_q
+
+from model.inference import inference
 
 app = Flask(__name__)
 # session data signed by server cryptographically
@@ -182,27 +195,46 @@ def scan():
     queryBinID = request.args.get("qb")  # Access the 'qb' query parameter
     queryLocation = request.args.get("ql")  # Access the 'ql' query parameter
 
-    if queryBinID and queryLocation:
-        if request.method == "POST" and "materialType" in request.form:
-            materialType = request.form["materialType"]
-            f = request.files["fileInput"]
-            if f.filename != "":
-                fdir = "uploads/" + f.filename
-                f.save(fdir)
-                maria_q.recyle(queryBinID, fdir, materialType)
-                msg = "You have successfully recycled!"
-                return redirect(url_for("home"))
-            else:
-                maria_q.recyle(queryBinID, "", materialType)
-                msg = "You have successfully recycled!"
-                return redirect(url_for("home"))
-        elif request.method == "POST":
-            msg = "Please fill in all the fields!"
-            return redirect(url_for("register"))
+    data = {
+        "queryBinID": queryBinID,
+        "queryLocation": queryLocation,
+        "labels": const.RECYCABLES,
+    }
 
-        return render_template(
-            "form.html", queryBinID=queryBinID, queryLocation=queryLocation
-        )
+    if queryBinID and queryLocation:
+        if request.method == "POST":
+            check = helper.missing_fields(
+                {
+                    "form_fields": ["materialType"],
+                    "form_req": request.form,
+                    "file_fields": ["fileInput"],
+                    "file_req": request.files,
+                }
+            )
+
+            if check != False:
+                for missing in check:
+                    flash(missing, "danger")
+
+                return render_template("form.html", data=data)
+
+            materialType = request.form["materialType"]
+            file = request.files["fileInput"]
+            fdir = helper.tmp_recycle(secure_filename(file.filename))
+            file.save(fdir)
+
+            detectedType, score = inference(fdir)
+
+            # approved = 0 # false
+            # if materialType == detectedType:
+            #     approved = 1 # true
+
+            blob_id = mongo_q.insert_detection(score, detectedType, materialType, fdir)
+            maria_q.recyle(queryBinID, blob_id)
+
+            msg = "You have successfully recycled!"
+
+        return render_template("form.html", data=data)
     else:
         return render_template("scan.html")
 
