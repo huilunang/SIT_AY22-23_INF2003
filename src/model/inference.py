@@ -1,8 +1,6 @@
 import os
 
 import utils.constant as const
-import utils.helper_functions as helper
-
 
 import tensorflow as tf
 
@@ -16,7 +14,7 @@ def preprocess_img(file):
 
 
 def inference(file):
-    model_path = os.path.join(helper.get_parent_folder(__file__), "model.h5")
+    model_path = os.path.join(os.path.dirname(__file__), "model.h5")
     model = tf.keras.models.load_model(model_path)
 
     image = preprocess_img(file)

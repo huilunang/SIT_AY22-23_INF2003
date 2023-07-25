@@ -1,6 +1,6 @@
-import utils.helper_functions as helper
+import os
 
-SRC_PATH = helper.get_parent_folder(helper.get_parent_folder(__file__))
+SRC_PATH = os.path.dirname(os.path.dirname((__file__)))
 
 IMAGE_SIZE = (224, 224)
 

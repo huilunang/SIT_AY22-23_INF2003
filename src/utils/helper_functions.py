@@ -13,10 +13,6 @@ def get_suggestions(search_query):
     return False
 
 
-def get_parent_folder(filepath):
-    return os.path.dirname(filepath)
-
-
 def tmp_recycle(filename):
     filepath = os.path.join(const.SRC_PATH, "tmp")
 
