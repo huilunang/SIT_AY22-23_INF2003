@@ -18,10 +18,10 @@ CREATE TABLE IF NOT EXISTS Bins (
 );
 
 CREATE TABLE IF NOT EXISTS Rewards (
-  RewardID INT PRIMARY KEY,
-  PointCost FLOAT,
+  RewardID INT PRIMARY KEY AUTO_INCREMENT,
+  PointCost INT,
   RewardName VARCHAR(255),
-  RewardImage BLOB,
+  RewardImage VARCHAR(255),
   Stock INT
 );
 
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS Recycles (
   MaterialType VARCHAR(255),
   UserID INT,
   FOREIGN KEY (BinID) REFERENCES Bins(BinID),
-  FOREIGN KEY (UserID) REFERENCES Users(UserID)
+  FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS RewardTransactions (
@@ -42,8 +42,8 @@ CREATE TABLE IF NOT EXISTS RewardTransactions (
   RewardID INT,
   UserID INT,
   Claimed BOOLEAN,
-  FOREIGN KEY (RewardID) REFERENCES Rewards(RewardID),
-  FOREIGN KEY (UserID) REFERENCES Users(UserID)
+  FOREIGN KEY (RewardID) REFERENCES Rewards(RewardID) ON DELETE CASCADE,
+  FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE
 );
 
 DELETE FROM Recycles WHERE RecycledID>0;
@@ -57,7 +57,7 @@ VALUES
   ('Phileo Teo', 'phileo@gmail.com', 'Bishan', 'phileo', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', false, 30),
   ('Xue Er', 'xueer@gmail.com', 'Yishun', 'xueer', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', false, 100),
   ('Hui Lun', 'huilun@gmail.com', 'Jurong', 'huilun', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', true, 60),
-  ('Si Hui', 'sihui@gmail.com', 'Sengkang', 'sihui', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', false, 90),
+  ('Si Hui', 'sihui@gmail.com', 'Sengkang', 'sihui', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', false, 380),
   ('Shi Ya', 'shiya@gmail.com', 'Tampines', 'shiya', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', false, 50);
 
 INSERT INTO Bins (BinID, Location, Capacity)
@@ -68,13 +68,13 @@ VALUES
   (4, 'Block 101 Jurong West Ave 5', 23),
   (5, 'Block 202 Tampines Street 11', 7);
 
-INSERT INTO Rewards (RewardID, PointCost, RewardName, RewardImage, Stock)
+INSERT INTO Rewards (PointCost, RewardName, RewardImage, Stock)
 VALUES
-  (1, 50, 'NTUC Voucher', NULL, 10),
-  (2, 35, 'Movie Ticket', NULL, 10),
-  (3, 40, 'Starbucks Gift Card', NULL, 10),
-  (4, 45, 'Clothing Store Voucher', NULL, 10),
-  (5, 25, 'Bookstore Coupon', NULL, 10);
+  (500, '$10 NTUC Voucher', 'ntuc.png', 10),
+  (350, 'Movie Ticket', 'movie.jpg', 10),
+  (400, 'Starbucks Gift Card', 'Starbucks.png', 10),
+  (450, 'Clothing Store Voucher', 'clothing.jpg', 10),
+  (250, 'Bookstore Coupon', 'bookstore.jpg', 10);
 
 INSERT INTO Recycles (RecycledID, BinID, Datetime, BlobID, Approved, MaterialType, UserID)
 VALUES

@@ -1,0 +1,28 @@
+/* Style for the form container */
+.container {
+    margin-top: 40px;
+}
+
+/* Style for the form fields */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+.form-control {
+    width: 100%;
+}
+
+/* Style for the submit button */
+.btn-primary {
+    margin-top: 20px;
+}
+
+.col-md-6 {
+    -ms-flex: 0 0 50%;
+    flex: 0 0 100%;
+    max-width: 100%;
+}
