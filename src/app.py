@@ -148,14 +148,32 @@ def delete_reward():
         return jsonify(success=False, message="Error deleting record")
 
 
-# @app.route("/rewards")
-# def admin_rewards():
-#     record = maria_q.getAllRewards()
-#     return render_template(
-#         "rewards.html",
-#         record = record,
-#     )
+@app.route("/rewards")
+def rewards():
+    record = maria_q.getAllRewards()
+    userPointsRecord = maria_q.getUserPoints()
+    userPoints= userPointsRecord[0]
+    return render_template(
+        "rewards.html",
+        record = record,
+        userPoints = userPoints,
+    )
 
+@app.route('/redeem_reward', methods=['POST'])
+def redeem_reward():
+    if request.method == 'POST':
+        reward_id = request.form.get('reward_id')
+        record = maria_q.getRewardRecord(reward_id)
+        point_cost = record[1]
+        stock = record[4]
+        userPointsRecord = maria_q.getUserPoints()
+        userPoints= userPointsRecord[0]
+        newUserPoints = userPoints - point_cost
+        newStock = stock - 1
+        maria_q.updateUserAfterRedemption(newUserPoints)
+        maria_q.updateStock(newStock, reward_id)
+        return jsonify(success=True, message="Redemption successful")
+    return jsonify(success=False, message="Error processing redemption")
 
 @app.route("/home")
 def home():

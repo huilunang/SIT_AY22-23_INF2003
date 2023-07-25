@@ -54,6 +54,19 @@ def createReward(pointCost, name, fileName, stock):
     query = "INSERT INTO Rewards (PointCost, RewardName, RewardImage, Stock) VALUES (%s, %s, %s, %s)"
     maria_db.execute(query, "", pointCost, name, fileName, stock)
 
+# rewards page
+def getRewardRecord(rewardID):
+    query = "SELECT * FROM Rewards WHERE RewardID = %s"
+    result = maria_db.execute(query, "one", rewardID)
+    return result["result"]
+
+def updateUserAfterRedemption(newPoints):
+    query = "UPDATE Users SET Points = %s WHERE UserID = %s"
+    maria_db.execute(query, "", newPoints, session["id"])
+
+def updateStock(newStock, rewardID):
+    query = "UPDATE Rewards SET Stock = %s WHERE RewardID = %s"
+    maria_db.execute(query, "", newStock, rewardID)
 
 # home page
 def getUserPoints():

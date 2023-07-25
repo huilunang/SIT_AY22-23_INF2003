@@ -1,0 +1,158 @@
+<!-- This page is customized according to user after authentication -->
+
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Welcome to Smart Bloobin</title>
+<link rel="stylesheet" href="../static/css/home.css">
+<link rel="stylesheet" href="../static/css/nav.css">
+<link rel="stylesheet" href="../static/css/rewards.css">
+{% endblock head %}
+
+{% block content %}
+<header>
+    <div class="containerNav">
+        <img src="../static/assets/smart bloobin logo.png" alt="logo" class="logo">
+
+        <nav>
+            <ul>
+                <li><a href="home">Home</a></li>
+                <li><a href="search">Search</a></li>
+                <li><a href="scan">Scan</a></li>
+                <li><a href="rewards">Rewards</a></li>
+                <li><a href="location" class="active">Location</a></li>
+                <li><a href="profile">Profile</a></li>
+                <li><a href="{{url_for('logout')}}">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-wrap">
+                <table class="table table-responsive-xl">
+                    <thead>
+                        <tr>
+                            <th>&nbsp;</th>
+                            <th>Name</th>
+                            <th>Point Cost</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rec in record %}
+                        <tr class="alert" role="alert">
+                            <td><img src="../static/assets/rewards/{{ rec[3] }}" alt="Uploaded Image" class="image">
+                            <td>{{ rec[2] }}</td>
+                            <td>{{ rec[1] }}</td>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary redeem-btn" data-reward-id="{{ rec[0] }}"
+                                    data-point-cost="{{ rec[1] }}" data-stock="{{ rec[4] }}"
+                                    data-uPoints="{{ userPoints }}" {% if rec[1] > userPoints or rec[4] == 0 %}disabled{% endif %}>Redeem</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal for Confirmation -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirm Redemption</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to redeem this reward?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmRedeemBtn">Redeem</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        // Function to display the confirmation modal and handle the redemption process
+        function handleRedemption(rewardId, pointCost, stock) {
+            // Display the confirmation modal
+            $('#confirmationModal').modal('show');
+
+            // Handle the click event for the "Redeem" button in the modal
+            $('#confirmRedeemBtn').on('click', function () {
+                // Close the modal
+                $('#confirmationModal').modal('hide');
+
+                // Make an AJAX request to the Flask endpoint for redemption
+                $.ajax({
+                    type: 'POST',
+                    url: '/redeem_reward',
+                    data: {
+                        reward_id: rewardId,
+                    },
+                    success: function (response) {
+                        // Check the response from the server
+                        if (response.success) {
+                            // Display a success message if redemption was successful
+                            alert(response.message);
+
+                            // Update the UI (e.g., deduct points, update stock, disable the button)
+                            var userPointsElement = $('#userPoints');
+                            var rewardStockElement = $('.reward-stock[data-reward-id="' + rewardId + '"]');
+
+                            // Deduct points from the user's account
+                            var rewardPointCost = parseInt(pointCost);
+                            var currentPoints = parseInt(userPointsElement.text());
+                            var newPoints = currentPoints - rewardPointCost;
+                            userPointsElement.text(newPoints);
+
+                            // Update the reward stock
+                            var currentStock = parseInt(stock);
+                            var newStock = currentStock - 1;
+                            rewardStockElement.text(newStock);
+
+                            // Disable the "Redeem" button if stock is 0 or points are insufficient
+                            if (newStock === 0 || newPoints < rewardPointCost) {
+                                $('.redeem-btn[data-reward-id="' + rewardId + '"]').prop('disabled', true);
+                            }
+                        } else {
+                            // Display an error message if redemption could not be completed
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        // Display an error message if the AJAX request fails
+                        alert('An error occurred while processing the redemption.');
+                    }
+                });
+            });
+        }
+
+        // Handle the click event for the "Redeem" buttons
+        $('.redeem-btn').on('click', function () {
+            var rewardId = $(this).data('reward-id');
+            var pointCost = $(this).data('point-cost');
+            var stock = $(this).data('stock');
+
+            handleRedemption(rewardId, pointCost, stock);
+        });
+    });
+
+</script>
+
+
+{% endblock %}
