@@ -1,4 +1,4 @@
--- tinyint: 0 - false, non-zero - true
+-- tinyint: 0 - false, 1 - true, -1 approved but unsucessful
 
 CREATE TABLE IF NOT EXISTS Users (
   UserID INT PRIMARY KEY AUTO_INCREMENT,
@@ -29,8 +29,8 @@ CREATE TABLE IF NOT EXISTS Recycles (
   RecycledID INT PRIMARY KEY AUTO_INCREMENT,
   BinID INT,
   Datetime DATETIME,
-  BlobID VARCHAR(24),
-  Approved TINYINT(1) DEFAULT 0,
+  DetectionID VARCHAR(24),
+  Approved TINYINT(1),
   MaterialType VARCHAR(255),
   UserID INT,
   FOREIGN KEY (BinID) REFERENCES Bins(BinID),
@@ -76,7 +76,7 @@ VALUES
   (450, 'Clothing Store Voucher', 'clothing.jpg', 10),
   (250, 'Bookstore Coupon', 'bookstore.jpg', 10);
 
-INSERT INTO Recycles (RecycledID, BinID, Datetime, BlobID, Approved, MaterialType, UserID)
+INSERT INTO Recycles (RecycledID, BinID, Datetime, DetectionID, Approved, MaterialType, UserID)
 VALUES
   (1, 1, '2023-02-10 09:30:00', '', 1, 'Plastic', 1),
   (2, 2, '2023-03-05 14:15:00', '', 1, 'Paper', 2),
@@ -92,8 +92,7 @@ VALUES
   (12, 3, '2023-06-26 19:35:00', '', 1, 'Glass', 4),
   (13, 3, '2023-06-28 11:09:00', '', 1, 'Metal', 4),
   (14, 3, '2023-07-10 11:15:00', '', 1, 'Metal', 5);
-  
-  
+
 INSERT INTO RewardTransactions (TransactionID, RewardID, UserID, Claimed)
 VALUES
   (1, 1, 1, true),

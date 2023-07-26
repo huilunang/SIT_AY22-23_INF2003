@@ -26,11 +26,12 @@
   </div>
 </header>
 
+<div id="alert"></div>
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
       <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-        Missing: {{ message }}
+        {{ message }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     {% endfor %}
@@ -56,17 +57,19 @@
           <input type="file" id="fileInput" class="form-control" name="fileInput" accept="image/*" />
         </div>
         <div class="mb-3">
-          <button type="submit" class="btn btn-primary w-100">Submit</button>
+          <button type="submit" class="btn btn-primary w-100" onclick="showAlert('info')">Submit</button>
         </div>
         <div class="mb-3">
-          <small class="form-text text-muted">BinID: {{ queryBinID }}</small>
-          <small class="form-text text-muted">Location: {{ queryLocation|capitalize }}</small>
+          <small class="form-text text-muted">BinID: {{ data.queryBinID }}</small>
+          <small class="form-text text-muted">Location: {{ data.queryLocation|capitalize }}</small>
           <small id="timeNow" class="form-text text-muted">Datetime: </small>
         </div>
       </form>
     </div>
   </div>
 </div>
+
+<script src="../static/js/index.js" defer></script>
 <script>
   // Get the current date and time
   var currentDateTime = new Date();
@@ -77,5 +80,10 @@
   // Update the text content of the small element
   var timeNowElement = document.getElementById("timeNow");
   timeNowElement.textContent += formattedDateTime;
+
+  function showAlert(alertType) {
+    let message = "Bloobin is processing your recycling, please wait...";
+    bootstrap_alert(alertType, message);
+  }
 </script>
 {% endblock %}

@@ -28,7 +28,7 @@ class MongoDBConnManager:
     
     def get_file(self, id):
         # get the image via GridFs object
-        self.gridfs.get(id)
+        return self.gridfs.get(id)
 
     def set_file(self, filepath):
         with open(filepath, 'rb') as f:

@@ -99,13 +99,13 @@ def admin_home():
     )
 
 
-@app.route('/delete_user', methods = ['POST'])
+@app.route("/delete_user", methods=["POST"])
 def delete_user():
-    record_id = request.form.get('record_id')
+    record_id = request.form.get("record_id")
     try:
         maria_q.deleteUser(record_id)
         return jsonify(success=True, message="User Deleted Successfully.")
-    except Exception  as e:
+    except Exception as e:
         print(f"Error: {e}")
         return jsonify(success=False, message="Error deleting record")
 
@@ -115,15 +115,15 @@ def admin_rewards():
     record = maria_q.getAllRewards()
     return render_template(
         "admin_rewards.html",
-        record = record,
+        record=record,
     )
 
 
-@app.route('/upload_image', methods = ['POST'])
+@app.route("/upload_image", methods=["POST"])
 def upload_image():
-    if request.method == 'POST':
-        reward_id = request.form.get('reward_id')
-        image_file = request.files['image_file']
+    if request.method == "POST":
+        reward_id = request.form.get("reward_id")
+        image_file = request.files["image_file"]
         if image_file:
             # Save the uploaded image name
             filename = image_file.filename
@@ -133,13 +133,13 @@ def upload_image():
     return redirect(url_for("admin_rewards"))
 
 
-@app.route('/add_reward', methods=["GET", "POST"])
+@app.route("/add_reward", methods=["GET", "POST"])
 def add_reward():
     if request.method == "POST":
         name = request.form["name"]
         point_cost = request.form["point_cost"]
         stocks = request.form["stocks"]
-        image_file = request.files['image_file']
+        image_file = request.files["image_file"]
         if name and point_cost and stocks and image_file:
             # Save the uploaded image name
             filename = image_file.filename
@@ -150,13 +150,13 @@ def add_reward():
     return render_template("add_reward.html")
 
 
-@app.route('/delete_reward', methods = ['POST'])
+@app.route("/delete_reward", methods=["POST"])
 def delete_reward():
-    record_id = request.form.get('record_id')
+    record_id = request.form.get("record_id")
     try:
         maria_q.deleteReward(record_id)
         return jsonify(success=True, message="Reward Deleted Successfully.")
-    except Exception  as e:
+    except Exception as e:
         print(f"Error: {e}")
         return jsonify(success=False, message="Error deleting record")
 
@@ -165,28 +165,75 @@ def delete_reward():
 def rewards():
     record = maria_q.getAllRewards()
     userPointsRecord = maria_q.getUserPoints()
-    userPoints= userPointsRecord[0]
+    userPoints = userPointsRecord[0]
     return render_template(
         "rewards.html",
-        record = record,
-        userPoints = userPoints,
+        record=record,
+        userPoints=userPoints,
     )
 
-@app.route('/redeem_reward', methods=['POST'])
+
+@app.route("/redeem_reward", methods=["POST"])
 def redeem_reward():
-    if request.method == 'POST':
-        reward_id = request.form.get('reward_id')
+    if request.method == "POST":
+        reward_id = request.form.get("reward_id")
         record = maria_q.getRewardRecord(reward_id)
         point_cost = record[1]
         stock = record[4]
         userPointsRecord = maria_q.getUserPoints()
-        userPoints= userPointsRecord[0]
+        userPoints = userPointsRecord[0]
         newUserPoints = userPoints - point_cost
         newStock = stock - 1
         maria_q.updateUserAfterRedemption(newUserPoints)
         maria_q.updateStock(newStock, reward_id)
         return jsonify(success=True, message="Redemption successful")
     return jsonify(success=False, message="Error processing redemption")
+
+
+@app.route("/admin_approval", methods=["GET", "POST"])
+def recycle_approve():
+    data = {
+        "username": session["username"],
+        "record": maria_q.get_recycle()
+    }
+
+    if request.method == "GET":
+        collectionId = request.args.get("collection") # query for detection
+
+        if collectionId:
+            material, image = mongo_q.get_detection(collectionId)
+            response = {
+                "modelLabeled": material,
+                "recycleImg": image,
+                "materialType": const.LABELS
+            }
+            return jsonify(response)
+    else:
+        recycleId = request.args.get("recycleId")
+        detectionId = request.args.get("detectionId")
+
+        if recycleId and detectionId:
+            approval = request.form.get("approval")
+
+            if approval:
+                if int(approval) == -1:
+                    material = request.form.get("material")
+
+                    if material:
+                        mongo_q.set_material(detectionId, material)
+                    else:
+                        flash("Missing: 'Material' selection is required", "danger")
+                
+                maria_q.update_approval(int(approval), recycleId)
+                flash(f"Approval has been successfully made for recycle ID {recycleId} {detectionId}", "success")
+            else:
+                flash("Missing: 'Approval' selection is required", "danger")
+                
+        else:
+            flash("Error: Query is invalid!", "danger")
+
+    return render_template("admin_approval.html", data=data)
+
 
 @app.route("/home")
 def home():
@@ -251,7 +298,9 @@ def profile():
 
     details = maria_q.userProfile()
 
-    return render_template("profile.html", msg=msg, details=details, isAdmin=session["isAdmin"])
+    return render_template(
+        "profile.html", msg=msg, details=details, isAdmin=session["isAdmin"]
+    )
 
 
 @app.route("/search", methods=["GET", "POST"])
@@ -316,7 +365,7 @@ def scan():
 
             if check != False:
                 for missing in check:
-                    flash(missing, "danger")
+                    flash(f'Missing: {missing}', "danger")
 
                 return render_template("form.html", data=data)
 
@@ -327,14 +376,20 @@ def scan():
 
             detectedType, score = inference(fdir)
 
-            # approved = 0 # false
-            # if materialType == detectedType:
-            #     approved = 1 # true
+            approved = 0  # false
+            if materialType == detectedType:
+                approved = 1  # true
 
-            blob_id = mongo_q.insert_detection(score, detectedType, materialType, fdir)
-            maria_q.recyle(queryBinID, blob_id)
+            detection_id = mongo_q.insert_detection(score, detectedType, fdir)
+            maria_q.recyle(queryBinID, detection_id, approved, materialType)
 
-            msg = "You have successfully recycled!"
+            if approved == 0:
+                flash(
+                    "Bloobin detects that a manual review is required, please wait up to 3 working days",
+                    "warning",
+                )
+            else:
+                flash("You have successfully recycled", "success")
 
         return render_template("form.html", data=data)
     else:
