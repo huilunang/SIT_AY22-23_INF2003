@@ -25,6 +25,12 @@ body {
   margin: 150px auto;
 }
 
+.container-approval {
+  max-width: 700px;
+  padding: 0 20px;
+  margin: 60px auto;
+}
+
 .wrapper {
   width: 100%;
   background: white;
@@ -176,4 +182,10 @@ form .end-link a:hover {
   align-items: center;
   height: 100%;
   font-size: 80px;
+}
+
+/* Title */
+.page-title {
+  padding: 20px 0 20px;
+  border: 2px solid;
 }

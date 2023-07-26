@@ -46,46 +46,50 @@
         </div>
     </div>
 </div>
-<div class="container" style="max-width: 700px;">
+<div class="container-approval text-center">
     <div class="row justify-content-center">
-        <div class="col-md-12 text-center mb-5">
-            <h2 class="heading-section">Recycle Submission Approval</h2>
+        <div class="col-md-12 mb-5">
+            <h2 class="heading-section page-title">Recycle Submission Approval</h2>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="table-wrap">
-                <table class="table table-responsive-xl">
-                    <thead>
-                        <tr>
-                            <th>RecycledID</th>
-                            <th>UserID</th>
-                            <th>Datetime</th>
-                            <th>User Labeled</th>
-                            <th>&nbsp;</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for rec in data.record %}
-                        <tr class="alert" role="alert" data-detection-id="{{ rec[4] }}">
-                            <td>{{ rec[0] }}</td>
-                            <td>{{ rec[1] }}</td>
-                            <td>{{ rec[2] }}</td>
-                            <td>{{ rec[3]|capitalize }}</td>
-                            <td>
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#approvalModal" onclick="openEditModal(this)">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+    {% if data.record %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-responsive-xl">
+                        <thead>
+                            <tr>
+                                <th>RecycledID</th>
+                                <th>UserID</th>
+                                <th>Datetime</th>
+                                <th>User Labeled</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rec in data.record %}
+                            <tr class="alert" role="alert" data-detection-id="{{ rec[4] }}">
+                                <td>{{ rec[0] }}</td>
+                                <td>{{ rec[1] }}</td>
+                                <td>{{ rec[2] }}</td>
+                                <td>{{ rec[3]|capitalize }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#approvalModal" onclick="openEditModal(this)">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
+    {% else %}
+        <h5>No recycling submission is needed for approval</h5>
+    {% endif %}
 </div>
 
 <!-- Modal -->

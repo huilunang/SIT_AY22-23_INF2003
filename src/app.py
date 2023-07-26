@@ -198,14 +198,14 @@ def recycle_approve():
     }
 
     if request.method == "GET":
-        collectionId = request.args.get("collection") # query for detection
+        collectionId = request.args.get("collection")  # query for detection
 
         if collectionId:
             material, image = mongo_q.get_detection(collectionId)
             response = {
                 "modelLabeled": material,
                 "recycleImg": image,
-                "materialType": const.LABELS
+                "materialType": const.LABELS,
             }
             return jsonify(response)
     else:
@@ -223,12 +223,16 @@ def recycle_approve():
                         mongo_q.set_material(detectionId, material)
                     else:
                         flash("Missing: 'Material' selection is required", "danger")
-                
+
                 maria_q.update_approval(int(approval), recycleId)
-                flash(f"Approval has been successfully made for recycle ID {recycleId} {detectionId}", "success")
+                flash(
+                    f"Approval has been successfully made for recycle ID {recycleId}",
+                    "success",
+                )
+
+                return redirect(url_for("recycle_approve"))
             else:
                 flash("Missing: 'Approval' selection is required", "danger")
-                
         else:
             flash("Error: Query is invalid!", "danger")
 
@@ -365,7 +369,7 @@ def scan():
 
             if check != False:
                 for missing in check:
-                    flash(f'Missing: {missing}', "danger")
+                    flash(f"Missing: {missing}", "danger")
 
                 return render_template("form.html", data=data)
 
