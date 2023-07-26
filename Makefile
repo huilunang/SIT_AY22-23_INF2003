@@ -15,15 +15,15 @@ logs:
 	@echo "Viewing Docker container logs..."
 	docker-compose logs -f
 
-# Entrypoint to run services
-run: down build up logs
-	@echo "App is accesible at http://127.0.0.1:5000/..."
-
 clean: down
 	@echo "Removing application containers and volumes..."
 	docker-compose rm -v
-
-deepclean: clean
-	@echo "Removing unused resources..."
-	docker image prune -f
 	docker volume prune -f
+
+# Entrypoint to run services
+run: clean build up logs
+	@echo "App is accesible at http://127.0.0.1:5000/..."
+
+deepclean:
+	@echo "Removing all resources..."
+	docker system prune

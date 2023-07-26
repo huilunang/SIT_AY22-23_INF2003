@@ -3,6 +3,7 @@
 header {
   background: #007cd1;
 }
+
 body {
   /* background: #94cce9; */
   /* background: url('../assets/bkgrdpic.jpg')no-repeat; */
@@ -13,14 +14,23 @@ body {
   position: relative;
   overflow: hidden;
 }
+
 ::selection {
   background: #007cd1;
 }
+
 .container {
   max-width: 500px;
   padding: 0 20px;
   margin: 150px auto;
 }
+
+.container-approval {
+  max-width: 700px;
+  padding: 0 20px;
+  margin: 60px auto;
+}
+
 .wrapper {
   width: 100%;
   background: white;
@@ -29,6 +39,7 @@ body {
   border-radius: 5px;
   box-shadow: 0px 4px 10px 1px rgba(0, 0, 0, 0.1);
 }
+
 .wrapper .title {
   height: 90px;
   background: #007cd1;
@@ -40,14 +51,17 @@ body {
   align-items: center;
   justify-content: center;
 }
+
 .wrapper form {
   padding: 30px 25px 25px 25px;
 }
+
 .wrapper form .row {
   height: 45px;
   margin-bottom: 15px;
   position: relative;
 }
+
 .wrapper form .row input {
   height: 100%;
   width: 100%;
@@ -58,13 +72,16 @@ body {
   font-size: 16px;
   transition: all 0.3s ease;
 }
+
 form .row input:focus {
   border-color: #007cd1;
   box-shadow: inset 0px 0px 2px 2px #007cd1;
 }
+
 form .row input::placeholder {
   color: #999;
 }
+
 .wrapper form .row i {
   position: absolute;
   width: 47px;
@@ -78,17 +95,21 @@ form .row input::placeholder {
   align-items: center;
   justify-content: center;
 }
+
 .wrapper form .pass {
   margin: -8px 0 20px 0;
 }
+
 .wrapper form .pass a {
   color: #007cd1;
   font-size: 17px;
   text-decoration: none;
 }
+
 .wrapper form .pass a:hover {
   text-decoration: underline;
 }
+
 .wrapper form .button input {
   color: #fff;
   font-size: 20px;
@@ -98,26 +119,32 @@ form .row input::placeholder {
   border: 1px solid #007cd1;
   cursor: pointer;
 }
+
 form .button input:hover {
   background: #007cd1;
 }
+
 .wrapper form .end-link {
   text-align: center;
   margin-top: 20px;
   font-size: 17px;
 }
+
 .wrapper form .end-link a {
   color: #007cd1;
   text-decoration: none;
 }
+
 form .end-link a:hover {
   text-decoration: underline;
 }
+
 .error-message {
   color: red;
   margin-top: 10px;
   text-align: center;
 }
+
 .searchContainer {
   background: #007cd1;
 }
@@ -133,14 +160,14 @@ form .end-link a:hover {
   padding: 20px;
   text-align: center;
   margin-right: 100px;
-  position: relative; 
+  position: relative;
 }
 
 .box-title {
   flex: 1;
   font-size: 18px;
   position: absolute;
-  top: 0; 
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
   background-color: #333;
@@ -155,4 +182,10 @@ form .end-link a:hover {
   align-items: center;
   height: 100%;
   font-size: 80px;
+}
+
+/* Title */
+.page-title {
+  padding: 20px 0 20px;
+  border: 2px solid;
 }

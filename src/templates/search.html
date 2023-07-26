@@ -33,11 +33,11 @@
             <form method="POST" action="{{ url_for('search') }}">
               <div class="dropdown">
                 <input type="text" id="search-input" class="search-input" placeholder="Search..." name="search_query"
-                  data-toggle="dropdown" autocomplete="off" />
+                  data-bs-toggle="dropdown" autocomplete="off" />
                 <a href="#" class="search-icon">
                   <i class="fa fa-search"></i>
                 </a>
-                <div id="suggestions" class="dropdown-menu" aria-labelledby="search-input"></div>
+                <ul id="suggestions" class="dropdown-menu" aria-labelledby="search-input"></ul>
               </div>
             </form>
           </div>
@@ -145,11 +145,13 @@
             suggestionsContainer.innerHTML = "";
             if (data && data.suggested_words.length > 0) {
               data.suggested_words.forEach((word) => {
+                const element = document.createElement("li");
                 const suggestion = document.createElement("a");
                 suggestion.classList.add("dropdown-item");
                 suggestion.href = "search?q=" + encodeURIComponent(word);
                 suggestion.textContent = word;
-                suggestionsContainer.appendChild(suggestion);
+                element.appendChild(suggestion);
+                suggestionsContainer.appendChild(element);
               });
             } else {
               const noResults = document.createElement("a");
