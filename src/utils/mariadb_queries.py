@@ -125,6 +125,19 @@ def getRecycleActivity60days():
     result = maria_db.executeForDataframe(query)
     return result
 
+def getRecycleMaterialActivity60days(materialType):
+    end_date = datetime.datetime.now(pytz.timezone('Asia/Singapore')).date()
+    start_date = end_date - datetime.timedelta(days=59) 
+    query = f'''SELECT DATE(Datetime) AS Date,
+    COUNT(*) AS TotalRecycled
+    FROM Recycles
+    WHERE MaterialType = '{materialType}'
+    AND DATE(Datetime) BETWEEN '{start_date}' AND '{end_date}'
+    GROUP BY Date
+    ORDER BY Date
+    '''
+    result = maria_db.executeForDataframe(query)
+    return result
 
 
 # profile page

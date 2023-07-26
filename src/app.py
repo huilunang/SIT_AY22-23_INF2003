@@ -223,9 +223,19 @@ def home():
 
     # generate activity graph
     helper.generateGraph()
-    helper.generateActivities(maria_q.getRecycleActivity60days())
+    helper.generateActivities(maria_q.getRecycleActivity60days(), None)
+    helper.generateActivities(maria_q.getRecycleMaterialActivity60days('Paper'), 'Paper')
+    helper.generateActivities(maria_q.getRecycleMaterialActivity60days('Plastic'), 'Plastic')
+    helper.generateActivities(maria_q.getRecycleMaterialActivity60days('Glass'), 'Glass')
+    helper.generateActivities(maria_q.getRecycleMaterialActivity60days('Metal'), 'Metal')
+    helper.generateActivities(maria_q.getRecycleMaterialActivity60days('E-waste'), 'Ewaste')
     recentActivityGraph_path = "static/assets/graphs/recentActivity.png"
     Last60DaysActivityGraph_path = "static/assets/graphs/last60DaysActivity.png"
+    Last60DaysActivityPaperGraph_path = "static/assets/graphs/last60DaysActivity_Paper.png"
+    Last60DaysActivityPlasticGraph_path = "static/assets/graphs/last60DaysActivity_Plastic.png"
+    Last60DaysActivityGlassGraph_path = "static/assets/graphs/last60DaysActivity_Glass.png"
+    Last60DaysActivityMetalGraph_path = "static/assets/graphs/last60DaysActivity_Metal.png"
+    Last60DaysActivityEwasteGraph_path = "static/assets/graphs/last60DaysActivity_Ewaste.png"
 
     return render_template(
         "home.html",
@@ -237,6 +247,11 @@ def home():
         material_count=material_count,
         recentActivityGraph_path=recentActivityGraph_path,
         Last60DaysActivityGraph_path=Last60DaysActivityGraph_path,
+        Last60DaysActivityPaperGraph_path=Last60DaysActivityPaperGraph_path,
+        Last60DaysActivityPlasticGraph_path=Last60DaysActivityPlasticGraph_path,
+        Last60DaysActivityGlassGraph_path=Last60DaysActivityGlassGraph_path,
+        Last60DaysActivityMetalGraph_path=Last60DaysActivityMetalGraph_path,
+        Last60DaysActivityEwasteGraph_path=Last60DaysActivityEwasteGraph_path,
     )
 
 

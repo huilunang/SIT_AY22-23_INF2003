@@ -14,6 +14,7 @@ def get_suggestions(search_query):
 
 
 def generateGraph():
+    plt.clf()
     end_date = datetime.datetime.now(pytz.timezone("Asia/Singapore")).date()
     start_date = end_date - datetime.timedelta(days=6)
     df = maria_q.getUserRecycleAcivity()
@@ -78,7 +79,8 @@ def generateGraph():
     plt.savefig("static/assets/graphs/recentActivity.png")
 
 
-def generateActivities(result):
+def generateActivities(result, materialType):
+    plt.clf()
     end_date = datetime.datetime.now(pytz.timezone("Asia/Singapore")).date()
     start_date = end_date - datetime.timedelta(days=59)
     df = result
@@ -126,4 +128,9 @@ def generateActivities(result):
 
     # Display the chart
     plt.tight_layout()  # Adjusts the layout to prevent overlapping labels
-    plt.savefig("static/assets/graphs/last60DaysActivity.png")
+
+    if materialType in ["Paper", "Plastic", "Glass", "Metal", "Ewaste"]:
+        plt.savefig("static/assets/graphs/last60DaysActivity_"+materialType+".png")
+    else:
+        plt.savefig("static/assets/graphs/last60DaysActivity.png")
+    
