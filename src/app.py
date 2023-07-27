@@ -225,6 +225,7 @@ def recycle_approve():
                         flash("Missing: 'Material' selection is required", "danger")
 
                 maria_q.update_approval(int(approval), recycleId)
+                maria_q.add_points(request.form["userid"])
                 flash(
                     f"Approval has been successfully made for recycle ID {recycleId}",
                     "success",
@@ -383,6 +384,7 @@ def scan():
             approved = 0  # false
             if materialType == detectedType:
                 approved = 1  # true
+                maria_q.add_points(session["id"])
 
             detection_id = mongo_q.insert_detection(score, detectedType, fdir)
             maria_q.recyle(queryBinID, detection_id, approved, materialType)
@@ -393,7 +395,7 @@ def scan():
                     "warning",
                 )
             else:
-                flash("You have successfully recycled", "success")
+                flash(f"You have successfully recycled and earned {const.RECYCLE_POINTS} points", "success")
 
         return render_template("form.html", data=data)
     else:
