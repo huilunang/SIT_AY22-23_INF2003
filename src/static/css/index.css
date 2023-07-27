@@ -1,21 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 
 header {
-    background: transparent;
-    backdrop-filter: blur(10px);
-  }
+  background: transparent;
+  backdrop-filter: blur(10px);
+}
 
-body{
+body {
   background: url('../assets/home.jpg')no-repeat;
   width: 100%;
   height: 100vh;
   background-size: cover;
   background-position: center;
   position: relative;
-  overflow: hidden ;
+  overflow: auto;
 }
 
-.center{
+.center {
   position: absolute;
   top: 52%;
   left: 50%;
@@ -24,20 +24,24 @@ body{
   padding: 0 20px;
   text-align: center;
 }
-.center .title{
+
+.center .title {
   color: #fff;
   font-size: 55px;
   font-weight: 600;
 }
-.center .sub_title{
+
+.center .sub_title {
   color: #fff;
   font-size: 25px;
   font-weight: 600;
 }
-.center .btns{
+
+.center .btns {
   margin-top: 20px;
 }
-.center .btns button{
+
+.center .btns button {
   height: 55px;
   width: 170px;
   border-radius: 5px;
@@ -51,15 +55,18 @@ body{
   outline: none;
   transition: all 0.3s ease;
 }
-.center .btns button:first-child{
+
+.center .btns button:first-child {
   color: #fff;
   background: none;
 }
-.btns button:first-child:hover{
+
+.btns button:first-child:hover {
   background: white;
   color: black;
 }
-.center .btns button:last-child{
+
+.center .btns button:last-child {
   background: white;
   color: black;
 }

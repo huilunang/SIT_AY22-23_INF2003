@@ -3,9 +3,8 @@
 header {
   background: #007cd1;
 }
+
 body {
-  /* background: #94cce9; */
-  /* background: url('../assets/bkgrdpic.jpg')no-repeat; */
   background: #007cd1;
   width: 100%;
   min-height: 100%;
@@ -13,6 +12,7 @@ body {
   background-position: center;
   background-size: cover;
 }
+
 ::selection {
   background: #007cd1;
 }
@@ -25,7 +25,7 @@ body {
 }
 
 @media screen and (max-width: 600px) {
-  body > div > div > div > div {
+  body>div>div>div>div {
     height: 100% !important;
   }
 }

@@ -1,3 +1,5 @@
+import utils.constant as const
+
 from database.mariadb_conn import MariaDBConnManager
 
 from flask import session
@@ -232,6 +234,16 @@ def recyle(queryBinID, detectionID, approved, materialType):
         query, "", queryBinID, detectionID, approved, materialType, session["id"]
     )
 
+
+def add_points(userId):
+    query = """
+    UPDATE Users
+    SET Points = Points + %s
+    WHERE UserID = %s
+    """
+
+    maria_db.execute(query, "", const.RECYCLE_POINTS, userId)
+    
 
 # search page
 def get_search(query_param, value):

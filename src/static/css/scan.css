@@ -3,9 +3,8 @@
 header {
   background: #007cd1;
 }
+
 body {
-  /* background: #94cce9; */
-  /* background: url('../assets/bkgrdpic.jpg')no-repeat; */
   background: #007cd1;
   width: 100%;
   min-height: 100%;
@@ -13,6 +12,7 @@ body {
   background-position: center;
   background-size: cover;
 }
+
 ::selection {
   background: #007cd1;
 }
@@ -50,16 +50,20 @@ body {
   .mainContainer {
     height: 50% !important;
   }
+
   .scanContainer {
     height: 100% !important;
     border-radius: 10% 10% 0 0;
   }
+
   .txt1 {
     font-size: 11vw !important;
   }
+
   .txt2 {
     font-size: 11vw !important;
   }
+
   .txt3 {
     font-size: 10vw !important;
   }
