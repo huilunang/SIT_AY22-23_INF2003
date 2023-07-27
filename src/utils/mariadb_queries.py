@@ -249,20 +249,20 @@ def add_points(userId):
 def get_search(query_param, value):
     if query_param == "q":
         query = """
-        SELECT * FROM info1
+        SELECT * FROM InfoRecyclables
         INNER JOIN
-        info2 ON info1.id = info2.id
-        WHERE info1.item = %s
+        InfoRecyclableTips ON InfoRecyclables.ItemID = InfoRecyclableTips.ItemID
+        WHERE InfoRecyclables.Item = %s
         """
 
         fetch_method = "one"
         result = maria_db.execute(query, fetch_method, value)["result"]
     else:
         query = """
-        SELECT * FROM info1
+        SELECT * FROM InfoRecyclables
         INNER JOIN
-        info2 ON info1.id = info2.id
-        WHERE info1.type = %s
+        InfoRecyclableTips ON InfoRecyclables.ItemID = InfoRecyclableTips.ItemID
+        WHERE InfoRecyclables.ItemType = %s
         """
 
         fetch_method = "all"
@@ -276,10 +276,10 @@ def get_search(query_param, value):
 
 def suggestion(search_query):
     query = """
-    SELECT item
-    FROM info1
-    WHERE item LIKE %s
-    ORDER BY item
+    SELECT Item
+    FROM InfoRecyclables
+    WHERE Item LIKE %s
+    ORDER BY Item
     LIMIT 10
     """
 
