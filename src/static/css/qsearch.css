@@ -260,3 +260,9 @@ a:link {
     padding: 0 !important;
   }
 }
+
+.chart-container {
+  width: 50%;
+  height: 50%;
+  margin: auto;
+}

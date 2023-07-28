@@ -277,6 +277,24 @@ def get_search(query_param, value, offset, limit):
         result = [dict(zip(row_headers, r)) for r in result["result"]]
     return result
 
+def get_material_stats(value):
+    query = """
+    SELECT * FROM InfoStats
+    WHERE InfoStats.WasteType = %s
+    ORDER BY InfoStats.Year ASC
+    """
+
+    fetch_method = "all"
+    result = maria_db.execute(query, fetch_method, value)
+
+    row_headers = [x[0] for x in result["description"]]
+    result = [dict(zip(row_headers, r)) for r in result["result"]]
+    # Check if result is empty
+    if not result:
+        # Return None if empty
+        return None
+    return result
+
 
 def get_total_number_of_items(query_param, value):
     if query_param == "q":
@@ -295,6 +313,7 @@ def get_total_number_of_items(query_param, value):
         result = maria_db.execute(query, fetch_method, value)
     total_items = result["result"][0]  # Access the count directly
     return total_items
+
 
 def suggestion(search_query):
     query = """

@@ -330,6 +330,7 @@ def search():
             total_items = maria_q.get_total_number_of_items("q", query)
             data["record"] = maria_q.get_search("q", query, offset, page_size)
         else:
+            data["stats"] = maria_q.get_material_stats(mquery)
             total_items = maria_q.get_total_number_of_items("m", mquery)
             data["mrecord"] = maria_q.get_search("m", mquery, offset, page_size)
 
