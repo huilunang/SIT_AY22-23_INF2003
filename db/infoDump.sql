@@ -223,7 +223,7 @@ INSERT INTO InfoRecyclables (ItemID, ItemType, Item, Recycle, Remarks) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS InfoRecyclableTips (
-  ItemID INT NOT NULL,
+  ItemID INT(3) PRIMARY KEY NOT NULL,
   ItemType VARCHAR(7) DEFAULT NULL,
   Item VARCHAR(97) DEFAULT NULL,
   Recyclable VARCHAR(88) DEFAULT NULL,
