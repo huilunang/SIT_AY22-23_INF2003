@@ -1,0 +1,17 @@
+body {
+    overflow: hidden;
+}
+
+.container-recycle {
+    margin: 2% 15%;
+}
+
+.table-container {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.table-container thead {
+    position: sticky;
+    top: 0;
+}

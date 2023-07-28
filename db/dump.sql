@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS Recycles (
 );
 
 CREATE TABLE IF NOT EXISTS RewardTransactions (
-  TransactionID INT PRIMARY KEY,
+  TransactionID INT PRIMARY KEY AUTO_INCREMENT,
   RewardID INT,
   UserID INT,
   Claimed BOOLEAN,
@@ -93,10 +93,10 @@ VALUES
   (13, 3, '2023-06-28 11:09:00', '', 1, 'Metal', 4),
   (14, 3, '2023-07-10 11:15:00', '', 1, 'Metal', 5);
 
-INSERT INTO RewardTransactions (TransactionID, RewardID, UserID, Claimed)
+INSERT INTO RewardTransactions (RewardID, UserID, Claimed)
 VALUES
-  (1, 1, 1, true),
-  (2, 3, 2, false),
-  (3, 2, 3, true),
-  (4, 5, 4, false),
-  (5, 4, 5, true);
+  (1, 1, true),
+  (3, 2, false),
+  (2, 3, true),
+  (5, 4, false),
+  (4, 5, true);

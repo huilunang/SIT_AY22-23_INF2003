@@ -249,6 +249,7 @@ def generate_performance():
     else:
         flash("Error: Request type is not supported", "danger")
 
+      
 @app.route("/home")
 def home():
     # user current points

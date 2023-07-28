@@ -17,14 +17,14 @@ bloobin.createCollection('detection_result', { capped: false });
 // insert dummy data
 // bloobin.detection_result.insertMany([
 //   {
-//     label: "trash",
-//     score: 0.89,
-//     userId: 2,
+//     model_labeled: "trash",
+//     confidence_score: 0.89,
+//     user_id: 2,
 //   },
 //   {
-//     label: "glass",
-//     score: 0.59,
-//     userId: 2,
+//     model_labeled: "glass",
+//     confidence_score: 0.59,
+//     user_id: 2,
 //   }
 // ]);
 
