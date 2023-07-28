@@ -186,6 +186,7 @@ def redeem_reward():
         newStock = stock - 1
         maria_q.updateUserAfterRedemption(newUserPoints)
         maria_q.updateStock(newStock, reward_id)
+        maria_q.addTransaction(reward_id)
         return jsonify(success=True, message="Redemption successful")
     return jsonify(success=False, message="Error processing redemption")
 
