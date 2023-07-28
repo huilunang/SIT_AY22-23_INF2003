@@ -132,6 +132,14 @@ def updateStock(newStock, rewardID):
     maria_db.execute(query, "", newStock, rewardID)
 
 
+def addTransaction(rewardID):
+    query = """
+    INSERT INTO RewardTransactions (RewardID, UserID, Claimed)
+    VALUES (%s, %s, %s)
+    """
+    maria_db.execute(query, "", rewardID, session["id"], False)
+
+
 # approval page
 def get_recycle():
     query = """
