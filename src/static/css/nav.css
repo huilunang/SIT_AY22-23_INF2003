@@ -13,9 +13,6 @@
   margin: 0 auto;
 }
 
-/* header {
-  background: #007cd1;
-} */
 
 header::after {
   content: "";
