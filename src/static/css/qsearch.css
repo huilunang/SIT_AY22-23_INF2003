@@ -201,6 +201,10 @@ form .end-link a:hover {
   white-space: nowrap;
 }
 
+#suggestions {
+    display: none;
+}
+
 a:link {
   text-decoration: none;
 }
