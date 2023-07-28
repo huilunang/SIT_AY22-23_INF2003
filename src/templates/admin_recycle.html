@@ -1,0 +1,289 @@
+<!-- This page is customized according to user after authentication -->
+
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Welcome to Smart Bloobin</title>
+<link rel="stylesheet" href="../static/css/home.css">
+<link rel="stylesheet" href="../static/css/nav.css">
+<link rel="stylesheet" href="../static/css/admin_recycle.css">
+{% endblock head %}
+
+{% block content %}
+<header>
+    <div class="containerNav">
+        <img src="../static/assets/smart bloobin logo.png" alt="logo" class="logo">
+
+        <nav>
+            <ul>
+                <li><a href="admin_home">Admin</a></li>
+                <li><a href="admin_rewards">Rewards</a></li>
+                <li><a href="admin_recycle" class="active">Recycle</a></li>
+                <li><a href="profile">Profile</a></li>
+                <li><a href="{{url_for('logout')}}">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<div id="alert"></div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="container-fluid text-center">
+    <div class="col-sm-8 text-left">
+        <div>
+            <br>
+            <h3>Welcome, {{ data.username }}!</h3>
+            <br>
+        </div>
+    </div>
+</div>
+
+<div class="container-recycle">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="approval-tab" data-bs-toggle="tab" data-bs-target="#approval-tab-pane"
+                type="button" role="tab" aria-controls="approval-tab-pane" aria-selected="true">Approval</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="performance-tab" data-bs-toggle="tab" data-bs-target="#performance-tab-pane"
+                type="button" role="tab" aria-controls="performance-tab-pane" aria-selected="false"
+                onclick="generatePerformance()">Model
+                Performance</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="approval-tab-pane" role="tabpanel" aria-labelledby="approval-tab"
+            tabindex="0">
+            <div class="table-container text-center mt-3">
+                {% if data.record %}
+                <table class="table table-hover table-responsive-xl">
+                    <thead>
+                        <tr>
+                            <th scope="col">RecycledID</th>
+                            <th scope="col">UserID</th>
+                            <th scope="col">Timestamp</th>
+                            <th scope="col">User Labeled</th>
+                            <th scope="col">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rec in data.record %}
+                        <tr class="alert" role="alert" data-detection-id="{{ rec[4] }}">
+                            <td>{{ rec[0] }}</td>
+                            <td>{{ rec[1] }}</td>
+                            <td>{{ rec[2] }}</td>
+                            <td>{{ rec[3]|capitalize }}</td>
+                            <td>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#approvalModal" onclick="openEditModal(this)">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <h5 class="mt-5">No recycling submission is needed for approval</h5>
+                {% endif %}
+            </div>
+        </div>
+        <div class="tab-pane fade" id="performance-tab-pane" role="tabpanel" aria-labelledby="performance-tab"
+            tabindex="0">
+            <div class="d-flex justify-content-center mt-3">
+                <canvas id="chartPerformance"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="approvalModal" tabindex="-1" aria-labelledby="approvalModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="approvalModalLabel">Approval Form</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="approval-form" method="POST">
+                <div class="modal-body">
+                    <div style="padding: 0 60px;">
+                        <div class="row justify-content-center mb-2">
+                            <img id="recycleimg" alt="recycle-image" style="max-height: 50%;">
+                            <div class="form-floating">
+                                <input type="text" readonly class="form-control-plaintext" id="recycleid">
+                                <label for="recycleid">RecycledID</label>
+                            </div>
+                            <div class="form-floating">
+                                <input type="text" readonly class="form-control-plaintext" id="userid" name="userid">
+                                <label for="userid">UserID</label>
+                            </div>
+                            <div class="form-floating">
+                                <input type="text" readonly class="form-control-plaintext" id="timestamp">
+                                <label for="timestamp">Timestamp</label>
+                            </div>
+                            <div class="form-floating">
+                                <input type="text" readonly class="form-control-plaintext" id="userlabeled">
+                                <label for="userlabeled">User Labeled</label>
+                            </div>
+                            <div class="form-floating">
+                                <input type="text" readonly class="form-control-plaintext" id="modellabeled">
+                                <label for="modellabeled">Model Labeled</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div>
+                                Approval
+                            </div>
+                            <div class="mb-3">
+                                <input type="radio" class="btn-check" name="approval" id="approve" autocomplete="off"
+                                    value="1" checked onclick="materialselect(this)">
+                                <label class="btn btn-outline-success" for="approve">
+                                    <i class="fa-solid fa-check"></i>
+                                </label>
+                                <input type="radio" class="btn-check" name="approval" id="disapprove" autocomplete="off"
+                                    value="-1" onclick="materialselect(this)">
+                                <label class="btn btn-outline-danger" for="disapprove">
+                                    <i class="fa-solid fa-x"></i>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="select-material" hidden>
+                                Actual Material
+                                <select id="avail-materials" class="form-select" name="material"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="../static/js/index.js" defer></script>
+<script>
+    function generatePerformance() {
+        $.ajax({
+            type: 'GET',
+            url: '/generate_performance',
+            success: function (res) {
+                const ctx = document.getElementById('chartPerformance');
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: res.labels,
+                        datasets: [{
+                            label: 'Average confidence score',
+                            data: res.avg_scores,
+                            backgroundColor: [
+                                'rgba(53, 136, 192, 0.2)',
+                                'rgba(144, 127, 159, 0.2)',
+                                'rgba(255, 225, 168, 0.3)',
+                                'rgba(238, 213, 194, 0.3)',
+                                'rgba(109, 159, 113, 0.2)',
+                                'rgba(63, 59, 55, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(53, 136, 192, 0.6)',
+                                'rgba(144, 127, 159, 0.6)',
+                                'rgba(255, 225, 168)',
+                                'rgba(238, 213, 194)',
+                                'rgba(109, 159, 113, 0.6)',
+                                'rgba(63, 59, 55, 0.6)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            },
+            error: function (error) {
+                bootstrap_alert("danger", "Error occurred: Unable to generate model performance graph");
+            }
+        });
+    }
+
+    function openEditModal(button) {
+        var row = button.parentNode.parentNode;
+        var recycleid = row.cells[0].innerText;
+        var userid = row.cells[1].innerText;
+        var timestamp = row.cells[2].innerText;
+        var userlabeled = row.cells[3].innerText;
+        var detectionId = row.dataset.detectionId;
+        var url = "/admin_recycle?recycleId=" + recycleid + "&detectionId=" + detectionId;
+
+        collectionReq(detectionId);
+        populateModal(recycleid, userid, timestamp, userlabeled);
+        document.getElementById('approval-form').setAttribute("action", url);
+
+        // Open the Bootstrap modal
+        $('#editModal').modal('show');
+    }
+
+    function collectionReq(collectionId) {
+        $.ajax({
+            type: 'GET',
+            url: '/admin_recycle?collection=' + collectionId,
+            success: function (res) {
+                document.getElementById('modellabeled').value = capitalize(res.modelLabeled);
+                document.getElementById('recycleimg').src = 'data:image/png;base64,' + res.recycleImg;
+
+                let opt = '';
+                res.materialType.forEach((type) => {
+                    opt += '<option value="' + type + '">' + capitalize(type) + '</option>';
+                });
+                document.getElementById('avail-materials').innerHTML = opt;
+            },
+            error: function (error) {
+                bootstrap_alert("danger", "Error occurred: Unable to get detection data");
+            }
+        });
+    }
+
+    function populateModal(recycleid, userid, timestamp, userlabeled) {
+        document.getElementById('recycleid').value = recycleid;
+        document.getElementById('userid').value = userid;
+        document.getElementById('timestamp').value = timestamp;
+        document.getElementById('userlabeled').value = capitalize(userlabeled);
+    }
+
+    function materialselect(radio) {
+        var materials = document.getElementById('select-material');
+
+        if (radio.value == "1") {
+            if (!materials.hasAttribute('hidden'))
+                materials.setAttribute('hidden', "");
+        } else {
+            if (materials.hasAttribute('hidden'))
+                materials.removeAttribute('hidden');
+        }
+    }
+
+    function capitalize(word) {
+        return word.charAt(0).toUpperCase() + word.slice(1)
+    }
+</script>
+{% endblock %}

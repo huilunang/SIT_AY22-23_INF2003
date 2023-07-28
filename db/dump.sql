@@ -1,3 +1,5 @@
+-- tinyint: 0 - false, 1 - true, -1 approved but unsucessful
+
 CREATE TABLE IF NOT EXISTS Users (
   UserID INT PRIMARY KEY AUTO_INCREMENT,
   Name VARCHAR(255),
@@ -24,10 +26,11 @@ CREATE TABLE IF NOT EXISTS Rewards (
 );
 
 CREATE TABLE IF NOT EXISTS Recycles (
-  RecycledID INT PRIMARY KEY,
+  RecycledID INT PRIMARY KEY AUTO_INCREMENT,
   BinID INT,
   Datetime DATETIME,
-  Image blob,
+  DetectionID VARCHAR(24),
+  Approved TINYINT(1),
   MaterialType VARCHAR(255),
   UserID INT,
   FOREIGN KEY (BinID) REFERENCES Bins(BinID),
@@ -35,7 +38,7 @@ CREATE TABLE IF NOT EXISTS Recycles (
 );
 
 CREATE TABLE IF NOT EXISTS RewardTransactions (
-  TransactionID INT PRIMARY KEY,
+  TransactionID INT PRIMARY KEY AUTO_INCREMENT,
   RewardID INT,
   UserID INT,
   TransactionDate DATETIME,
@@ -74,38 +77,27 @@ VALUES
   (450, 'Clothing Store Voucher', 'clothing.jpg', 10),
   (250, 'Bookstore Coupon', 'bookstore.jpg', 10);
 
-INSERT INTO Recycles (RecycledID, BinID, Datetime, Image, MaterialType, UserID)
+INSERT INTO Recycles (RecycledID, BinID, Datetime, DetectionID, Approved, MaterialType, UserID)
 VALUES
-  (1, 1, '2023-07-17 09:30:00', '', 'Plastic', 1),
-  (2, 2, '2023-07-18 14:15:00', '', 'Paper', 2),
-  (3, 3, '2023-07-19 11:45:00', '', 'Glass', 3),
-  (4, 1, '2023-07-20 16:30:00', '', 'Metal', 1),
-  (5, 2, '2023-07-21 13:00:00', '', 'Plastic', 2),
-  (6, 3, '2023-07-22 09:30:00', '', 'Paper', 3),
-  (7, 1, '2023-07-23 14:15:00', '', 'Glass', 1),
-  (8, 2, '2023-07-24 11:45:00', '', 'Metal', 2),
-  (9, 3, '2023-07-25 16:30:00', '', 'Plastic', 3),
-  (10, 1, '2023-07-26 13:00:00', '', 'Paper', 1),
-  (11, 2, '2023-07-27 09:30:00', '', 'Glass', 2),
-  (12, 3, '2023-07-28 14:15:00', '', 'Metal', 3),
-  (13, 1, '2023-07-29 11:45:00', '', 'Plastic', 1),
-  (14, 2, '2023-07-30 16:30:00', '', 'Paper', 2),
-  (15, 3, '2023-07-31 13:00:00', '', 'Glass', 3),
-  (16, 1, '2023-07-17 09:30:00', '', 'Metal', 1),
-  (17, 2, '2023-07-18 14:15:00', '', 'Plastic', 2),
-  (18, 3, '2023-07-19 11:45:00', '', 'Paper', 3),
-  (19, 1, '2023-07-20 16:30:00', '', 'Glass', 1),
-  (20, 2, '2023-07-21 13:00:00', '', 'Metal', 2),
-  (21, 3, '2023-07-22 09:30:00', '', 'Plastic', 3),
-  (22, 1, '2023-07-23 14:15:00', '', 'Paper', 1),
-  (23, 2, '2023-07-24 11:45:00', '', 'Glass', 2),
-  (24, 3, '2023-07-25 16:30:00', '', 'Metal', 3),
-  (25, 1, '2023-07-26 13:00:00', '', 'Plastic', 1);
-  
-INSERT INTO RewardTransactions (TransactionID, RewardID, UserID, Claimed, TransactionDate)
+  (1, 1, '2023-02-10 09:30:00', '', 1, 'Plastic', 1),
+  (2, 2, '2023-03-05 14:15:00', '', 1, 'Paper', 2),
+  (3, 3, '2023-04-20 11:45:00', '', 1, 'Glass', 3),
+  (4, 4, '2023-04-28 16:30:00', '', 1, 'Metal', 4),
+  (5, 5, '2023-04-15 13:00:00', '', 1, 'Plastic', 5),
+  (6, 3, '2023-05-10 11:47:00', '', 1, 'Glass', 4),
+  (7, 3, '2023-05-15 10:30:00', '', 1, 'Glass', 3),
+  (8, 3, '2023-05-18 18:20:00', '', 1, 'Plastic', 3),
+  (9, 4, '2023-06-24 11:23:00', '', 1, 'Plastic', 4),
+  (10, 3, '2023-06-24 11:50:00', '', 1, 'Plastic', 4),
+  (11, 3, '2023-06-26 12:30:00', '', 1, 'Plastic', 4),
+  (12, 3, '2023-06-26 19:35:00', '', 1, 'Glass', 4),
+  (13, 3, '2023-06-28 11:09:00', '', 1, 'Metal', 4),
+  (14, 3, '2023-07-10 11:15:00', '', 1, 'Metal', 5);
+
+INSERT INTO RewardTransactions (RewardID, UserID, Claimed)
 VALUES
-  (1, 1, 1, true, '2023-07-19 13:00:00'),
-  (2, 3, 2, false, '2023-07-20 13:00:00'),
-  (3, 2, 3, true, '2023-07-21 13:00:00'),
-  (4, 5, 4, false, '2023-07-22 13:00:00'),
-  (5, 4, 5, true, '2023-07-23 13:00:00');
+  (1, 1, true),
+  (3, 2, false),
+  (2, 3, true),
+  (5, 4, false),
+  (4, 5, true);
