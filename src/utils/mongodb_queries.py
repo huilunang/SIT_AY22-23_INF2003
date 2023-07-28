@@ -46,3 +46,24 @@ def set_material(detectionId, label):
     collection.update_one(
         {"_id": ObjectId(detectionId)}, {"$set": {"confirmed_label": label}}
     )
+
+
+def get_average_score():
+    collection = mongo_db.get_collection("detection_result")
+
+    pipeline = [
+        {
+            "$group": {
+                "_id": "$model_labeled",
+                "avgConfidence": {"$avg": "$confidence_score"},
+            }
+        }
+    ]
+
+    results = list(collection.aggregate(pipeline))
+    data = {
+        "labels": [res["_id"] for res in results],
+        "avg_scores": [res["avgConfidence"] for res in results]
+    }
+
+    return data

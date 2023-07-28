@@ -191,8 +191,8 @@ def redeem_reward():
     return jsonify(success=False, message="Error processing redemption")
 
 
-@app.route("/admin_approval", methods=["GET", "POST"])
-def recycle_approve():
+@app.route("/admin_recycle", methods=["GET", "POST"])
+def recycle_approval():
     data = {
         "username": session["username"],
         "record": maria_q.get_recycle()
@@ -232,13 +232,21 @@ def recycle_approve():
                     "success",
                 )
 
-                return redirect(url_for("recycle_approve"))
+                return redirect(url_for("recycle_approval"))
             else:
                 flash("Missing: 'Approval' selection is required", "danger")
         else:
             flash("Error: Query is invalid!", "danger")
 
-    return render_template("admin_approval.html", data=data)
+    return render_template("admin_recycle.html", data=data)
+
+
+@app.route("/generate_performance", methods=["GET"])
+def generate_performance():
+    if request.method == "GET":
+        return jsonify(mongo_q.get_average_score())
+    else:
+        flash("Error: Request type is not supported", "danger")
 
 
 @app.route("/home")
