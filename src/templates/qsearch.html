@@ -35,12 +35,19 @@
           <div class="search">
             <form method="POST" action="{{ url_for('search') }}">
               <div class="dropdown">
-                <input type="text" id="search-input" class="search-input" placeholder="Search..." name="search_query"
-                  data-bs-toggle="dropdown" autocomplete="off" />
+                <input
+                  type="text"
+                  id="search-input"
+                  class="search-input"
+                  placeholder="Search..."
+                  name="search_query"
+                  data-toggle="dropdown"
+                  autocomplete="off"
+                />
                 <a href="#" class="search-icon">
                   <i class="fa fa-search"></i>
                 </a>
-                <ul id="suggestions" class="dropdown-menu" aria-labelledby="search-input"></ul>
+                <div id="suggestions" class="dropdown-menu" aria-labelledby="search-input"></div>
               </div>
             </form>
           </div>
@@ -64,21 +71,15 @@
           <tbody>
             {% if data.query %}
             <h3>{{ data.query|title }}</h3>
-            {% endif %}
-            {% if data.record %}
+            {% endif %} {% if data.record %} {% for record in data.record %}
             <tr>
-              <td>{{ data.record[0]|title }}</td>
-              <td>{{ data.record[6]|title }}</td>
-              <td>{{ data.record[7]|title }}</td>
-              <td>{{ data.record[3]|title }}</td>
               <td>
-                {{ data.record[8]|capitalize }}{{ data.record[9]|capitalize }}
+                {{ record['ItemID']|title }}
+                <br>
+                <a href="#" id="randomImageLink_{{ loop.index }}" data-img="{{ record['Item'] }}">
+                  <img src="" id="randomImage_{{ loop.index }}" alt="{{ record['Item'] }}" width="300px" height="200px" loading="lazy"/>
+                </a>
               </td>
-            </tr>
-            {% elif data.mrecord %}
-            {% for record in data.mrecord %}
-            <tr>
-              <td>{{ record['ItemID']|title }}</td>
               <td>{{ record['ItemType']|title }}</td>
               <td>{{ record['Item']|title }}</td>
               <td>{{ record['Recycle']|title }}</td>
@@ -87,55 +88,103 @@
                 record['NonRecyclable']|capitalize }}
               </td>
             </tr>
-            {% endfor %}
-            {% else %}
+            {% endfor %} {% elif data.mrecord %} {% for record in data.mrecord
+            %}
+            <tr>
+              <td>
+                {{ record['ItemID']|title }}
+                <br>
+                <a href="#" id="randomImageLink_{{ loop.index }}" data-img="{{ record['Item'] }}">
+                  <img src="" id="randomImage_{{ loop.index }}" alt="{{ record['Item'] }}" width="300px" height="200px" loading="lazy"/>
+              </td>
+              <td>{{ record['ItemType']|title }}</td>
+              <td>{{ record['Item']|title }}</td>
+              <td>{{ record['Recycle']|title }}</td>
+              <td>
+                {{ record['Recyclable']|capitalize }}{{
+                record['NonRecyclable']|capitalize }}
+              </td>
+            </tr>
+            {% endfor %} {% else %}
             <td>No record found.</td>
             {% endif %}
           </tbody>
         </table>
       </div>
+
+      {% if data.record %}
+        <div aria-label="...">
+          <ul class="pagination justify-content-center">
+            <li class="page-item {% if current_page == 1 %}disabled{% endif %}">
+              <a class="page-link" href="{{ url_for('search', q=data.query, page=current_page-1) }}" tabindex="-1" aria-disabled="true">Previous</a>
+            </li>
+            {% for page in range(1, total_pages + 1) %}
+              <li class="page-item {% if page == current_page %}active aria-current='page'{% endif %}">
+                <a class="page-link" href="{{ url_for('search', q=data.query, page=page) }}">{{ page }}</a>
+              </li>
+            {% endfor %}
+            <li class="page-item {% if current_page == total_pages %}disabled{% endif %}">
+              <a class="page-link" href="{{ url_for('search', q=data.query, page=current_page+1) }}">Next</a>
+            </li>
+          </ul>
+        </div>
+      {% elif data.mrecord %}
+        <div aria-label="...">
+          <ul class="pagination justify-content-center">
+            <li class="page-item {% if current_page == 1 %}disabled{% endif %}">
+              <a class="page-link" href="{{ url_for('search', m=data.mquery, page=current_page-1) }}" tabindex="-1" aria-disabled="true">Previous</a>
+            </li>
+            {% for page in range(1, total_pages + 1) %}
+              <li class="page-item {% if page == current_page %}active aria-current='page'{% endif %}">
+                <a class="page-link" href="{{ url_for('search', m=data.mquery, page=page) }}">{{ page }}</a>
+              </li>
+            {% endfor %}
+            <li class="page-item {% if current_page == total_pages %}disabled{% endif %}">
+              <a class="page-link" href="{{ url_for('search', m=data.mquery, page=current_page+1) }}">Next</a>
+            </li>
+          </ul>
+        </div>
+      {% endif %}
     </div>
   </div>
 
+  <script src="../static/js/search.js" defer></script>
   <script>
-    const searchInput = document.getElementById("search-input");
-    const suggestionsContainer = document.getElementById("suggestions");
+  async function fetchImages(img, link) {
+    const encodedQuery = encodeURIComponent(img);
+    const encodedAPIKey = encodeURIComponent("{{ pexels_api_key }}");
 
-    searchInput.addEventListener("input", function () {
-      const searchQuery = this.value;
-      if (searchQuery.length >= 2) {
-        fetch("/get_suggestions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ search_query: searchQuery }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            suggestionsContainer.innerHTML = "";
-            if (data && data.suggested_words.length > 0) {
-              data.suggested_words.forEach((word) => {
-                const element = document.createElement("li");
-                const suggestion = document.createElement("a");
-                suggestion.classList.add("dropdown-item");
-                suggestion.href = "search?q=" + encodeURIComponent(word);
-                suggestion.textContent = word;
-                element.appendChild(suggestion);
-                suggestionsContainer.appendChild(element);
-              });
-            } else {
-              const noResults = document.createElement("a");
-              suggestion.classList.add("dropdown-item");
-              suggestion.href = "#";
-              suggestion.textContent = word;
-              suggestionsContainer.appendChild(noResults);
-            }
-          });
-      } else {
-        suggestionsContainer.innerHTML = "";
+    const res = await fetch(
+      "https://api.pexels.com/v1/search?query=" +
+      encodedQuery +
+      "&orientation=landscape&size=large&per_page=25",
+      {
+        headers: { Authorization: encodedAPIKey },
       }
-    });
+    );
+    const json = await res.json();
+    const images = json.photos;
+
+    // const randomIndex = Math.floor(Math.random() * images.length);
+    const randomImageUrl = images[0].src.large;
+
+    const linkId = link;
+    const imgId = "randomImage_" + link.replace(/\D/g, '');
+
+    // Get the link element based on the unique id
+    const randomImageLink = document.getElementById(linkId);
+    const randomImage = document.getElementById(imgId);
+    randomImageLink.href = randomImageUrl;
+    randomImage.src = randomImageUrl;
+  }
+
+  // Call fetchImages for each link in the loop
+  const linkElements = document.querySelectorAll('[id^="randomImageLink_"]');
+  linkElements.forEach((link) => {
+    const img = link.getAttribute("data-img");
+    const id = link.getAttribute("id");
+    fetchImages(img, id);
+  });
   </script>
 </body>
 {% endblock %}

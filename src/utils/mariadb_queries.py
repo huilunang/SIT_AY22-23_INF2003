@@ -246,33 +246,55 @@ def add_points(userId):
     
 
 # search page
-def get_search(query_param, value):
+def get_search(query_param, value, offset, limit):
     if query_param == "q":
         query = """
         SELECT * FROM InfoRecyclables
         INNER JOIN
         InfoRecyclableTips ON InfoRecyclables.ItemID = InfoRecyclableTips.ItemID
-        WHERE InfoRecyclables.Item = %s
+        WHERE InfoRecyclables.Item LIKE %s
+        LIMIT %s OFFSET %s
         """
 
-        fetch_method = "one"
-        result = maria_db.execute(query, fetch_method, value)["result"]
+        fetch_method = "all"
+        result = maria_db.execute(query, fetch_method, '%' + value + '%', limit, offset)
+
+        row_headers = [x[0] for x in result["description"]]
+        result = [dict(zip(row_headers, r)) for r in result["result"]]
     else:
         query = """
         SELECT * FROM InfoRecyclables
         INNER JOIN
         InfoRecyclableTips ON InfoRecyclables.ItemID = InfoRecyclableTips.ItemID
         WHERE InfoRecyclables.ItemType = %s
+        LIMIT %s OFFSET %s
         """
 
         fetch_method = "all"
-        result = maria_db.execute(query, fetch_method, value)
+        result = maria_db.execute(query, fetch_method, value, limit, offset)
 
         row_headers = [x[0] for x in result["description"]]
         result = [dict(zip(row_headers, r)) for r in result["result"]]
-
     return result
 
+
+def get_total_number_of_items(query_param, value):
+    if query_param == "q":
+            query = """
+            SELECT COUNT(*) FROM InfoRecyclables
+            WHERE InfoRecyclables.Item LIKE %s
+            """
+            fetch_method = "one" # Single result with the count
+            result = maria_db.execute(query, fetch_method, '%' + value + '%')
+    else:
+        query = """
+            SELECT COUNT(*) FROM InfoRecyclables
+            WHERE InfoRecyclables.ItemType = %s
+        """
+        fetch_method = "one" # Single result with the count
+        result = maria_db.execute(query, fetch_method, value)
+    total_items = result["result"][0]  # Access the count directly
+    return total_items
 
 def suggestion(search_query):
     query = """

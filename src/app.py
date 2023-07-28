@@ -1,5 +1,6 @@
 import re
 import hashlib
+import math
 
 from flask import (
     Flask,
@@ -312,23 +313,43 @@ def profile():
 def search():
     query = request.args.get("q")  # Access the 'q' query parameter
     mquery = request.args.get("m")  # Access the 'm' query parameter
+    page = int(request.args.get("page", 1))  # Access the 'm' query parameter
 
+    pexels_api_key = "eTAgLvBaXl4E3zEhJ0WV5ymxFCOLEYivMWx0Mo3rPe3dbV5uXmKRdWJf"; # Pexels API key
+
+    # Get the page number from the URL parameter (default to page 1 if not provided)
+    page_size = 10  # Number of items to display per page
+
+    # Retrieve the relevant items for the current page based on page number and page size
+    offset = (page - 1) * page_size # Use a database query with LIMIT and OFFSET clauses
+    
     if query or mquery:
-        data = {"query": query}
+        data = {"query": query, "mquery": mquery}
 
         if query:
-            data["record"] = maria_q.get_search("q", query)
+            total_items = maria_q.get_total_number_of_items("q", query)
+            data["record"] = maria_q.get_search("q", query, offset, page_size)
         else:
-            data["mrecord"] = maria_q.get_search("m", mquery)
+            total_items = maria_q.get_total_number_of_items("m", mquery)
+            data["mrecord"] = maria_q.get_search("m", mquery, offset, page_size)
 
-        return render_template("qsearch.html", data=data)
+        # Calculate the total number of pages
+        total_pages = math.ceil(total_items / page_size)
+
+        return render_template("qsearch.html", data=data, current_page=page, total_pages=total_pages, pexels_api_key=pexels_api_key)
     elif request.method == "POST":
-        search_query = request.form.get("search_query")
-        suggested_words = helper.get_suggestions(search_query)
+        request_identifier = request.headers.get('X-Request-Identifier')
 
-        return render_template("search.html", suggested_words=suggested_words)
+        if request_identifier == 'search-suggestions':
+            search_query = request.json.get("search_query")
+            suggested_words = helper.get_suggestions(search_query)
+
+            return render_template("search.html", suggested_words=suggested_words)
+        else:
+            search_query = request.form.get("search_query")
+            return redirect(url_for("search", q=search_query))
     else:
-        return render_template("search.html")
+        return render_template("search.html") # Start page of search
 
 
 @app.route("/get_suggestions", methods=["POST"])
