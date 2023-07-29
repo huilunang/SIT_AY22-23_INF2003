@@ -58,3 +58,7 @@ h2 {
     font-weight: 500;
     line-height: 1.2;
 }
+
+#codeDisplay {
+    font-size: 32px; /* Adjust the font size as needed */
+}

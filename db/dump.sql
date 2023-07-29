@@ -155,41 +155,17 @@ VALUES
   (74, 5, '2023-08-30 16:30:00', '', 1, 'Plastic', 5),
   (75, 1, '2023-08-30 17:00:00', '', 1, 'Paper', 1);
 
-Please note that I have generated random dates within the specified range (2023-07-05 to 2023-08-29) for the new entries. You can modify the dates as needed. Also, ensure that the existing data IDs go up to 10 before running the above SQL statement to prevent conflicts.
-
-
-
-
-User
-Create entries 30 to 40, keep the date within 2023-06
-ChatGPT
-To create entries from 30 to 40 and keep the dates within 2023-06, you can use the following SQL INSERT statement:
-
-sql
-Copy code
-INSERT INTO Recycles (RecycledID, BinID, Datetime, DetectionID, Approved, MaterialType, UserID)
+INSERT INTO RewardTransactions (TransactionID, RewardID, UserID,TransactionDate, Claimed)
 VALUES
-  (31, 1, '2023-06-01 09:30:00', '', 1, 'Plastic', 1),
-  (32, 2, '2023-06-02 14:15:00', '', 1, 'Paper', 2),
-  (33, 3, '2023-06-03 11:45:00', '', 1, 'Glass', 3),
-  (34, 4, '2023-06-04 16:30:00', '', 1, 'Metal', 4),
-  (35, 5, '2023-06-05 13:00:00', '', 1, 'Plastic', 5),
-  (36, 3, '2023-06-06 11:47:00', '', 1, 'Glass', 4),
-  (37, 3, '2023-06-07 10:30:00', '', 1, 'Glass', 3),
-  (38, 3, '2023-06-08 18:20:00', '', 1, 'Plastic', 3),
-  (39, 4, '2023-06-09 11:23:00', '', 1, 'Plastic', 4),
-  (40, 3, '2023-06-10 11:50:00', '', 1, 'Plastic', 4);
-Please note that the dates in this insert statement are within 2023-06. Adjust the dates as needed while making sure they stay within that range. Also, ensure that the existing data IDs go up to 30 before running the above SQL statement to prevent conflicts.
+  (1, 1, 1, '2023-07-19 13:00:00', true),
+  (2, 3, 2, '2023-07-20 13:00:00', false),
+  (3, 2, 3, '2023-07-21 13:00:00', true),
+  (4, 5, 4, '2023-07-22 13:00:00', false),
+  (5, 4, 5, '2023-07-23 13:00:00', true);
 
 
 
 
 
 
-INSERT INTO RewardTransactions (TransactionID, RewardID, UserID, Claimed, TransactionDate)
-VALUES
-  (1, 1, 1, true, '2023-07-19 13:00:00'),
-  (2, 3, 2, false, '2023-07-20 13:00:00'),
-  (3, 2, 3, true, '2023-07-21 13:00:00'),
-  (4, 5, 4, false, '2023-07-22 13:00:00'),
-  (5, 4, 5, true, '2023-07-23 13:00:00');
+

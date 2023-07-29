@@ -136,7 +136,7 @@ def updateStock(newStock, rewardID):
 
 def getTransactionInfo():
     query = """
-    SELECT r.RewardName, rt.TransactionDate, rt.Claimed 
+    SELECT rt.TransactionID, r.RewardName, rt.TransactionDate, rt.Claimed 
     FROM Rewards r 
     JOIN RewardTransactions rt 
     ON r.RewardID = rt.RewardID
@@ -149,6 +149,9 @@ def getRewardTransactions():
     result = maria_db.execute(query, "all", session["id"])
     return result["result"]
 
+def updateRewardTransactions(TransactionID):
+    query = "UPDATE RewardTransactions SET Claimed = true WHERE TransactionID = %s"
+    maria_db.execute(query, "", TransactionID)
 
 def getRewardNameByRewardID(RewardID):
     query = "SELECT RewardName FROM Rewards WHERE RewardID = %s"
@@ -286,7 +289,8 @@ def getUserRecycleAcivity():
 def getRecycleActivity60days():
     end_date = datetime.datetime.now(pytz.timezone("Asia/Singapore")).date()
     start_date = end_date - datetime.timedelta(days=59)
-    query = f"""SELECT DATE(Datetime) AS Date,
+    query = f"""
+        SELECT DATE(Datetime) AS Date,
     COUNT(*) AS TotalRecycled
     FROM Recycles
     WHERE DATE(Datetime) BETWEEN '{start_date}' AND '{end_date}'
@@ -301,7 +305,8 @@ def getRecycleActivity60days():
 def getRecycleMaterialActivity60days(materialType):
     end_date = datetime.datetime.now(pytz.timezone("Asia/Singapore")).date()
     start_date = end_date - datetime.timedelta(days=59)
-    query = f"""SELECT DATE(Datetime) AS Date,
+    query = f"""
+    SELECT DATE(Datetime) AS Date,
     COUNT(*) AS TotalRecycled
     FROM Recycles
     WHERE MaterialType = '{materialType}'
