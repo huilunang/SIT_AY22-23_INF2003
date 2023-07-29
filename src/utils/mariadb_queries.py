@@ -161,10 +161,15 @@ def getRewardNameByRewardID(RewardID):
 
 def addTransaction(rewardID):
     currentDatetime=datetime.datetime.now(pytz.timezone("Asia/Singapore"))
+    currentDatetime=datetime.datetime.now(pytz.timezone("Asia/Singapore"))
     query = """
     INSERT INTO RewardTransactions (RewardID, UserID, TransactionDate, Claimed)
     VALUES (%s, %s, %s, %s)
+    INSERT INTO RewardTransactions (RewardID, UserID, TransactionDate, Claimed)
+    VALUES (%s, %s, %s, %s)
     """
+    maria_db.execute(query, "", rewardID, session["id"], currentDatetime, False)
+
     maria_db.execute(query, "", rewardID, session["id"], currentDatetime, False)
 
 
@@ -210,6 +215,24 @@ def getUserPoints():
     result = maria_db.execute(query, "one", session["id"])
     return result["result"]
 
+def getDailyRecycles():
+    currentDate=datetime.datetime.now(pytz.timezone("Asia/Singapore")).date()
+    query = "SELECT COUNT(*) AS NumRecycles FROM Recycles WHERE DATE(Datetime) = %s"
+
+    result = maria_db.execute(query, "one", currentDate)
+    return result["result"]
+
+def getUserDailyRecycles():
+    currentDate=datetime.datetime.now(pytz.timezone("Asia/Singapore")).date()
+    query = "SELECT COUNT(*) AS NumRecycles FROM Recycles WHERE DATE(Datetime) = %s AND UserID = %s"
+
+    result = maria_db.execute(query, "one", currentDate, session["id"])
+    return result["result"]
+
+def getTotalRecycles():
+    query = "SELECT COUNT(*) AS NumRecycles FROM Recycles"
+    result = maria_db.execute(query, "one")
+    return result["result"]
 def getDailyRecycles():
     currentDate=datetime.datetime.now(pytz.timezone("Asia/Singapore")).date()
     query = "SELECT COUNT(*) AS NumRecycles FROM Recycles WHERE DATE(Datetime) = %s"
