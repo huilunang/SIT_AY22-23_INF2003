@@ -172,16 +172,14 @@ def rewards():
     userPoints= userPointsRecord[0]
 
     # reward transactions table
-    transactionRecord = maria_q.getRewardTransactions()
+    transactionRecord = maria_q.getTransactionInfo()
     transaction_dates = []
     reward_names = []
     claimed = []
-
     # Retrieve and append data to lists
-    for date, id, claim in transactionRecord:
-        rewardName = maria_q.getRewardNameByRewardID(id)
+    for name, date, claim in transactionRecord:
+        reward_names.append(name)
         transaction_dates.append(date)
-        reward_names.append(rewardName[0])
         if claim:
             claimed.append('Redeemed')
         else:
@@ -279,6 +277,38 @@ def home():
     record = maria_q.getUserPoints()
     points = record[0]
 
+    # recycles made today
+    record = maria_q.getDailyRecycles()
+    dailyRecycles=record[0]
+
+    # recycles user recycles today
+    record = maria_q.getUserDailyRecycles()
+    userDailyRecycles=record[0]
+
+    # total recycles made
+    record = maria_q.getTotalRecycles()
+    totalRecycles=record[0]
+
+    # top 5 recyclers
+    record = maria_q.getTop5Recyclers()
+    topRecyclerNames = []
+    topRecycles = []
+    for name, recycles in record:
+        topRecyclerNames.append(name)
+        topRecycles.append(recycles)
+    
+    topRecyclersData = list(enumerate(zip(topRecyclerNames, topRecycles), 1))
+
+    # bin capacity
+    binLocation = []
+    binCapacity = []
+    record = maria_q.getBinCapacity()
+    for binLoc, binCap in record:
+        binLocation.append(binLoc)
+        binCapacity.append(format(float(binCap)/2, ".1f"))
+        
+    binData = list(enumerate(zip(binLocation, binCapacity), 1))
+    
     # recycles by month line chart
     record = maria_q.getRecyclesByMonth()
     recycles_by_month = []
@@ -302,14 +332,14 @@ def home():
     helper.generateActivities(maria_q.getRecycleMaterialActivity60days('Plastic'), 'Plastic')
     helper.generateActivities(maria_q.getRecycleMaterialActivity60days('Glass'), 'Glass')
     helper.generateActivities(maria_q.getRecycleMaterialActivity60days('Metal'), 'Metal')
-    helper.generateActivities(maria_q.getRecycleMaterialActivity60days('E-waste'), 'Ewaste')
+    helper.generateActivities(maria_q.getRecycleMaterialActivity60days('Cardboard'), 'Cardboard')
     recentActivityGraph_path = "static/assets/graphs/recentActivity.png"
     Last60DaysActivityGraph_path = "static/assets/graphs/last60DaysActivity.png"
     Last60DaysActivityPaperGraph_path = "static/assets/graphs/last60DaysActivity_Paper.png"
     Last60DaysActivityPlasticGraph_path = "static/assets/graphs/last60DaysActivity_Plastic.png"
     Last60DaysActivityGlassGraph_path = "static/assets/graphs/last60DaysActivity_Glass.png"
     Last60DaysActivityMetalGraph_path = "static/assets/graphs/last60DaysActivity_Metal.png"
-    Last60DaysActivityEwasteGraph_path = "static/assets/graphs/last60DaysActivity_Ewaste.png"
+    Last60DaysActivityCardboardGraph_path = "static/assets/graphs/last60DaysActivity_Cardboard.png"
 
     return render_template(
         "home.html",
@@ -325,7 +355,12 @@ def home():
         Last60DaysActivityPlasticGraph_path=Last60DaysActivityPlasticGraph_path,
         Last60DaysActivityGlassGraph_path=Last60DaysActivityGlassGraph_path,
         Last60DaysActivityMetalGraph_path=Last60DaysActivityMetalGraph_path,
-        Last60DaysActivityEwasteGraph_path=Last60DaysActivityEwasteGraph_path,
+        Last60DaysActivityCardboardGraph_path=Last60DaysActivityCardboardGraph_path,
+        dailyRecycles=dailyRecycles,
+        userDailyRecycles=userDailyRecycles,
+        totalRecycles=totalRecycles,
+        binData=binData,
+        topRecyclersData=topRecyclersData,
     )
 
 

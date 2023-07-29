@@ -24,13 +24,13 @@ def generateGraph():
     df = maria_q.getUserRecycleAcivity()
     # Map the day of the week to its corresponding name
     day_mapping = {
-        1: "Sunday",
-        2: "Monday",
-        3: "Tuesday",
-        4: "Wednesday",
-        5: "Thursday",
-        6: "Friday",
-        7: "Saturday",
+        1: "Sun",
+        2: "Mon",
+        3: "Tue",
+        4: "Wed",
+        5: "Thu",
+        6: "Fri",
+        7: "Sat",
     }
 
     df["DayOfWeek"] = df["DayOfWeek"].map(day_mapping)
@@ -66,20 +66,34 @@ def generateGraph():
     df["TotalRecycled"].fillna(0, inplace=True)
 
     # Create a line graph using matplotlib
-    plt.plot(all_days["DayOfWeek"], df["TotalRecycled"], marker="o")
+    plt.figure(figsize=(10, 6))  # Set the figure size (width, height)
+
+    # Plot the data with a line and markers
+    plt.plot(df["DayOfWeek"], df["TotalRecycled"], marker="o", color="green", linestyle="-", linewidth=2)
 
     # Set the chart title and labels
-    plt.title("Your Total Number of Recycled Items in the Last 7 Days")
-    plt.xlabel("Day of the Week (GMT+8)")
-    plt.ylabel("Total Recycled")
+    plt.title("Your Total Number of Recycled Items in the Last 7 Days", fontsize=16)
+    plt.xlabel("Day of the Week", fontsize=12)
+    plt.ylabel("Total Recycled", fontsize=12)
 
     # Rotate the x-axis labels for better readability
-    plt.xticks(rotation=45)
+    plt.xticks(rotation=45, ha="right", fontsize=10)  # ha="right" aligns labels to the right
 
-    # Set the y-axis lower limit to 0
-    plt.ylim(bottom=0)
+    # Set the y-axis lower limit to 0 and adjust the upper limit
+    plt.ylim(bottom=0, top=max(df["TotalRecycled"]) * 1.1)
 
-    # Display the chart
+    # Add grid lines to the plot
+    plt.grid(True, linestyle="--", alpha=0.7)
+
+    # Add data labels to the markers
+    for x, y in zip(df["DayOfWeek"], df["TotalRecycled"]):
+        plt.text(x, y, str(int(y)), ha="center", va="bottom", fontsize=10)
+
+    # Customize the plot background and border
+    plt.gca().spines["top"].set_visible(False)
+    plt.gca().spines["right"].set_visible(False)
+
+    # Save the chart to a file
     plt.savefig("static/assets/graphs/recentActivity.png")
 
 
@@ -133,7 +147,7 @@ def generateActivities(result, materialType):
     # Display the chart
     plt.tight_layout()  # Adjusts the layout to prevent overlapping labels
 
-    if materialType in ["Paper", "Plastic", "Glass", "Metal", "Ewaste"]:
+    if materialType in ["Paper", "Plastic", "Glass", "Metal", "Cardboard"]:
         plt.savefig("static/assets/graphs/last60DaysActivity_" + materialType + ".png")
     else:
         plt.savefig("static/assets/graphs/last60DaysActivity.png")
