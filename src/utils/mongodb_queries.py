@@ -8,10 +8,12 @@ import utils.helper_functions as helper
 
 mongo_db = MongoDBConnManager()
 
+
 def get_locations():
     collection = mongo_db.get_collection("location")
 
     return [data for data in collection.find()]
+
 
 """ Tried to do for Pagination
     def get_locations_page(page_number, items_per_page):
@@ -40,9 +42,11 @@ def get_locations():
     
     return paginated_recycling, paginated_ebin,total_locations
  """
+
+
 def get_suggestions(data, search_query):
-    recycling=data[0]['features']
-    ebin=data[1]['features']
+    recycling = data[0]["features"]
+    ebin = data[1]["features"]
 
     # Function to extract street names from recycling bin data
     def extract_recycling_street_names():
@@ -54,9 +58,9 @@ def get_suggestions(data, search_query):
         for entry in ebin:
             yield entry["properties"]["Description"]["ADDRESSSTREETNAME"]
 
-    #Convert searcb query to lowercase 
+    # Convert searcb query to lowercase
     search_query_lower = search_query.lower()
-    
+
     # Combine and sort the suggestions from both recycling and e-bin data
     suggested_words = set()
     for street_name in extract_recycling_street_names():
@@ -82,6 +86,7 @@ def get_detection(id):
 
     return detection["model_labeled"], encoded_image_data
 
+
 def insert_detection(score, modelLabel, fdir):
     collection = mongo_db.get_collection("detection_result")
 
@@ -95,6 +100,7 @@ def insert_detection(score, modelLabel, fdir):
     collection.update_one({"_id": post_id}, {"$set": {"image_id": image_id}})
 
     return str(post_id)
+
 
 def set_material(detectionId, label):
     collection = mongo_db.get_collection("detection_result")
@@ -119,7 +125,7 @@ def get_average_score():
     results = list(collection.aggregate(pipeline))
     data = {
         "labels": [res["_id"] for res in results],
-        "avg_scores": [res["avgConfidence"] for res in results]
+        "avg_scores": [res["avgConfidence"] for res in results],
     }
 
     return data

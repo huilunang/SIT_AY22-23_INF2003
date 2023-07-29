@@ -14,7 +14,7 @@ from flask import (
     redirect,
     url_for,
     jsonify,
-    flash
+    flash,
 )
 from werkzeug.utils import secure_filename
 
@@ -34,6 +34,7 @@ app.secret_key = "secret key"
 @app.route("/")
 def index():
     return render_template("index.html")
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -171,7 +172,7 @@ def delete_reward():
 def rewards():
     record = maria_q.getAllRewards()
     userPointsRecord = maria_q.getUserPoints()
-    userPoints= userPointsRecord[0]
+    userPoints = userPointsRecord[0]
 
     # reward transactions table
     transactionRecord = maria_q.getTransactionInfo()
@@ -185,15 +186,17 @@ def rewards():
         reward_names.append(name)
         transaction_dates.append(date)
         if claim:
-            claimed.append('Redeemed')
+            claimed.append("Redeemed")
         else:
-            claimed.append('Not Redeemed')
+            claimed.append("Not Redeemed")
     # Create transaction_data list after appending data
-    transaction_data = list(enumerate(zip(transaction_id, reward_names, transaction_dates, claimed), 1))
+    transaction_data = list(
+        enumerate(zip(transaction_id, reward_names, transaction_dates, claimed), 1)
+    )
     return render_template(
         "rewards.html",
-        record = record,
-        userPoints = userPoints,
+        record=record,
+        userPoints=userPoints,
         transaction_data=transaction_data,
     )
 
@@ -215,6 +218,7 @@ def redeem_reward():
         return jsonify(success=True, message="Claim successful")
     return jsonify(success=False, message="Error processing claim")
 
+
 @app.route("/claim_reward", methods=["POST"])
 def claim_reward():
     if request.method == "POST":
@@ -226,10 +230,7 @@ def claim_reward():
 
 @app.route("/admin_recycle", methods=["GET", "POST"])
 def recycle_approval():
-    data = {
-        "username": session["username"],
-        "record": maria_q.get_recycle()
-    }
+    data = {"username": session["username"], "record": maria_q.get_recycle()}
 
     if request.method == "GET":
         collectionId = request.args.get("collection")  # query for detection
@@ -281,7 +282,7 @@ def generate_performance():
     else:
         flash("Error: Request type is not supported", "danger")
 
-      
+
 @app.route("/home")
 def home():
     # user current points
@@ -290,15 +291,15 @@ def home():
 
     # recycles made today
     record = maria_q.getDailyRecycles()
-    dailyRecycles=record[0]
+    dailyRecycles = record[0]
 
     # recycles user recycles today
     record = maria_q.getUserDailyRecycles()
-    userDailyRecycles=record[0]
+    userDailyRecycles = record[0]
 
     # total recycles made
     record = maria_q.getTotalRecycles()
-    totalRecycles=record[0]
+    totalRecycles = record[0]
 
     # top 5 recyclers
     record = maria_q.getTop5Recyclers()
@@ -307,7 +308,7 @@ def home():
     for name, recycles in record:
         topRecyclerNames.append(name)
         topRecycles.append(recycles)
-    
+
     topRecyclersData = list(enumerate(zip(topRecyclerNames, topRecycles), 1))
 
     # bin capacity
@@ -316,10 +317,10 @@ def home():
     record = maria_q.getBinCapacity()
     for binLoc, binCap in record:
         binLocation.append(binLoc)
-        binCapacity.append(format(float(binCap)/2, ".1f"))
-        
+        binCapacity.append(format(float(binCap) / 2, ".1f"))
+
     binData = list(enumerate(zip(binLocation, binCapacity), 1))
-    
+
     # recycles by month line chart
     record = maria_q.getRecyclesByMonth()
     recycles_by_month = []
@@ -339,18 +340,38 @@ def home():
     # generate activity graph
     helper.generateGraph()
     helper.generateActivities(maria_q.getRecycleActivity60days(), None)
-    helper.generateActivities(maria_q.getRecycleMaterialActivity60days('Paper'), 'Paper')
-    helper.generateActivities(maria_q.getRecycleMaterialActivity60days('Plastic'), 'Plastic')
-    helper.generateActivities(maria_q.getRecycleMaterialActivity60days('Glass'), 'Glass')
-    helper.generateActivities(maria_q.getRecycleMaterialActivity60days('Metal'), 'Metal')
-    helper.generateActivities(maria_q.getRecycleMaterialActivity60days('Cardboard'), 'Cardboard')
+    helper.generateActivities(
+        maria_q.getRecycleMaterialActivity60days("Paper"), "Paper"
+    )
+    helper.generateActivities(
+        maria_q.getRecycleMaterialActivity60days("Plastic"), "Plastic"
+    )
+    helper.generateActivities(
+        maria_q.getRecycleMaterialActivity60days("Glass"), "Glass"
+    )
+    helper.generateActivities(
+        maria_q.getRecycleMaterialActivity60days("Metal"), "Metal"
+    )
+    helper.generateActivities(
+        maria_q.getRecycleMaterialActivity60days("Cardboard"), "Cardboard"
+    )
     recentActivityGraph_path = "static/assets/graphs/recentActivity.png"
     Last60DaysActivityGraph_path = "static/assets/graphs/last60DaysActivity.png"
-    Last60DaysActivityPaperGraph_path = "static/assets/graphs/last60DaysActivity_Paper.png"
-    Last60DaysActivityPlasticGraph_path = "static/assets/graphs/last60DaysActivity_Plastic.png"
-    Last60DaysActivityGlassGraph_path = "static/assets/graphs/last60DaysActivity_Glass.png"
-    Last60DaysActivityMetalGraph_path = "static/assets/graphs/last60DaysActivity_Metal.png"
-    Last60DaysActivityCardboardGraph_path = "static/assets/graphs/last60DaysActivity_Cardboard.png"
+    Last60DaysActivityPaperGraph_path = (
+        "static/assets/graphs/last60DaysActivity_Paper.png"
+    )
+    Last60DaysActivityPlasticGraph_path = (
+        "static/assets/graphs/last60DaysActivity_Plastic.png"
+    )
+    Last60DaysActivityGlassGraph_path = (
+        "static/assets/graphs/last60DaysActivity_Glass.png"
+    )
+    Last60DaysActivityMetalGraph_path = (
+        "static/assets/graphs/last60DaysActivity_Metal.png"
+    )
+    Last60DaysActivityCardboardGraph_path = (
+        "static/assets/graphs/last60DaysActivity_Cardboard.png"
+    )
 
     return render_template(
         "home.html",
@@ -416,14 +437,17 @@ def search():
     mquery = request.args.get("m")  # Access the 'm' query parameter
     page = int(request.args.get("page", 1))  # Access the 'm' query parameter
 
-    pexels_api_key = "eTAgLvBaXl4E3zEhJ0WV5ymxFCOLEYivMWx0Mo3rPe3dbV5uXmKRdWJf"; # Pexels API key
+    pexels_api_key = "eTAgLvBaXl4E3zEhJ0WV5ymxFCOLEYivMWx0Mo3rPe3dbV5uXmKRdWJf"
+    # Pexels API key
 
     # Get the page number from the URL parameter (default to page 1 if not provided)
     page_size = 10  # Number of items to display per page
 
     # Retrieve the relevant items for the current page based on page number and page size
-    offset = (page - 1) * page_size # Use a database query with LIMIT and OFFSET clauses
-    
+    offset = (
+        page - 1
+    ) * page_size  # Use a database query with LIMIT and OFFSET clauses
+
     if query or mquery:
         data = {"query": query, "mquery": mquery}
 
@@ -438,11 +462,17 @@ def search():
         # Calculate the total number of pages
         total_pages = math.ceil(total_items / page_size)
 
-        return render_template("qsearch.html", data=data, current_page=page, total_pages=total_pages, pexels_api_key=pexels_api_key)
+        return render_template(
+            "qsearch.html",
+            data=data,
+            current_page=page,
+            total_pages=total_pages,
+            pexels_api_key=pexels_api_key,
+        )
     elif request.method == "POST":
-        request_identifier = request.headers.get('X-Request-Identifier')
+        request_identifier = request.headers.get("X-Request-Identifier")
 
-        if request_identifier == 'search-suggestions':
+        if request_identifier == "search-suggestions":
             search_query = request.json.get("search_query")
             suggested_words = helper.get_suggestions(search_query)
 
@@ -451,7 +481,7 @@ def search():
             search_query = request.form.get("search_query")
             return redirect(url_for("search", q=search_query))
     else:
-        return render_template("search.html") # Start page of search
+        return render_template("search.html")  # Start page of search
 
 
 @app.route("/get_suggestions", methods=["POST"])
@@ -464,36 +494,40 @@ def get_suggestions():
 @app.route("/location")
 def location():
     data = mongo_q.get_locations()
-    user_location = maria_q.getUserLocation()    
+    user_location = maria_q.getUserLocation()
     return render_template("location.html", user_location=user_location, data=data)
 
 
-@app.route("/locationList", methods=["GET","POST"])
+@app.route("/locationList", methods=["GET", "POST"])
 def locationList():
-    data =mongo_q.get_locations()
+    data = mongo_q.get_locations()
 
     # For Pagination - tried
     """ page_number = request.args.get('page_number', 1, type=int)
     items_per_page = 150
     recycling, ebin,total_locations = mongo_q.get_locations_page(page_number, items_per_page)
-    """   
-    #Cleaning the data's value field for recycling bin data
-    recycling=data[0]['features']
-    row_pattern = r'<tr.*?>\s*<th.*?>(.*?)<\/th>\s*<td.*?>(.*?)<\/td>(?=\s*<\/td>|<td.*?>|\s*<\/tr>)'
+    """
+    # Cleaning the data's value field for recycling bin data
+    recycling = data[0]["features"]
+    row_pattern = r"<tr.*?>\s*<th.*?>(.*?)<\/th>\s*<td.*?>(.*?)<\/td>(?=\s*<\/td>|<td.*?>|\s*<\/tr>)"
     for entry in recycling:
         html_string = entry["properties"]["description"]["value"]
-        entry["properties"]["description"]["value"] = helper.parse_html_table(row_pattern, html_string)
-    data[0]['features'] = recycling
+        entry["properties"]["description"]["value"] = helper.parse_html_table(
+            row_pattern, html_string
+        )
+    data[0]["features"] = recycling
 
-    #Cleaning the data's value field for e-bin data
-    ebin =data[1]['features']
-    row_pattern = r'<tr.*?>\s*<th.*?>(.*?)<\/th>\s*<td.*?>(.*?)<\/td>\s*<\/tr>'
+    # Cleaning the data's value field for e-bin data
+    ebin = data[1]["features"]
+    row_pattern = r"<tr.*?>\s*<th.*?>(.*?)<\/th>\s*<td.*?>(.*?)<\/td>\s*<\/tr>"
     for entry in ebin:
         html_string = entry["properties"]["Description"]
-        entry["properties"]["Description"] = helper.parse_html_table(row_pattern,html_string)
-    data[1]['features'] = ebin
-    
-    #Pagination 
+        entry["properties"]["Description"] = helper.parse_html_table(
+            row_pattern, html_string
+        )
+    data[1]["features"] = ebin
+
+    # Pagination
     """ total_pages = math.ceil(total_locations / items_per_page) """
 
     # Handle the search query
@@ -504,43 +538,64 @@ def locationList():
         search_query = request.form.get("search_query")
         if search_query:
             # Get the combined suggestions based on the search query
-            suggested_words = mongo_q.get_suggestions(recycling,ebin, search_query)
-            #Filter the recycling data
-            filtered_recycling_data = [entry for entry in recycling if search_query.lower() in entry['properties']['description']['value']['ADDRESSSTREETNAME'].lower()]
+            suggested_words = mongo_q.get_suggestions(recycling, ebin, search_query)
+            # Filter the recycling data
+            filtered_recycling_data = [
+                entry
+                for entry in recycling
+                if search_query.lower()
+                in entry["properties"]["description"]["value"][
+                    "ADDRESSSTREETNAME"
+                ].lower()
+            ]
             # Filter E-waste data
-            filtered_ebin_data = [entry for entry in ebin if search_query.lower() in entry['properties']['Description']['ADDRESSSTREETNAME'].lower()]
+            filtered_ebin_data = [
+                entry
+                for entry in ebin
+                if search_query.lower()
+                in entry["properties"]["Description"]["ADDRESSSTREETNAME"].lower()
+            ]
         else:
             # If no search query is provided, show all locations
             suggested_words = None
-            filtered_recycling_data=recycling
+            filtered_recycling_data = recycling
             filtered_ebin_data = ebin
     else:
         suggested_words = None
-        filtered_recycling_data=recycling
+        filtered_recycling_data = recycling
         filtered_ebin_data = ebin
 
-    return render_template("locationList.html",recycling=filtered_recycling_data, ebin=filtered_ebin_data,suggested_words=suggested_words) #For pagementation - ,total_pages=total_pages, page_number=page_number, items_per_page=items_per_page
+    return render_template(
+        "locationList.html",
+        recycling=filtered_recycling_data,
+        ebin=filtered_ebin_data,
+        suggested_words=suggested_words,
+    )  # For pagementation - ,total_pages=total_pages, page_number=page_number, items_per_page=items_per_page
+
 
 @app.route("/get_location_suggestions", methods=["POST"])
 def get_location_suggestions():
     data = mongo_q.get_locations()
 
-    #Cleaning the data's value field for recycling bin data
-    recycling = data[0]['features']
-    row_pattern = r'<tr.*?>\s*<th.*?>(.*?)<\/th>\s*<td.*?>(.*?)<\/td>(?=\s*<\/td>|<td.*?>|\s*<\/tr>)'
+    # Cleaning the data's value field for recycling bin data
+    recycling = data[0]["features"]
+    row_pattern = r"<tr.*?>\s*<th.*?>(.*?)<\/th>\s*<td.*?>(.*?)<\/td>(?=\s*<\/td>|<td.*?>|\s*<\/tr>)"
     for entry in recycling:
         html_string = entry["properties"]["description"]["value"]
-        entry["properties"]["description"]["value"] = helper.parse_html_table(row_pattern, html_string)
-    data[0]['features'] = recycling
+        entry["properties"]["description"]["value"] = helper.parse_html_table(
+            row_pattern, html_string
+        )
+    data[0]["features"] = recycling
 
-    #Cleaning the data's value field for e-bin data
-    ebin = data[1]['features']
-    row_pattern = r'<tr.*?>\s*<th.*?>(.*?)<\/th>\s*<td.*?>(.*?)<\/td>\s*<\/tr>'
+    # Cleaning the data's value field for e-bin data
+    ebin = data[1]["features"]
+    row_pattern = r"<tr.*?>\s*<th.*?>(.*?)<\/th>\s*<td.*?>(.*?)<\/td>\s*<\/tr>"
     for entry in ebin:
         html_string = entry["properties"]["Description"]
-        entry["properties"]["Description"] = helper.parse_html_table(row_pattern,html_string)
-    data[1]['features'] = ebin
-
+        entry["properties"]["Description"] = helper.parse_html_table(
+            row_pattern, html_string
+        )
+    data[1]["features"] = ebin
 
     # # Extract the search query from the JSON data sent in the request
     # search_query = request.json["search_query"]
@@ -611,7 +666,10 @@ def scan():
                     "warning",
                 )
             else:
-                flash(f"You have successfully recycled and earned {const.RECYCLE_POINTS} points", "success")
+                flash(
+                    f"You have successfully recycled and earned {const.RECYCLE_POINTS} points",
+                    "success",
+                )
 
         return render_template("form.html", data=data)
     else:
