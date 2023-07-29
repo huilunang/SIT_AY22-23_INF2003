@@ -93,6 +93,11 @@ def generateGraph():
     plt.gca().spines["top"].set_visible(False)
     plt.gca().spines["right"].set_visible(False)
 
+    # Check if file path is empty
+    filepath = os.path.join(const.SRC_PATH, "static/assets/graphs")
+
+    if os.path.isdir(filepath) is False:
+        os.mkdir(filepath)
     # Save the chart to a file
     plt.savefig("static/assets/graphs/recentActivity.png")
 
@@ -146,6 +151,14 @@ def generateActivities(result, materialType):
 
     # Display the chart
     plt.tight_layout()  # Adjusts the layout to prevent overlapping labels
+
+    
+
+    # Check if file path is empty
+    filepath = os.path.join(const.SRC_PATH, "static/assets/graphs")
+
+    if os.path.isdir(filepath) is False:
+        os.mkdir(filepath)
 
     if materialType in ["Paper", "Plastic", "Glass", "Metal", "Cardboard"]:
         plt.savefig("static/assets/graphs/last60DaysActivity_" + materialType + ".png")
