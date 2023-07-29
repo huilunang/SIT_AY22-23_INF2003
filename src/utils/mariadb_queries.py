@@ -161,25 +161,11 @@ def getRewardNameByRewardID(RewardID):
 
 def addTransaction(rewardID):
     currentDatetime=datetime.datetime.now(pytz.timezone("Asia/Singapore"))
-    currentDatetime=datetime.datetime.now(pytz.timezone("Asia/Singapore"))
     query = """
     INSERT INTO RewardTransactions (RewardID, UserID, TransactionDate, Claimed)
-    VALUES (%s, %s, %s, %s)
-    INSERT INTO RewardTransactions (RewardID, UserID, TransactionDate, Claimed)
-    VALUES (%s, %s, %s, %s)
-    """
-    maria_db.execute(query, "", rewardID, session["id"], currentDatetime, False)
+    VALUES (%s, %s, %s, %s)"""
 
     maria_db.execute(query, "", rewardID, session["id"], currentDatetime, False)
-
-
-def addTransaction(rewardID):
-    query = """
-    INSERT INTO RewardTransactions (RewardID, UserID, Claimed)
-    VALUES (%s, %s, %s)
-    """
-    maria_db.execute(query, "", rewardID, session["id"], False)
-
 
 # approval page
 def get_recycle():
