@@ -201,6 +201,10 @@ form .end-link a:hover {
   white-space: nowrap;
 }
 
+#suggestions {
+    display: none;
+}
+
 a:link {
   text-decoration: none;
 }
@@ -255,4 +259,10 @@ a:link {
   body>div:nth-child(2)>div>div>div {
     padding: 0 !important;
   }
+}
+
+.chart-container {
+  width: 50%;
+  height: 50%;
+  margin: auto;
 }

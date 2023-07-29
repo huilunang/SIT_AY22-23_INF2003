@@ -10,7 +10,7 @@ import pytz
 
 
 def get_suggestions(search_query):
-    if len(search_query) >= 2:
+    if len(search_query) > 0:
         suggested_words = [row[0] for row in maria_q.suggestion(search_query)]
 
         return suggested_words

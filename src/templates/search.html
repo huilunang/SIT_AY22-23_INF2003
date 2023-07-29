@@ -32,12 +32,23 @@
           <div class="search">
             <form method="POST" action="{{ url_for('search') }}">
               <div class="dropdown">
-                <input type="text" id="search-input" class="search-input" placeholder="Search..." name="search_query"
-                  data-bs-toggle="dropdown" autocomplete="off" />
+                <input
+                  type="text"
+                  id="search-input"
+                  class="search-input"
+                  placeholder="Search..."
+                  name="search_query"
+                  data-toggle="dropdown"
+                  autocomplete="off"
+                />
                 <a href="#" class="search-icon">
                   <i class="fa fa-search"></i>
                 </a>
-                <ul id="suggestions" class="dropdown-menu" aria-labelledby="search-input"></ul>
+                <div
+                  id="suggestions"
+                  class="dropdown-menu"
+                  aria-labelledby="search-input"
+                ></div>
               </div>
             </form>
           </div>
@@ -126,45 +137,7 @@
     </div>
   </div>
 
-  <script>
-    const searchInput = document.getElementById("search-input");
-    const suggestionsContainer = document.getElementById("suggestions");
+<script src="../static/js/search.js" defer></script>
 
-    searchInput.addEventListener("input", function () {
-      const searchQuery = this.value;
-      if (searchQuery.length >= 2) {
-        fetch("/get_suggestions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ search_query: searchQuery }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            suggestionsContainer.innerHTML = "";
-            if (data && data.suggested_words.length > 0) {
-              data.suggested_words.forEach((word) => {
-                const element = document.createElement("li");
-                const suggestion = document.createElement("a");
-                suggestion.classList.add("dropdown-item");
-                suggestion.href = "search?q=" + encodeURIComponent(word);
-                suggestion.textContent = word;
-                element.appendChild(suggestion);
-                suggestionsContainer.appendChild(element);
-              });
-            } else {
-              const noResults = document.createElement("a");
-              suggestion.classList.add("dropdown-item");
-              suggestion.href = "#";
-              suggestion.textContent = word;
-              suggestionsContainer.appendChild(noResults);
-            }
-          });
-      } else {
-        suggestionsContainer.innerHTML = "";
-      }
-    });
-  </script>
 </body>
 {% endblock %}

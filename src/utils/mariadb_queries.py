@@ -165,6 +165,14 @@ def addTransaction(rewardID):
     maria_db.execute(query, "", rewardID, session["id"], currentDatetime, False)
 
 
+def addTransaction(rewardID):
+    query = """
+    INSERT INTO RewardTransactions (RewardID, UserID, Claimed)
+    VALUES (%s, %s, %s)
+    """
+    maria_db.execute(query, "", rewardID, session["id"], False)
+
+
 # approval page
 def get_recycle():
     query = """
@@ -361,40 +369,82 @@ def add_points(userId):
 
 
 # search page
-def get_search(query_param, value):
+def get_search(query_param, value, offset, limit):
     if query_param == "q":
         query = """
-        SELECT * FROM info1
+        SELECT * FROM InfoRecyclables
         INNER JOIN
-        info2 ON info1.id = info2.id
-        WHERE info1.item = %s
-        """
-
-        fetch_method = "one"
-        result = maria_db.execute(query, fetch_method, value)["result"]
-    else:
-        query = """
-        SELECT * FROM info1
-        INNER JOIN
-        info2 ON info1.id = info2.id
-        WHERE info1.type = %s
+        InfoRecyclableTips ON InfoRecyclables.ItemID = InfoRecyclableTips.ItemID
+        WHERE InfoRecyclables.Item LIKE %s
+        LIMIT %s OFFSET %s
         """
 
         fetch_method = "all"
-        result = maria_db.execute(query, fetch_method, value)
+        result = maria_db.execute(query, fetch_method, '%' + value + '%', limit, offset)
 
         row_headers = [x[0] for x in result["description"]]
         result = [dict(zip(row_headers, r)) for r in result["result"]]
+    else:
+        query = """
+        SELECT * FROM InfoRecyclables
+        INNER JOIN
+        InfoRecyclableTips ON InfoRecyclables.ItemID = InfoRecyclableTips.ItemID
+        WHERE InfoRecyclables.ItemType = %s
+        LIMIT %s OFFSET %s
+        """
 
+        fetch_method = "all"
+        result = maria_db.execute(query, fetch_method, value, limit, offset)
+
+        row_headers = [x[0] for x in result["description"]]
+        result = [dict(zip(row_headers, r)) for r in result["result"]]
     return result
+
+
+def get_material_stats(value):
+    query = """
+    SELECT * FROM InfoStats
+    WHERE InfoStats.WasteType = %s 
+    ORDER BY InfoStats.Year ASC
+    """
+
+    fetch_method = "all"
+    result = maria_db.execute(query, fetch_method, value)
+
+    row_headers = [x[0] for x in result["description"]]
+    result = [dict(zip(row_headers, r)) for r in result["result"]]
+    # Check if result is empty
+    if not result:
+        # Return None if empty
+        return None
+    return result
+
+
+def get_total_number_of_items(query_param, value):
+    if query_param == "q":
+            query = """
+            SELECT COUNT(*) FROM InfoRecyclables
+            WHERE InfoRecyclables.Item LIKE %s
+            """
+            fetch_method = "one" # Single result with the count
+            result = maria_db.execute(query, fetch_method, '%' + value + '%')
+    else:
+        query = """
+            SELECT COUNT(*) FROM InfoRecyclables
+            WHERE InfoRecyclables.ItemType = %s
+        """
+        fetch_method = "one" # Single result with the count
+        result = maria_db.execute(query, fetch_method, value)
+    total_items = result["result"][0]  # Access the count directly
+    return total_items
 
 
 def suggestion(search_query):
     query = """
-    SELECT item
-    FROM info1
-    WHERE item LIKE %s
-    ORDER BY item
+    SELECT Item
+    FROM InfoRecyclables
+    WHERE Item LIKE %s
+    ORDER BY Item
     LIMIT 10
     """
 
