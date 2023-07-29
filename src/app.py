@@ -34,7 +34,6 @@ app.secret_key = "secret key"
 def index():
     return render_template("index.html")
 
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     msg = ""
@@ -96,10 +95,11 @@ def register():
 
 @app.route("/admin_home")
 def admin_home():
-    record = maria_q.getAllUsers()
+    records = maria_q.getAllUsers()
+    enumerated_records = [(index + 1, *record) for index, record in enumerate(records)]
     return render_template(
         "admin_home.html",
-        record=record,
+        record=enumerated_records,
         username=session["username"],
     )
 
