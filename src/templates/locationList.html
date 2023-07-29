@@ -14,7 +14,7 @@
       alt="logo"
       class="logo"
     />
-<!-- Navigation Bar -->
+
     <nav>
       <ul>
         <li><a href="home">Home</a></li>
@@ -29,32 +29,30 @@
   </div>
 </header>
 
-<!-- Filters and buttons to navigate between map and list -->
 <body>
   <div class="container-fluid" style="height: 50%">
     <div class="row d-flex justify-content-center align-items-center searchContainer" style="height: 100%">
       <div class="col-md-9 m-5">
         <h1 class="heading text-center">LOCATION</h1>
         <div class="row d-flex justify-content-center px-5">
-          <button class="btn btn-link"><a href="location" class="active">Map</a></button>
-          <br>
-          <button class="btn btn-link" ><a href="locationList" class="active">List</a></button>    
+          <button class="btn btn-light" ><a href="location" class="active">Map</a></button>
+          <button class="btn btn-light"><a href="locationList" class="active">List</a></button>    
         </div>
         <div class="row d-flex justify-content-center px-5">
           <div class="search">
             <form id="search-form">
-              
               <div class="input-group">
                 <div class="input-group-prepend">
                   <label for="filter">Filter:</label>
                 </div>
-                <select id="filter" class ="col-1" onchange="filterData()">
+                <div>
+
+                </div>
+                <select id="filter" class="col-1" onchange="filterData()">
                   <option value="all">All</option>
                   <option value="recycling">Recycling</option>
                   <option value="e-waste">E-Waste</option>
                 </select>
-                <div class="col py-2">
-                </div>
                 <input 
                   type="hidden" 
                   id="search-query-input" 
@@ -85,15 +83,13 @@
     </div>
   </div>
   <div>
-  <br>
-
     <div id="location-data">
       <div id="recycling-data" style="display: block;">
         <!-- Show the recycling data -->
         {% if recycling %}
           {% for feature in recycling %}
             <div class="row">
-              <div class="col">
+              <div class="col" >
                 <div class="card" style='border-radius: 0%;'>
                   <p><b>Address:</b>  {{ feature['properties']['description']['value']['ADDRESSBLOCKHOUSENUMBER'] }}  {{ feature['properties']['description']['value']['ADDRESSSTREETNAME'] }} S{{ feature['properties']['description']['value']['ADDRESSPOSTALCODE'] }}</p>
                   <p><b>Coordinates:</b> {{ feature['geometry']['coordinates'][1] }}, {{ feature['geometry']['coordinates'][0] }}</p>
@@ -102,8 +98,6 @@
                 </div>
               </div>
             </div>
-            <br>
-            <br>
           {% endfor %}
         {% else %}
           <p>No recycling bin locations to display.</p>
@@ -124,8 +118,6 @@
                 </div>
               </div>
             </div>
-            <br>
-            <br>
           {% endfor %}
         {% else %}
           <p>No e-waste bin locations to display.</p>
@@ -135,8 +127,6 @@
   </div>
 
 <script>
-
-// Filter the records to show based on recycling, e-waste and all
 function filterData() {
   var filterValue = document.getElementById("filter").value;
   var recyclingData = document.getElementById("recycling-data");
@@ -154,7 +144,6 @@ function filterData() {
   }
 }
 
-//When type into the box, will auto filter the records
 function handleSearchInput() {
   const input = document.getElementById("search-input");
   const filter = input.value.toUpperCase();

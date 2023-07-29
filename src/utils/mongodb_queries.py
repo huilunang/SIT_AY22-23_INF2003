@@ -40,7 +40,10 @@ def get_locations():
     
     return paginated_recycling, paginated_ebin,total_locations
  """
-def get_suggestions(recycling,ebin, search_query):
+def get_suggestions(data, search_query):
+    recycling=data[0]['features']
+    ebin=data[1]['features']
+
     # Function to extract street names from recycling bin data
     def extract_recycling_street_names():
         for entry in recycling:
@@ -64,12 +67,10 @@ def get_suggestions(recycling,ebin, search_query):
         if search_query_lower in street_name.lower():
             suggested_words.add(street_name)
 
-
     # Sort the suggestions in alphabetical order and get the first 10
     sorted_suggestions = sorted(suggested_words)[:10]
 
     return sorted_suggestions
-
 
 
 def get_detection(id):
@@ -80,7 +81,6 @@ def get_detection(id):
     encoded_image_data = base64.b64encode(image).decode("utf-8")
 
     return detection["model_labeled"], encoded_image_data
-
 
 def insert_detection(score, modelLabel, fdir):
     collection = mongo_db.get_collection("detection_result")
@@ -96,7 +96,6 @@ def insert_detection(score, modelLabel, fdir):
     collection.update_one({"_id": post_id}, {"$set": {"image_id": image_id}})
 
     return str(post_id)
-
 
 def set_material(detectionId, label):
     collection = mongo_db.get_collection("detection_result")
