@@ -18,7 +18,7 @@
             <ul>
                 <li><a href="admin_home" class="active">Admin</a></li>
                 <li><a href="admin_rewards">Rewards</a></li>
-                <li><a href="admin_approval">Recycle Approval</a></li>
+                <li><a href="admin_recycle">Recycle</a></li>
                 <li><a href="profile">Profile</a></li>
                 <li><a href="{{url_for('logout')}}">Logout</a></li>
             </ul>
@@ -56,7 +56,7 @@
                 <table class="table table-responsive-xl">
                     <thead>
                         <tr>
-                            <th>UserID</th>
+                            <th>&nbsp;</th>
                             <th>Username</th>
                             <th>Name</th>
                             <th>Email</th>
@@ -67,15 +67,15 @@
                     </thead>
                     <tbody>
                         {% for rec in record %}
-                            <tr class="alert" role="alert" data-isadmin="{{ rec[6] }}">
+                            <tr class="alert" role="alert" data-isadmin="{{ rec[7] }}">
                                 <td>{{ rec[0] }}</td>
-                                <td>{{ rec[4] }}</td>
-                                <td>{{ rec[1] }}</td>
+                                <td>{{ rec[5] }}</td>
                                 <td>{{ rec[2] }}</td>
                                 <td>{{ rec[3] }}</td>
-                                <td>{{ rec[7] }}</td>
+                                <td>{{ rec[4] }}</td>
+                                <td>{{ rec[8] }}</td>
                                 <td>
-                                    <button type="button" class="delete-btn btn btn-danger" data-record-id="{{ rec[0] }}" data-toggle="modal" data-target="#confirmationModal">
+                                    <button type="button" class="delete-btn btn btn-danger" data-record-id="{{ rec[1] }}" data-toggle="modal" data-target="#confirmationModal">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>

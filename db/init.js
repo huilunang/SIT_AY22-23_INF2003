@@ -17,14 +17,14 @@ bloobin.createCollection('detection_result', { capped: false });
 // insert dummy data
 // bloobin.detection_result.insertMany([
 //   {
-//     label: "trash",
-//     score: 0.89,
-//     userId: 2,
+//     model_labeled: "trash",
+//     confidence_score: 0.89,
+//     user_id: 2,
 //   },
 //   {
-//     label: "glass",
-//     score: 0.59,
-//     userId: 2,
+//     model_labeled: "glass",
+//     confidence_score: 0.59,
+//     user_id: 2,
 //   }
 // ]);
 
@@ -35,5 +35,5 @@ function loadGeoJSON(filePath, collectionName) {
 }
 
 bloobin.createCollection('location', { capped: false });
-loadGeoJSON('/docker-entrypoint-initdb.d/recyclingbin.geojson', 'location');
-loadGeoJSON('/docker-entrypoint-initdb.d/e-wastebin.geojson', 'location');
+loadGeoJSON('/docker-entrypoint-initdb.d/locationDump/recyclingbin.geojson', 'location');
+loadGeoJSON('/docker-entrypoint-initdb.d/locationDump/e-wastebin.geojson', 'location');

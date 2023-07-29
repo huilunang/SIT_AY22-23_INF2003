@@ -19,8 +19,8 @@
                 <li><a href="home">Home</a></li>
                 <li><a href="search">Search</a></li>
                 <li><a href="scan">Scan</a></li>
-                <li><a href="rewards">Rewards</a></li>
-                <li><a href="location" class="active">Location</a></li>
+                <li><a href="rewards" class="active">Rewards</a></li>
+                <li><a href="location">Location</a></li>
                 <li><a href="profile">Profile</a></li>
                 <li><a href="{{url_for('logout')}}">Logout</a></li>
             </ul>
@@ -30,6 +30,7 @@
 
 
 <div class="container">
+    <h1>Rewards Shop</h1>
     <div class="row">
         <div class="col-md-12">
             <div class="table-wrap">
@@ -52,7 +53,8 @@
                             <td>
                                 <button class="btn btn-primary redeem-btn" data-reward-id="{{ rec[0] }}"
                                     data-point-cost="{{ rec[1] }}" data-stock="{{ rec[4] }}"
-                                    data-uPoints="{{ userPoints }}" {% if rec[1] > userPoints or rec[4] == 0 %}disabled{% endif %}>Redeem</button>
+                                    data-uPoints="{{ userPoints }}" {% if rec[1]> userPoints or rec[4] == 0 %}disabled{%
+                                    endif %}>Claim</button>
                             </td>
                         </tr>
                         {% endfor %}
@@ -61,8 +63,38 @@
             </div>
         </div>
     </div>
+    <br>
+    <h1>Transactions History</h1>
+    <table class="center-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Reward Name</th>
+                <th>Transaction Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for index, (transaction_id, reward_name, transaction_date, claimed) in transaction_data %}
+            <tr>
+                <td class="table-cell-spacing">{{ index }}</td>
+                <td class="table-cell-spacing">{{ reward_name }}</td>
+                <td class="table-cell-spacing">{{ transaction_date }}</td>
+                <td class="table-cell-spacing">
+                    {% if claimed == "Not Redeemed" %}
+                    <button class="btn btn-primary redeem-button"
+                        data-transaction-id="{{ transaction_id }}">Redeem</button>
+                    {% else %}
+                    {{ claimed }}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
-<!-- Modal for Confirmation -->
+<br><br>
+<!-- Modal for Claim -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -74,11 +106,54 @@
                 </button>
             </div>
             <div class="modal-body">
-                Are you sure you want to redeem this reward?
+                Are you sure you want to claim this reward? (Your reward can be redeemed at a later time)
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="confirmRedeemBtn">Redeem</button>
+                <button type="button" class="btn btn-primary" id="confirmRedeemBtn">Claim</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Redeem -->
+<div class="modal fade" id="redeemModal" tabindex="-1" role="dialog" aria-labelledby="redeemModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="redeemModalLabel">Confirm Redemption</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to redeem this reward?
+                (WARNING: A code will be provided to you, only click redeem when ready to show the cashier)
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmRedemption"
+                    data-transaction-id="{{ transaction_id }}">Redeem</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="codeModal" tabindex="-1" role="dialog" aria-labelledby="codeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="codeModalLabel">Redemption Code (Screenshot if needed): </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="codeDisplay">
+                <!-- The randomly generated 4-digit alphanumeric code will be displayed here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
             </div>
         </div>
     </div>
@@ -129,6 +204,9 @@
                             if (newStock === 0 || newPoints < rewardPointCost) {
                                 $('.redeem-btn[data-reward-id="' + rewardId + '"]').prop('disabled', true);
                             }
+
+                            // Reload page to update transactions table
+                            location.reload();
                         } else {
                             // Display an error message if redemption could not be completed
                             alert(response.message);
@@ -142,6 +220,8 @@
             });
         }
 
+
+
         // Handle the click event for the "Redeem" buttons
         $('.redeem-btn').on('click', function () {
             var rewardId = $(this).data('reward-id');
@@ -150,7 +230,61 @@
 
             handleRedemption(rewardId, pointCost, stock);
         });
+
+        $('.redeem-button').on('click', function () {
+            var transactionID = $(this).data('transaction-id');
+            var modalId = "#redeemModal";
+            $(modalId).modal('show');
+        });
+
+        // Function to handle the confirmRedemption click
+        $('#confirmRedemption').on('click', function () {
+            // Close the redeemModal
+            $('#redeemModal').modal('hide');
+
+            // Generate a random 4-digit alphanumeric code
+            var code = generateRandomCode(4); // Replace '4' with the desired length of the code
+            var transactionID = $('.redeem-button').data('transaction-id');
+            $.ajax({
+                type: 'POST',
+                url: '/claim_reward',
+                data: {
+                    transactionID: transactionID,
+                },
+                success: function (response) {
+                    // Check the response from the server
+                    if (response.success) {
+                        // Display a success message if redemption was successful
+                        alert(response.message);
+                    } else {
+                        // Display an error message if redemption could not be completed
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    // Display an error message if the AJAX request fails
+                    alert('An error occurred while processing the redemption.');
+                }
+            });
+
+            // Display the code in the codeModal
+            $('#codeDisplay').text(code);
+            $('#codeModal').modal('show');
+        });
+        $('#codeModal').on('hidden.bs.modal', function () {
+            location.reload()
+        });
     });
+
+    // Function to generate a random alphanumeric code of the specified length
+    function generateRandomCode(length) {
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        var code = '';
+        for (var i = 0; i < length; i++) {
+            code += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return code;
+    }
 
 </script>
 

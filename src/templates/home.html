@@ -12,7 +12,6 @@
 <header>
     <div class="containerNav">
         <img src="../static/assets/smart bloobin logo.png" alt="logo" class="logo">
-
         <nav>
             <ul>
                 <li><a href="home" class="active">Home</a></li>
@@ -27,30 +26,31 @@
     </div>
 </header>
 
-<div class="container-fluid text-center">
+<div class="container">
     <div class="col-sm-8 text-left">
         <div>
             <br>
             <h1>Welcome, {{username}}!</h1>
+            <hr>
             <br>
         </div>
     </div>
 </div>
 
-<div class="container-fluid">
+<div class="container">
     <div class="row">
-
-        <div class="col-md-4">
+        <h3>Your Recycling Statistics</h3>
+        <div class="col-md-6">
             <div class="card card-style mb-2">
                 <div class="card-body">
                     <div class="chart-container" style="position: relative;">
-                        <canvas id="recycle_by_month"></canvas>
+                        <img id="graph" src="{{ recentActivityGraph_path }}" alt="Recent Activity Graph">
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="card card-style mb-2">
                 <div class="card-body">
                     <div class="chart-container" style="position: relative;">
@@ -60,18 +60,169 @@
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="box">
-                <div class="box-title">Existing Points</div>
-                <div class="points">
-                    <span>{{points}}</span>
+
+
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Recycle Analytics</h3>
+                    <div class="card card-style mb-2">
+                        <div class="card-body">
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs" id="myTabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="all-tab" data-toggle="tab" href="#all" role="tab"
+                                        aria-controls="all" aria-selected="true">All</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="paper-tab" data-toggle="tab" href="#paper" role="tab"
+                                        aria-controls="paper" aria-selected="false">Paper</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="plastic-tab" data-toggle="tab" href="#plastic" role="tab"
+                                        aria-controls="plastic" aria-selected="false">Plastic</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="glass-tab" data-toggle="tab" href="#glass" role="tab"
+                                        aria-controls="glass" aria-selected="false">Glass</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="metal-tab" data-toggle="tab" href="#metal" role="tab"
+                                        aria-controls="metal" aria-selected="false">Metal</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="cardboard-tab" data-toggle="tab" href="#cardboard" role="tab"
+                                        aria-controls="cardboard" aria-selected="false">Cardboard</a>
+                                </li>
+                            </ul>
+
+                            <!-- Tab panes -->
+                            <div class="tab-content mt-2" id="myTabContent">
+                                <div class="tab-pane fade show active" id="all" role="tabpanel"
+                                    aria-labelledby="all-tab">
+                                    <!-- Content for the All tab -->
+                                    <img id="graph" src="{{ Last60DaysActivityGraph_path }}"
+                                        alt="Last 60 Days Activity Graph">
+                                </div>
+                                <div class="tab-pane fade" id="paper" role="tabpanel" aria-labelledby="paper-tab">
+                                    <!-- Content for the Paper tab -->
+                                    <img id="graph" src="{{ Last60DaysActivityPaperGraph_path }}"
+                                        alt="Last 60 Days Activity Graph">
+                                </div>
+                                <div class="tab-pane fade" id="plastic" role="tabpanel" aria-labelledby="plastic-tab">
+                                    <!-- Content for the Plastic tab -->
+                                    <img id="graph" src="{{ Last60DaysActivityPlasticGraph_path }}"
+                                        alt="Last 60 Days Activity Graph">
+                                </div>
+                                <div class="tab-pane fade" id="glass" role="tabpanel" aria-labelledby="glass-tab">
+                                    <!-- Content for the Glass tab -->
+                                    <img id="graph" src="{{ Last60DaysActivityGlassGraph_path }}"
+                                        alt="Last 60 Days Activity Graph">
+                                </div>
+                                <div class="tab-pane fade" id="metal" role="tabpanel" aria-labelledby="metal-tab">
+                                    <!-- Content for the Metal tab -->
+                                    <img id="graph" src="{{ Last60DaysActivityMetalGraph_path }}"
+                                        alt="Last 60 Days Activity Graph">
+                                </div>
+                                <div class="tab-pane fade" id="cardboard" role="tabpanel" aria-labelledby="cardboard-tab">
+                                    <!-- Content for the E-waste tab -->
+                                    <img id="graph" src="{{ Last60DaysActivityCardboardGraph_path }}"
+                                        alt="Last 60 Days Activity Graph">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h3>Recycles Made</h3>
+                    <div class="row" style="height:100%;">
+                        <div class="col-md-6">
+                            <div class="box">
+                                <div class="box-title bg-navy">Your Points</div>
+                                <div class="points">
+                                    <span>{{points}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="box">
+                                <div class="box-title bg-maroon">Total Recycles Made</div>
+                                <div class="points">
+                                    <span>{{totalRecycles}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="box">
+                                <div class="box-title bg-darkgreen">Your Daily Recycles</div>
+                                <div class="points">
+                                    <span>{{userDailyRecycles}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="box">
+                                <div class="box-title">Recycles Made Today</div>
+                                <div class="points">
+                                    <span>{{dailyRecycles}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
+
+
+        <div class="col-md-6">
+            <br><br>
+            <h3>Bin Info</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bin Location</th>
+                        <th>Bin Capacity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for index, (bin_location, bin_capacity) in binData %}
+                    <tr>
+                        <td class="table-cell-spacing">{{ bin_location }}</td>
+                        <td class="table-cell-spacing"><b>{{ bin_capacity }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-6">
+            <br><br>
+            <h3>LeaderBoards</h3>
+            <table class="leaderboard-table">
+                <thead class="bg-brown">
+                    <tr>
+                        <th>#</th>
+                        <th class="recycler-name">Recycler Name</th>
+                        <th class="recycler-recycles">Total Number of Recycles</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for index, (topRecyclerNames, topRecycles) in topRecyclersData %}
+                    <tr
+                        class="{% if index == 1 %}light-yellow{% elif index == 2 %}light-gray{% elif index == 3 %}light-copper{% endif %}">
+                        <td class="table-cell-spacing">{{ index }}</td>
+                        <td class="table-cell-spacing">{{ topRecyclerNames }}</td>
+                        <td class="table-cell-spacing">{{ topRecycles }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-
+<br><br><br><br><br><br><br><br><br><br><br><br>
 <script>
     let recycles_by_month = JSON.parse('{{recycles_by_month | tojson}}');
     let month_labels = JSON.parse('{{month_label | tojson}}');

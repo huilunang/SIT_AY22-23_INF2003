@@ -1,8 +1,11 @@
+body {
+    overflow: auto;
+  }
+
 .container {
     max-width: 80%;
     padding: 0 20px;
     margin: 25px auto;
-    overflow-y: auto;
 }
 
 .table-wrap {
@@ -54,4 +57,8 @@ h2 {
     margin-top: 15px;
     font-weight: 500;
     line-height: 1.2;
+}
+
+#codeDisplay {
+    font-size: 32px; /* Adjust the font size as needed */
 }

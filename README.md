@@ -36,3 +36,7 @@ Improve Singapore's recycling bins.
 > make clean
 ### Remove unused resources dangling
 > make deepclean
+
+## Login Credentials
+### Username: <your name> (e.g. sihui)
+### Password: 123
