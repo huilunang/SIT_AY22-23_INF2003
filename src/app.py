@@ -225,9 +225,9 @@ def recycle_approval():
                         mongo_q.set_material(detectionId, material)
                     else:
                         flash("Missing: 'Material' selection is required", "danger")
-
+                else:
+                    maria_q.add_points(request.form["userid"])
                 maria_q.update_approval(int(approval), recycleId)
-                maria_q.add_points(request.form["userid"])
                 flash(
                     f"Approval has been successfully made for recycle ID {recycleId}",
                     "success",

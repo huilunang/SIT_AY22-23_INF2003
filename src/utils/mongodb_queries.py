@@ -31,7 +31,6 @@ def insert_detection(score, modelLabel, fdir):
         "image_id": "",
         "confidence_score": float(score),
         "model_labeled": modelLabel,
-        "user_id": session["id"],
     }
     post_id = collection.insert_one(post).inserted_id
     image_id = mongo_db.set_file(fdir)
