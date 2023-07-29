@@ -4,6 +4,7 @@
 <title>Search</title>
 <link rel="stylesheet" href="../static/css/qsearch.css" />
 <link rel="stylesheet" href="../static/css/nav.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
 {% endblock head %} {% block content %}
 <header>
   <div class="containerNav">
@@ -28,15 +29,22 @@
     <div class="row d-flex justify-content-center align-items-center searchContainer" style="height: 100%">
       <div class="col-md-9 m-5">
         <h1 class="heading text-center">
-          CAN {% if data.query %}{{ data.query | upper }}{% else %}THIS{% endif %} BE
+          CAN {% if data.query %}{{ data.query | upper }}{% elif data.mquery%}{{ data.mquery | upper }}{% else %}THIS{% endif %} BE
           RECYCLED
         </h1>
         <div class="row d-flex justify-content-center px-5">
           <div class="search">
             <form method="POST" action="{{ url_for('search') }}">
               <div class="dropdown">
-                <input type="text" id="search-input" class="search-input" placeholder="Search..." name="search_query"
-                  data-toggle="dropdown" autocomplete="off" />
+                <input
+                  type="text"
+                  id="search-input"
+                  class="search-input"
+                  placeholder="Search..."
+                  name="search_query"
+                  data-toggle="dropdown"
+                  autocomplete="off"
+                />
                 <a href="#" class="search-icon">
                   <i class="fa fa-search"></i>
                 </a>
@@ -49,6 +57,11 @@
     </div>
   </div>
   <div class="container-fluid" style="overflow: auto">
+    {% if data.mquery and data['stats'] != None %}
+    <div class="chart-container mt-3">
+      <canvas id="chart"></canvas>
+    </div>
+    {% endif %}
     <div class="row d-flex flex-column justify-content-center align-items-center pt-5 pb-5">
       <div class="col-md-9 flex-column align-items-center table-responsive">
         <table class="table table-hover">
@@ -64,75 +77,170 @@
           <tbody>
             {% if data.query %}
             <h3>{{ data.query|title }}</h3>
-            {% endif %}
-            {% if data.record %}
+            {% endif %} {% if data.record %} {% for record in data.record %}
             <tr>
-              <td>{{ data.record[0]|title }}</td>
-              <td>{{ data.record[6]|title }}</td>
-              <td>{{ data.record[7]|title }}</td>
-              <td>{{ data.record[3]|title }}</td>
               <td>
-                {{ data.record[8]|capitalize }}{{ data.record[9]|capitalize }}
+                {{ record['ItemID']|title }}
+                <br>
+                <a href="#" id="randomImageLink_{{ loop.index }}" data-img="{{ record['Item'] }}">
+                  <img src="" id="randomImage_{{ loop.index }}" alt="{{ record['Item'] }}" width="300px" height="200px" loading="lazy"/>
+                </a>
+              </td>
+              <td>{{ record['ItemType']|title }}</td>
+              <td>{{ record['Item']|title }}</td>
+              <td>{{ record['Recycle']|title }}</td>
+              <td>
+                {{ record['Recyclable']|capitalize }}{{
+                record['NonRecyclable']|capitalize }}
               </td>
             </tr>
-            {% elif data.mrecord %}
-            {% for record in data.mrecord %}
+            {% endfor %} {% elif data.mrecord %} {% for record in data.mrecord
+            %}
             <tr>
-              <td>{{ record['id']|title }}</td>
-              <td>{{ record['type']|title }}</td>
-              <td>{{ record['item']|title }}</td>
-              <td>{{ record['recycle']|title }}</td>
               <td>
-                {{ record['recyclable']|capitalize }}{{
-                record['nonrecyclable']|capitalize }}
+                {{ record['ItemID']|title }}
+                <br>
+                <a href="#" id="randomImageLink_{{ loop.index }}" data-img="{{ record['Item'] }}">
+                  <img src="" id="randomImage_{{ loop.index }}" alt="{{ record['Item'] }}" width="300px" height="200px" loading="lazy"/>
+              </td>
+              <td>{{ record['ItemType']|title }}</td>
+              <td>{{ record['Item']|title }}</td>
+              <td>{{ record['Recycle']|title }}</td>
+              <td>
+                {{ record['Recyclable']|capitalize }}{{
+                record['NonRecyclable']|capitalize }}
               </td>
             </tr>
-            {% endfor %}
-            {% else %}
+            {% endfor %} {% else %}
             <td>No record found.</td>
             {% endif %}
           </tbody>
         </table>
       </div>
+
+      {% if data.record %}
+        <div aria-label="...">
+          <ul class="pagination justify-content-center">
+            <li class="page-item {% if current_page == 1 %}disabled{% endif %}">
+              <a class="page-link" href="{{ url_for('search', q=data.query, page=current_page-1) }}" tabindex="-1" aria-disabled="true">Previous</a>
+            </li>
+            {% for page in range(1, total_pages + 1) %}
+              <li class="page-item {% if page == current_page %}active aria-current='page'{% endif %}">
+                <a class="page-link" href="{{ url_for('search', q=data.query, page=page) }}">{{ page }}</a>
+              </li>
+            {% endfor %}
+            <li class="page-item {% if current_page == total_pages %}disabled{% endif %}">
+              <a class="page-link" href="{{ url_for('search', q=data.query, page=current_page+1) }}">Next</a>
+            </li>
+          </ul>
+        </div>
+      {% elif data.mrecord %}
+        <div aria-label="...">
+          <ul class="pagination justify-content-center">
+            <li class="page-item {% if current_page == 1 %}disabled{% endif %}">
+              <a class="page-link" href="{{ url_for('search', m=data.mquery, page=current_page-1) }}" tabindex="-1" aria-disabled="true">Previous</a>
+            </li>
+            {% for page in range(1, total_pages + 1) %}
+              <li class="page-item {% if page == current_page %}active aria-current='page'{% endif %}">
+                <a class="page-link" href="{{ url_for('search', m=data.mquery, page=page) }}">{{ page }}</a>
+              </li>
+            {% endfor %}
+            <li class="page-item {% if current_page == total_pages %}disabled{% endif %}">
+              <a class="page-link" href="{{ url_for('search', m=data.mquery, page=current_page+1) }}">Next</a>
+            </li>
+          </ul>
+        </div>
+      {% endif %}
     </div>
   </div>
 
-  <script>
-    const searchInput = document.getElementById("search-input");
-    const suggestionsContainer = document.getElementById("suggestions");
+  <script src="../static/js/search.js" defer></script>
 
-    searchInput.addEventListener("input", function () {
-      const searchQuery = this.value;
-      if (searchQuery.length >= 2) {
-        fetch("/get_suggestions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+  {% if data.mquery and data['stats'] != None %}
+  <script>
+    function generateGraph() {
+      let ctx = document.getElementById("chart").getContext("2d");
+      let chart = new Chart(ctx, {
+          type: "bar",
+          data: {
+              labels: [
+                  "2017",
+                  "2018",
+                  "2019",
+                  "2020",
+                  "2021",
+                  "2022",
+              ],
+              datasets: [
+                  {
+                      label: "Total Generated",
+                      data: ["{{data['stats'][0]['TotalGenerated'] }}","{{data['stats'][1]['TotalGenerated'] }}","{{data['stats'][2]['TotalGenerated'] }}","{{data['stats'][3]['TotalGenerated'] }}","{{data['stats'][4]['TotalGenerated'] }}","{{data['stats'][5]['TotalGenerated'] }}",],
+                      backgroundColor: "#0070C0",
+                  },
+                  {
+                      label: "Total Recycled",
+                      data: ["{{data['stats'][0]['TotalRecycled'] }}","{{data['stats'][1]['TotalRecycled'] }}","{{data['stats'][2]['TotalRecycled'] }}","{{data['stats'][3]['TotalRecycled'] }}","{{data['stats'][4]['TotalRecycled'] }}","{{data['stats'][5]['TotalRecycled'] }}",],
+                      backgroundColor: "#77C000",
+                  },
+                  {
+                      label: "Total Disposed",
+                      data: ["{{data['stats'][0]['TotalDisposed'] }}","{{data['stats'][1]['TotalDisposed'] }}","{{data['stats'][2]['TotalDisposed'] }}","{{data['stats'][3]['TotalDisposed'] }}","{{data['stats'][4]['TotalDisposed'] }}","{{data['stats'][5]['TotalDisposed'] }}",],
+                      backgroundColor: "#ED7D31",
+                  },
+                  {
+                      label: "Recycling Rate",
+                      data: ["{{data['stats'][0]['RecyclingRate'] }}"*100,"{{data['stats'][1]['RecyclingRate'] }}"*100,"{{data['stats'][2]['RecyclingRate'] }}"*100,"{{data['stats'][3]['RecyclingRate'] }}"*100,"{{data['stats'][4]['RecyclingRate'] }}"*100,"{{data['stats'][5]['RecyclingRate'] }}"*100,],
+                      backgroundColor: "#FE292A",
+                  },
+              ],
           },
-          body: JSON.stringify({ search_query: searchQuery }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            suggestionsContainer.innerHTML = "";
-            if (data && data.suggested_words.length > 0) {
-              data.suggested_words.forEach((word) => {
-                const suggestion = document.createElement("a");
-                suggestion.classList.add("dropdown-item");
-                suggestion.href = "search?q=" + encodeURIComponent(word);
-                suggestion.textContent = word;
-                suggestionsContainer.appendChild(suggestion);
-              });
-            } else {
-              const noResults = document.createElement("a");
-              suggestion.classList.add("dropdown-item");
-              suggestion.href = "#";
-              suggestion.textContent = word;
-              suggestionsContainer.appendChild(noResults);
+          options: {
+            legend: {display: true},
+            title: {
+              display: true,
+              text: "Waste Statistics & Overall Recycling for " + "{{data['mquery'] | title}}" + " from Year 2017 to 2022"
             }
-          });
-      } else {
-        suggestionsContainer.innerHTML = "";
-      }
+          }
+      });
+    };
+    generateGraph();
+  </script>
+  {% endif %}
+
+  <script>
+    async function fetchImages(img, link) {
+      const encodedQuery = encodeURIComponent(img);
+      const encodedAPIKey = encodeURIComponent("{{ pexels_api_key }}");
+
+      const res = await fetch(
+        "https://api.pexels.com/v1/search?query=" +
+        encodedQuery +
+        "&orientation=landscape&size=large&per_page=1",
+        {
+          headers: { Authorization: encodedAPIKey },
+        }
+      );
+      const json = await res.json();
+      const images = json.photos;
+
+      const randomImageUrl = images[0].src.large;
+
+      const linkId = link;
+      const imgId = "randomImage_" + link.replace(/\D/g, '');
+
+      // Get the link element based on the unique id
+      const randomImageLink = document.getElementById(linkId);
+      const randomImage = document.getElementById(imgId);
+      randomImageLink.href = randomImageUrl;
+      randomImage.src = randomImageUrl;
+    }
+
+    // Call fetchImages for each link in the loop
+    const linkElements = document.querySelectorAll('[id^="randomImageLink_"]');
+    linkElements.forEach((link) => {
+      const img = link.getAttribute("data-img");
+      const id = link.getAttribute("id");
+      fetchImages(img, id);
     });
   </script>
 </body>

@@ -35,5 +35,5 @@ function loadGeoJSON(filePath, collectionName) {
 }
 
 bloobin.createCollection('location', { capped: false });
-loadGeoJSON('/docker-entrypoint-initdb.d/recyclingbin.geojson', 'location');
-loadGeoJSON('/docker-entrypoint-initdb.d/e-wastebin.geojson', 'location');
+loadGeoJSON('/docker-entrypoint-initdb.d/locationDump/recyclingbin.geojson', 'location');
+loadGeoJSON('/docker-entrypoint-initdb.d/locationDump/e-wastebin.geojson', 'location');

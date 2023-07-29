@@ -14,6 +14,7 @@ services:
       - MARIADB_ROOT_PASSWORD=${ROOTPWD}
     volumes:
       - ./db:/docker-entrypoint-initdb.d
+    command: --max-connections=1000
     networks:
       - bloobin-network
 
