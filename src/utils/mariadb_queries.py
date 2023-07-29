@@ -35,12 +35,11 @@ def regCheck(username):
 
 def register(name, email, area, username, pwd):
     query = """
-    INSERT INTO Users (Name, Email, Area, Username, Password, isAdmin, Points)
-    VALUES (%s, %s, %s, %s, %s, %s, %s)
+    INSERT INTO Users (UserID, Name, Email, Area, Username, Password, isAdmin, Points)
+    VALUES (UUID(), %s, %s, %s, %s, %s, %s, %s)
     """
 
-    result = maria_db.execute(query, "", name, email, area, username, pwd, False, 0)
-    return result["result"]
+    maria_db.execute(query, "", name, email, area, username, pwd, False, 0)
 
 
 # admin home page
@@ -57,7 +56,7 @@ def getAllUsers():
 def deleteUser(userID):
     query = """
     DELETE FROM Users
-    WHERE UserID = %
+    WHERE UserID = %s
     """
 
     maria_db.execute(query, "", userID)
