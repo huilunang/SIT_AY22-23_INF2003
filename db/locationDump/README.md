@@ -1,7 +1,7 @@
 # Resources
 ## Dataset
 - [Recycling Bins: recyclingbin.geojson] (https://data.gov.sg/dataset/recycling-bins)
-- [E-Waste Bins: wastebin.geojson] (https://data.gov.sg/dataset/e-waste-recycling)
+- [E-Waste Bins: e-wastebin.geojson] (https://data.gov.sg/dataset/e-waste-recycling)
 
 # Setup
 ## Host

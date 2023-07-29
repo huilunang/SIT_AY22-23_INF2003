@@ -6,7 +6,7 @@
 -- Resources:
 -- InfoRecyclables: https://www.towardszerowaste.gov.sg/recycle/what-to-recycle/
 -- InfoRecyclableTips: https://www.nea.gov.sg/docs/default-source/our-services/waste-management/list-of-items-that-are-recyclable-and-not.pdf
--- InfoStats: https://www.nea.gov.sg/our-services/waste-management/waste-statistics-and-overall-recycling
+-- InfoStats: https://www.nea.gov.sg/our-services/waste-management/waste-statistics-and-overall-recycling 
 
 
 --

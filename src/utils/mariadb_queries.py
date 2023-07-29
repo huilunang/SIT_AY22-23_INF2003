@@ -291,10 +291,11 @@ def get_search(query_param, value, offset, limit):
         result = [dict(zip(row_headers, r)) for r in result["result"]]
     return result
 
+
 def get_material_stats(value):
     query = """
     SELECT * FROM InfoStats
-    WHERE InfoStats.WasteType = %s
+    WHERE InfoStats.WasteType = %s 
     ORDER BY InfoStats.Year ASC
     """
 
