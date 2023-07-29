@@ -9,7 +9,7 @@ from flask import (
     redirect,
     url_for,
     jsonify,
-    flash,
+    flash
 )
 from werkzeug.utils import secure_filename
 
@@ -17,6 +17,7 @@ import utils.constant as const
 import utils.helper_functions as helper
 import utils.mariadb_queries as maria_q
 import utils.mongodb_queries as mongo_q
+import math
 
 from model.inference import inference
 
@@ -341,9 +342,102 @@ def get_suggestions():
 @app.route("/location")
 def location():
     data = mongo_q.get_locations()
-    user_location = maria_q.getUserLocation()
-
+    user_location = maria_q.getUserLocation()    
     return render_template("location.html", user_location=user_location, data=data)
+
+
+@app.route("/locationList", methods=["GET","POST"])
+def locationList():
+    data =mongo_q.get_locations()
+
+    # For Pagination - tried
+    """ page_number = request.args.get('page_number', 1, type=int)
+    items_per_page = 150
+    recycling, ebin,total_locations = mongo_q.get_locations_page(page_number, items_per_page)
+    """   
+    #Cleaning the data's value field for recycling bin data
+    recycling=data[0]['features']
+    row_pattern = r'<tr.*?>\s*<th.*?>(.*?)<\/th>\s*<td.*?>(.*?)<\/td>(?=\s*<\/td>|<td.*?>|\s*<\/tr>)'
+    for entry in recycling:
+        html_string = entry["properties"]["description"]["value"]
+        entry["properties"]["description"]["value"] = helper.parse_html_table(row_pattern, html_string)
+    data[0]['features'] = recycling
+
+    #Cleaning the data's value field for e-bin data
+    ebin =data[1]['features']
+    row_pattern = r'<tr.*?>\s*<th.*?>(.*?)<\/th>\s*<td.*?>(.*?)<\/td>\s*<\/tr>'
+    for entry in ebin:
+        html_string = entry["properties"]["Description"]
+        entry["properties"]["Description"] = helper.parse_html_table(row_pattern,html_string)
+    data[1]['features'] = ebin
+    
+    #Pagination 
+    """ total_pages = math.ceil(total_locations / items_per_page) """
+
+    # Handle the search query
+    search_query = request.args.get("search_query")
+    filtered_recycling_data = []
+    filtered_ebin_data = []
+    if request.method == "POST":
+        search_query = request.form.get("search_query")
+        if search_query:
+            # Get the combined suggestions based on the search query
+            suggested_words = mongo_q.get_suggestions(recycling,ebin, search_query)
+            #Filter the recycling data
+            filtered_recycling_data = [entry for entry in recycling if search_query.lower() in entry['properties']['description']['value']['ADDRESSSTREETNAME'].lower()]
+            # Filter E-waste data
+            filtered_ebin_data = [entry for entry in ebin if search_query.lower() in entry['properties']['Description']['ADDRESSSTREETNAME'].lower()]
+        else:
+            # If no search query is provided, show all locations
+            suggested_words = None
+            filtered_recycling_data=recycling
+            filtered_ebin_data = ebin
+    else:
+        suggested_words = None
+        filtered_recycling_data=recycling
+        filtered_ebin_data = ebin
+
+    return render_template("locationList.html",recycling=filtered_recycling_data, ebin=filtered_ebin_data,suggested_words=suggested_words) #For pagementation - ,total_pages=total_pages, page_number=page_number, items_per_page=items_per_page
+
+@app.route("/get_location_suggestions", methods=["POST"])
+def get_location_suggestions():
+    data = mongo_q.get_locations()
+
+    #Cleaning the data's value field for recycling bin data
+    recycling = data[0]['features']
+    row_pattern = r'<tr.*?>\s*<th.*?>(.*?)<\/th>\s*<td.*?>(.*?)<\/td>(?=\s*<\/td>|<td.*?>|\s*<\/tr>)'
+    for entry in recycling:
+        html_string = entry["properties"]["description"]["value"]
+        entry["properties"]["description"]["value"] = helper.parse_html_table(row_pattern, html_string)
+    data[0]['features'] = recycling
+
+    #Cleaning the data's value field for e-bin data
+    ebin = data[1]['features']
+    row_pattern = r'<tr.*?>\s*<th.*?>(.*?)<\/th>\s*<td.*?>(.*?)<\/td>\s*<\/tr>'
+    for entry in ebin:
+        html_string = entry["properties"]["Description"]
+        entry["properties"]["Description"] = helper.parse_html_table(row_pattern,html_string)
+    data[1]['features'] = ebin
+
+
+    # # Extract the search query from the JSON data sent in the request
+    # search_query = request.json["search_query"]
+
+    # # Get the combined suggestions based on the search query
+    # suggested_words = mongo_q.get_suggestions(data, search_query)
+
+    # # Return the suggested words as JSON response
+    # return jsonify({"suggested_words": suggested_words})
+    if request.method == "POST":
+        search_query = request.json.get("search_query")
+        if search_query:
+            # Get the combined suggestions based on the search query
+            suggested_words = mongo_q.get_suggestions(data, search_query)
+            return jsonify({"suggested_words": suggested_words})
+        else:
+            return jsonify({"suggested_words": []})
+    else:
+        return jsonify({"suggested_words": []})
 
 
 @app.route("/scan", methods=["GET", "POST"])

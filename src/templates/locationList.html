@@ -1,0 +1,235 @@
+<!-- This page shows the location of the recycling bins in Singapore -->
+
+{% extends 'base.html' %} {% block head %}
+<title>Location</title>
+<link rel="stylesheet" href="../static/css/locationList.css" />
+<link rel="stylesheet" href="../static/css/search.css" />
+<link rel="stylesheet" href="../static/css/nav.css" />
+
+{% endblock head %} {% block content %}
+<header>
+  <div class="containerNav">
+    <img
+      src="../static/assets/smart bloobin logo.png"
+      alt="logo"
+      class="logo"
+    />
+<!-- Navigation Bar -->
+    <nav>
+      <ul>
+        <li><a href="home">Home</a></li>
+        <li><a href="search">Search</a></li>
+        <li><a href="scan">Scan</a></li>
+        <li><a href="rewards">Rewards</a></li>
+        <li><a href="location" class="active">Location</a></li>
+        <li><a href="profile">Profile</a></li>
+        <li><a href="{{url_for('logout')}}">Logout</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- Filters and buttons to navigate between map and list -->
+<body>
+  <div class="container-fluid" style="height: 50%">
+    <div class="row d-flex justify-content-center align-items-center searchContainer" style="height: 100%">
+      <div class="col-md-9 m-5">
+        <h1 class="heading text-center">LOCATION</h1>
+        <div class="row d-flex justify-content-center px-5">
+          <button class="btn btn-link"><a href="location" class="active">Map</a></button>
+          <br>
+          <button class="btn btn-link" ><a href="locationList" class="active">List</a></button>    
+        </div>
+        <div class="row d-flex justify-content-center px-5">
+          <div class="search">
+            <form id="search-form">
+              
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <label for="filter">Filter:</label>
+                </div>
+                <select id="filter" class ="col-1" onchange="filterData()">
+                  <option value="all">All</option>
+                  <option value="recycling">Recycling</option>
+                  <option value="e-waste">E-Waste</option>
+                </select>
+                <div class="col py-2">
+                </div>
+                <input 
+                  type="hidden" 
+                  id="search-query-input" 
+                  name="q" 
+                  value=""
+                >
+                <div class="col-9">
+                <div class="dropdown">
+                  <input 
+                    type="text" 
+                    id="search-input" 
+                    class="search-input" 
+                    placeholder="Enter a location to filter" 
+                    name="search_query"
+                    data-bs-toggle="dropdown" 
+                    autocomplete="off" 
+                    oninput="handleSearchInput()"
+                  />
+                  <!-- <i class="fa fa-search search-icon"></i> -->
+                  <ul id="suggestions" class="dropdown-menu" aria-labelledby="search-input"></ul>
+                </div>
+              </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+  <br>
+
+    <div id="location-data">
+      <div id="recycling-data" style="display: block;">
+        <!-- Show the recycling data -->
+        {% if recycling %}
+          {% for feature in recycling %}
+            <div class="row">
+              <div class="col">
+                <div class="card" style='border-radius: 0%;'>
+                  <p><b>Address:</b>  {{ feature['properties']['description']['value']['ADDRESSBLOCKHOUSENUMBER'] }}  {{ feature['properties']['description']['value']['ADDRESSSTREETNAME'] }} S{{ feature['properties']['description']['value']['ADDRESSPOSTALCODE'] }}</p>
+                  <p><b>Coordinates:</b> {{ feature['geometry']['coordinates'][1] }}, {{ feature['geometry']['coordinates'][0] }}</p>
+                  <p><b>Bin Type:</b> Recycle Bin</p>
+                  <p><b>Description:</b> {{ feature['properties']['description']['value']['DESCRIPTION'] }}</p>  
+                </div>
+              </div>
+            </div>
+            <br>
+            <br>
+          {% endfor %}
+        {% else %}
+          <p>No recycling bin locations to display.</p>
+        {% endif %}
+      </div>
+
+      <div id="e-waste-data" style="display: block;">
+        <!-- Show E-waste bin data -->
+        {% if ebin %}
+          {% for feature in ebin %}
+            <div class="row">
+              <div class="col">
+                <div class="card" style='border-radius: 0%;'>
+                  <p><b>Address:</b>   {{ feature['properties']['Description']['ADDRESSSTREETNAME'] }} S{{ feature['properties']['Description']['ADDRESSPOSTALCODE'] }}</p>
+                  <p><b>Coordinates:</b> {{ feature['geometry']['coordinates'][1] }}, {{ feature['geometry']['coordinates'][0] }}</p>
+                  <p><b>Bin Type:</b> E-Waste Bin</p>
+                  <p><b>Description:</b> {{ feature['properties']['Description']['DESCRIPTION'] }}</p>  
+                </div>
+              </div>
+            </div>
+            <br>
+            <br>
+          {% endfor %}
+        {% else %}
+          <p>No e-waste bin locations to display.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+<script>
+
+// Filter the records to show based on recycling, e-waste and all
+function filterData() {
+  var filterValue = document.getElementById("filter").value;
+  var recyclingData = document.getElementById("recycling-data");
+  var eWasteData = document.getElementById("e-waste-data");
+
+  if (filterValue === "recycling") {
+    recyclingData.style.display = "block";
+    eWasteData.style.display = "none";
+  } else if (filterValue === "e-waste") {
+    recyclingData.style.display = "none";
+    eWasteData.style.display = "block";
+  } else {
+    recyclingData.style.display = "block";
+    eWasteData.style.display = "block";
+  }
+}
+
+//When type into the box, will auto filter the records
+function handleSearchInput() {
+  const input = document.getElementById("search-input");
+  const filter = input.value.toUpperCase();
+  const div = document.getElementById("location-data");
+  const card = div.getElementsByClassName("card");
+
+  // Set the value of the hidden input element to the current search query
+  document.getElementById("search-query-input").value = input.value;
+
+  for (let i = 0; i < card.length; i++) {
+    const address = card[i].getElementsByTagName("p")[0];
+    const txtValue = address.textContent || address.innerText;
+    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+      card[i].style.display = "";
+    } else {
+      card[i].style.display = "none";
+    }
+  }
+
+  // Clear the suggestions container when typing in the search input
+  document.getElementById("suggestions").innerHTML = "";
+}
+
+// Function to show suggestions based on search query
+function showSuggestions(searchQuery) {
+  fetch("/get_location_suggestions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ search_query: searchQuery }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const suggestionsContainer = document.getElementById("suggestions");
+      suggestionsContainer.innerHTML = "";
+
+      if (data && data.suggested_words.length > 0) {
+        data.suggested_words.forEach((word) => {
+          const element = document.createElement("li");
+          const suggestion = document.createElement("a");
+          suggestion.classList.add("dropdown-item");
+          suggestion.href = "#";
+          suggestion.textContent = word;
+          suggestion.addEventListener("click", function () {
+            // Set the clicked suggestion as the search input value
+            document.getElementById("search-input").value = word;
+            // Call the handleSearchInput function to filter the data based on the clicked suggestion
+            handleSearchInput();
+          });
+          element.appendChild(suggestion);
+          suggestionsContainer.appendChild(element);
+        });
+      } else {
+        const noResults = document.createElement("a");
+        noResults.classList.add("dropdown-item");
+        noResults.href = "#";
+        noResults.textContent = "No suggestions found";
+        suggestionsContainer.appendChild(noResults);
+      }
+    });
+}
+
+// Add event listener to the search input to handle the search functionality
+searchInput = document.getElementById("search-input");
+searchInput.addEventListener("input", function () {
+  const searchQuery = this.value;
+  if (searchQuery.length >= 2) {
+    showSuggestions(searchQuery);
+  } else {
+    // Clear the suggestions container when there are less than 2 characters typed
+    document.getElementById("suggestions").innerHTML = "";
+  }
+});
+
+</script>
+</body>
+{% endblock %}

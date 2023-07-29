@@ -3,6 +3,7 @@ import shutil
 
 import utils.constant as const
 import utils.mariadb_queries as maria_q
+import re
 
 
 def get_suggestions(search_query):
@@ -39,3 +40,19 @@ def missing_fields(fields: dict):
     if len(missing) != 0:
         return missing
     return False
+
+def parse_html_table(regular_expression, html_str):
+    # Find all matches of the row pattern
+    matches = re.findall(regular_expression, html_str)
+
+    # Create a dictionary from the matches
+    data_dict = {}
+    for key, value in matches:
+        key = re.sub(r'<.*?>', '', key)  # Remove HTML tags from key
+        value = re.sub(r'<.*?>', '', value)  # Remove HTML tags from value
+        data_dict[key.strip()] = value.strip()
+
+    return data_dict
+
+
+

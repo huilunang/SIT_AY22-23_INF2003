@@ -22,9 +22,10 @@ body {
 }
 
 #map {
-  height: 82%;
+  height: 80%;
   width: 100%;
 }
+
 
 .search-input {
   height: 100%;
