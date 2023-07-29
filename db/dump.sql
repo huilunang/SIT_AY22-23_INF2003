@@ -155,37 +155,6 @@ VALUES
   (74, 5, '2023-08-30 16:30:00', '', 1, 'Plastic', 'bdf70bee-f317-4507-9f96-6b0b472f614e'),
   (75, 1, '2023-08-30 17:00:00', '', 1, 'Paper', 'ed1118c3-0297-4369-88ad-3915b6c7a970');
 
-Please note that I have generated random dates within the specified range (2023-07-05 to 2023-08-29) for the new entries. You can modify the dates as needed. Also, ensure that the existing data IDs go up to 10 before running the above SQL statement to prevent conflicts.
-
-
-
-
-User
-Create entries 30 to 40, keep the date within 2023-06
-ChatGPT
-To create entries from 30 to 40 and keep the dates within 2023-06, you can use the following SQL INSERT statement:
-
-sql
-Copy code
-INSERT INTO Recycles (RecycledID, BinID, Datetime, DetectionID, Approved, MaterialType, UserID)
-VALUES
-  (31, 1, '2023-06-01 09:30:00', '', 1, 'Plastic', 'ed1118c3-0297-4369-88ad-3915b6c7a970'),
-  (32, 2, '2023-06-02 14:15:00', '', 1, 'Paper', '725f9329-5002-4ce4-94f5-f28ab6328eeb'),
-  (33, 3, '2023-06-03 11:45:00', '', 1, 'Glass', 'ef562a89-0468-4d33-9280-b5cbec8fdf5b'),
-  (34, 4, '2023-06-04 16:30:00', '', 1, 'Metal', '15b4002c-b194-45ec-842b-235dea4e1db5'),
-  (35, 5, '2023-06-05 13:00:00', '', 1, 'Plastic', 'bdf70bee-f317-4507-9f96-6b0b472f614e'),
-  (36, 3, '2023-06-06 11:47:00', '', 1, 'Glass', '15b4002c-b194-45ec-842b-235dea4e1db5'),
-  (37, 3, '2023-06-07 10:30:00', '', 1, 'Glass', 'ef562a89-0468-4d33-9280-b5cbec8fdf5b'),
-  (38, 3, '2023-06-08 18:20:00', '', 1, 'Plastic', 'ef562a89-0468-4d33-9280-b5cbec8fdf5b'),
-  (39, 4, '2023-06-09 11:23:00', '', 1, 'Plastic', '15b4002c-b194-45ec-842b-235dea4e1db5'),
-  (40, 3, '2023-06-10 11:50:00', '', 1, 'Plastic', '15b4002c-b194-45ec-842b-235dea4e1db5');
-Please note that the dates in this insert statement are within 2023-06. Adjust the dates as needed while making sure they stay within that range. Also, ensure that the existing data IDs go up to 30 before running the above SQL statement to prevent conflicts.
-
-
-
-
-
-
 INSERT INTO RewardTransactions (TransactionID, RewardID, UserID, Claimed, TransactionDate)
 VALUES
   (1, 1, 'ed1118c3-0297-4369-88ad-3915b6c7a970', true, '2023-07-19 13:00:00'),
