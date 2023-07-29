@@ -50,21 +50,37 @@
 </header>
 
 <body>
-  <div class="search">
-    <form onsubmit="searchLocation('input'); return false;">
-      <input
-        type="text"
-        id="search-input"
-        class="search-input"
-        placeholder="Enter a location"
-        name="search_query"
-        data-toggle="dropdown"
-        autocomplete="off"
-      />
-      <a href="#" class="search-icon" onclick="searchLocation('input');">
-        <i class="fa fa-search"></i>
-      </a>
-    </form>
+  <div class="container-fluid" style="height: 50%">
+    <div class="row d-flex justify-content-center align-items-center searchContainer" style="height: 100%">
+      <div class="col-md-9 m-5">
+        <h1 class="heading text-center">LOCATION</h1>
+        <div class="row d-flex justify-content-center px-5">
+          <button><a href="location" class="active">Map</a></button>
+          <br>
+          <button><a href="locationList" class="active">List</a></button>    
+        </div>
+        <div class="row d-flex justify-content-center px-5">
+          <div class="search">
+            <form onsubmit="searchLocation('input'); return false;"">
+              <div class="dropdown">
+                <input 
+                  type="text" 
+                  id="search-input" 
+                  class="search-input" 
+                  placeholder="Enter a location" 
+                  name="search_query"
+                  data-bs-toggle="dropdown" 
+                  autocomplete="off" />
+                <a href="#" class="search-icon" onclick="searchLocation('input');">
+                  <i class="fa fa-search"></i>
+                </a>
+                <ul id="suggestions" class="dropdown-menu" aria-labelledby="search-input"></ul>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div id="map"></div>
@@ -77,6 +93,7 @@
     // layers: [recyclingMarkers, eWasteMarkers]
     });
 
+    //To get the map display from Leaflet
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
@@ -85,8 +102,10 @@
 
     // Function to search for a location
     function searchLocation(type) {
+      //Search based on what user input
       if (type == 'input'){
         var input = document.getElementById('search-input').value;
+      //Based on user location 
       }else if(type == 'init'){
         var input = '{{ user_location["result"][0] }}' + ' Singapore';
       }
@@ -123,6 +142,7 @@
       });
     }
 
+    //
     var greenIcon = new L.Icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
       shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',

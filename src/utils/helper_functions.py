@@ -1,9 +1,11 @@
+import datetime
 import os
+import re
 import shutil
 
 import utils.constant as const
 import utils.mariadb_queries as maria_q
-import datetime
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import pytz
@@ -69,7 +71,14 @@ def generateGraph():
     plt.figure(figsize=(10, 6))  # Set the figure size (width, height)
 
     # Plot the data with a line and markers
-    plt.plot(df["DayOfWeek"], df["TotalRecycled"], marker="o", color="green", linestyle="-", linewidth=2)
+    plt.plot(
+        df["DayOfWeek"],
+        df["TotalRecycled"],
+        marker="o",
+        color="green",
+        linestyle="-",
+        linewidth=2,
+    )
 
     # Set the chart title and labels
     plt.title("Your Total Number of Recycled Items in the Last 7 Days", fontsize=16)
@@ -77,7 +86,9 @@ def generateGraph():
     plt.ylabel("Total Recycled", fontsize=12)
 
     # Rotate the x-axis labels for better readability
-    plt.xticks(rotation=45, ha="right", fontsize=10)  # ha="right" aligns labels to the right
+    plt.xticks(
+        rotation=45, ha="right", fontsize=10
+    )  # ha="right" aligns labels to the right
 
     # Set the y-axis lower limit to 0 and adjust the upper limit
     plt.ylim(bottom=0, top=max(df["TotalRecycled"]) * 1.1)
@@ -152,8 +163,6 @@ def generateActivities(result, materialType):
     # Display the chart
     plt.tight_layout()  # Adjusts the layout to prevent overlapping labels
 
-    
-
     # Check if file path is empty
     filepath = os.path.join(const.SRC_PATH, "static/assets/graphs")
 
@@ -192,3 +201,17 @@ def missing_fields(fields: dict):
     if len(missing) != 0:
         return missing
     return False
+
+
+def parse_html_table(regular_expression, html_str):
+    # Find all matches of the row pattern
+    matches = re.findall(regular_expression, html_str)
+
+    # Create a dictionary from the matches
+    data_dict = {}
+    for key, value in matches:
+        key = re.sub(r"<.*?>", "", key)  # Remove HTML tags from key
+        value = re.sub(r"<.*?>", "", value)  # Remove HTML tags from value
+        data_dict[key.strip()] = value.strip()
+
+    return data_dict
