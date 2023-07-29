@@ -174,20 +174,21 @@ def rewards():
 
     # reward transactions table
     transactionRecord = maria_q.getTransactionInfo()
+    transaction_id = []
     transaction_dates = []
     reward_names = []
     claimed = []
     # Retrieve and append data to lists
-    for name, date, claim in transactionRecord:
+    for id, name, date, claim in transactionRecord:
+        transaction_id.append(id)
         reward_names.append(name)
         transaction_dates.append(date)
         if claim:
             claimed.append('Redeemed')
         else:
             claimed.append('Not Redeemed')
-
     # Create transaction_data list after appending data
-    transaction_data = list(enumerate(zip(reward_names, transaction_dates, claimed), 1))
+    transaction_data = list(enumerate(zip(transaction_id, reward_names, transaction_dates, claimed), 1))
     return render_template(
         "rewards.html",
         record = record,
@@ -210,6 +211,14 @@ def redeem_reward():
         maria_q.updateUserAfterRedemption(newUserPoints)
         maria_q.updateStock(newStock, reward_id)
         maria_q.addTransaction(reward_id)
+        return jsonify(success=True, message="Claim successful")
+    return jsonify(success=False, message="Error processing claim")
+
+@app.route("/claim_reward", methods=["POST"])
+def claim_reward():
+    if request.method == "POST":
+        transactionID = request.form.get("transactionID")
+        maria_q.updateRewardTransactions(transactionID)
         return jsonify(success=True, message="Redemption successful")
     return jsonify(success=False, message="Error processing redemption")
 
