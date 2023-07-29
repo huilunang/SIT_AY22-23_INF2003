@@ -1,8 +1,11 @@
+body {
+    overflow: auto;
+  }
+
 .container {
     max-width: 80%;
     padding: 0 20px;
     margin: 25px auto;
-    overflow-y: auto;
 }
 
 .table-wrap {

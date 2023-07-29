@@ -61,3 +61,7 @@ urllib3==1.26.16
 Werkzeug==2.3.4
 wrapt==1.15.0
 yarl==1.9.2
+# Might need to manually install with pip install matplotlib --user
+matplotlib==3.7.2
+pandas==2.0.3
+pyzt==0.0.2

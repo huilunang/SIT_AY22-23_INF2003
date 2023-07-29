@@ -1,5 +1,9 @@
 import re
 import hashlib
+import datetime
+import pandas as pd
+import matplotlib.pyplot as plt
+import pytz
 import math
 
 from flask import (
@@ -166,11 +170,29 @@ def delete_reward():
 def rewards():
     record = maria_q.getAllRewards()
     userPointsRecord = maria_q.getUserPoints()
-    userPoints = userPointsRecord[0]
+    userPoints= userPointsRecord[0]
+
+    # reward transactions table
+    transactionRecord = maria_q.getTransactionInfo()
+    transaction_dates = []
+    reward_names = []
+    claimed = []
+    # Retrieve and append data to lists
+    for name, date, claim in transactionRecord:
+        reward_names.append(name)
+        transaction_dates.append(date)
+        if claim:
+            claimed.append('Redeemed')
+        else:
+            claimed.append('Not Redeemed')
+
+    # Create transaction_data list after appending data
+    transaction_data = list(enumerate(zip(reward_names, transaction_dates, claimed), 1))
     return render_template(
         "rewards.html",
-        record=record,
-        userPoints=userPoints,
+        record = record,
+        userPoints = userPoints,
+        transaction_data=transaction_data,
     )
 
 
@@ -256,6 +278,38 @@ def home():
     record = maria_q.getUserPoints()
     points = record[0]
 
+    # recycles made today
+    record = maria_q.getDailyRecycles()
+    dailyRecycles=record[0]
+
+    # recycles user recycles today
+    record = maria_q.getUserDailyRecycles()
+    userDailyRecycles=record[0]
+
+    # total recycles made
+    record = maria_q.getTotalRecycles()
+    totalRecycles=record[0]
+
+    # top 5 recyclers
+    record = maria_q.getTop5Recyclers()
+    topRecyclerNames = []
+    topRecycles = []
+    for name, recycles in record:
+        topRecyclerNames.append(name)
+        topRecycles.append(recycles)
+    
+    topRecyclersData = list(enumerate(zip(topRecyclerNames, topRecycles), 1))
+
+    # bin capacity
+    binLocation = []
+    binCapacity = []
+    record = maria_q.getBinCapacity()
+    for binLoc, binCap in record:
+        binLocation.append(binLoc)
+        binCapacity.append(format(float(binCap)/2, ".1f"))
+        
+    binData = list(enumerate(zip(binLocation, binCapacity), 1))
+    
     # recycles by month line chart
     record = maria_q.getRecyclesByMonth()
     recycles_by_month = []
@@ -272,6 +326,22 @@ def home():
         material.append(mat)
         material_count.append(num)
 
+    # generate activity graph
+    helper.generateGraph()
+    helper.generateActivities(maria_q.getRecycleActivity60days(), None)
+    helper.generateActivities(maria_q.getRecycleMaterialActivity60days('Paper'), 'Paper')
+    helper.generateActivities(maria_q.getRecycleMaterialActivity60days('Plastic'), 'Plastic')
+    helper.generateActivities(maria_q.getRecycleMaterialActivity60days('Glass'), 'Glass')
+    helper.generateActivities(maria_q.getRecycleMaterialActivity60days('Metal'), 'Metal')
+    helper.generateActivities(maria_q.getRecycleMaterialActivity60days('Cardboard'), 'Cardboard')
+    recentActivityGraph_path = "static/assets/graphs/recentActivity.png"
+    Last60DaysActivityGraph_path = "static/assets/graphs/last60DaysActivity.png"
+    Last60DaysActivityPaperGraph_path = "static/assets/graphs/last60DaysActivity_Paper.png"
+    Last60DaysActivityPlasticGraph_path = "static/assets/graphs/last60DaysActivity_Plastic.png"
+    Last60DaysActivityGlassGraph_path = "static/assets/graphs/last60DaysActivity_Glass.png"
+    Last60DaysActivityMetalGraph_path = "static/assets/graphs/last60DaysActivity_Metal.png"
+    Last60DaysActivityCardboardGraph_path = "static/assets/graphs/last60DaysActivity_Cardboard.png"
+
     return render_template(
         "home.html",
         username=session["username"],
@@ -280,6 +350,18 @@ def home():
         month_label=month_label,
         material=material,
         material_count=material_count,
+        recentActivityGraph_path=recentActivityGraph_path,
+        Last60DaysActivityGraph_path=Last60DaysActivityGraph_path,
+        Last60DaysActivityPaperGraph_path=Last60DaysActivityPaperGraph_path,
+        Last60DaysActivityPlasticGraph_path=Last60DaysActivityPlasticGraph_path,
+        Last60DaysActivityGlassGraph_path=Last60DaysActivityGlassGraph_path,
+        Last60DaysActivityMetalGraph_path=Last60DaysActivityMetalGraph_path,
+        Last60DaysActivityCardboardGraph_path=Last60DaysActivityCardboardGraph_path,
+        dailyRecycles=dailyRecycles,
+        userDailyRecycles=userDailyRecycles,
+        totalRecycles=totalRecycles,
+        binData=binData,
+        topRecyclersData=topRecyclersData,
     )
 
 
